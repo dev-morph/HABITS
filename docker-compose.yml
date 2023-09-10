@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+    frontend:
+        container_name: habits_frontend
+        image: habits_frontend:dev
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - 8080:8080
+        working_dir: /app/frontend
+        volumes:
+            - ./frontend:/app/frontend
+            - /app/node_modules
+        environment:
+            TZ: 'Asia/Seoul'
+    backend:
+        container_name: habits_backend
+        image: habits_backend:dev
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        ports:
+            - 3000:3000
+        working_dir: /app/backend
+        volumes:
+            - ./backend:/app/backend
+            - /app/node_modules
+        environment:
+            TZ: 'Asia/Seoul'
+    db:
+        image: mysql:8.1.0
+        volumes:
+            - mysql-data:/var/lib/mysql
+        ports:
+            - 3307:3306
+        env_file:
+            - ./backend/.env
+
+volumes:
+    mysql-data:
