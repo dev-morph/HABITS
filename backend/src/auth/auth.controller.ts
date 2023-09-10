@@ -1,5 +1,6 @@
-import { Controller, Get, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Param, Delete, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { KakaoCodeDto } from './dto/kakao-code.dto';
 // import { KakaoLoginDto } from './dto/kakao-login.dto';
 
 @Controller('auth')
@@ -12,15 +13,13 @@ export class AuthController {
 		return this.authService.findAll();
 	}
 
-	@Get('/kakao/login')
-	kakaoLogin() {
-		console.log('kakao/login');
-		return this.authService.kakaoLogin();
-	}
-	@Get('/kakao/redirect')
-	kakaoRedirect() {
-		console.log('kakao/redirect');
-		return this.authService.kakaoLogin();
+	@Post('/kakao/login')
+	async kakaoToken(@Body() kakaoLoginDto: KakaoCodeDto) {
+		console.log('kakao/token', kakaoLoginDto.code);
+		const { access_token } = await this.authService.getKakaoToken(kakaoLoginDto.code);
+		const result = await this.authService.getKakaoUserInfo(access_token);
+		console.log('result is ---> ', result);
+		return 'success';
 	}
 
 	@Get(':id')
