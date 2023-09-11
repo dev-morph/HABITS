@@ -1,10 +1,12 @@
 FROM node:18-alpine
 
-WORKDIR /app/frontend
+WORKDIR /app
 
 COPY package*.json ./
 
+RUN npm ci
+
 COPY ./ ./
 
-# EXPOSE 8080
+#Executed When Container launched
 CMD ["npm", "run", "dev"]

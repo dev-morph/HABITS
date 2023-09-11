@@ -30,12 +30,18 @@ services:
             TZ: 'Asia/Seoul'
     db:
         image: mysql:8.1.0
+        build:
+            context: ./db
+            dockerfile: Dockerfile
         volumes:
             - mysql-data:/var/lib/mysql
         ports:
             - 3307:3306
+        # environment:
+        #     MYSQL_ROOT_PASSWORD: '!docker'
+        #     MYSQL_DATABASE_NAME: HABITS
         env_file:
-            - ./backend/.env
+            - ./db/.env
 
 volumes:
     mysql-data:
