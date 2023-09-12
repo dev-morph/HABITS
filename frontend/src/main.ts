@@ -5,13 +5,15 @@ import store from './store';
 import mitt from 'mitt';
 //global css
 import '@/styles/common.scss';
+import { createPinia } from 'pinia';
 
 // const axiosInstance = axios.create({
 // 	withCredentials: true,
 // });
 const emitter = mitt();
+const pinia = createPinia();
 
 const app = createApp(App);
 app.config.globalProperties.$emitter = emitter;
 
-app.use(store).use(router).mount('#app');
+app.use(store).use(router).use(pinia).mount('#app');

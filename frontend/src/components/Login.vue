@@ -1,9 +1,5 @@
 <template>
 	<div>
-		Login Component
-		<button>
-			<img src="../assets/kakao_login/ko/kakao_login_medium_narrow.png" />
-		</button>
 		<button to="/oauth/kakao/redirect" @click="handleLogin">
 			<img src="../assets/kakao_login/ko/kakao_login_medium_wide.png" />
 		</button>
