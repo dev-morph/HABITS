@@ -1,15 +1,16 @@
-import { Controller, Get, Body, Param, Delete, Post } from '@nestjs/common';
+import { Controller, Get, Body, Param, Delete, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { KakaoCodeDto } from './dto/kakao-code.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-	@Get('/login')
-	findAll() {
-		console.log('got req');
-		return this.authService.findAll();
+	@UseGuards(AuthGuard('local'))
+	@Post('/login')
+	login(@Request() req) {
+		console.log('got req', req);
 	}
 
 	@Post('/kakao/login')
@@ -17,15 +18,5 @@ export class AuthController {
 		const result = this.authService.kakaoLogin(kakaoLoginDto);
 		console.log('controller --', result);
 		return 'success';
-	}
-
-	@Get(':id')
-	findOne(@Param('id') id: string) {
-		return this.authService.findOne(+id);
-	}
-
-	@Delete(':id')
-	remove(@Param('id') id: string) {
-		return this.authService.remove(+id);
 	}
 }

@@ -4,14 +4,26 @@ import { firstValueFrom } from 'rxjs';
 import { KakaoTokenDto } from './dto/kakao-token.dto';
 import { KakaoCodeDto } from './dto/kakao-code.dto';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly httpService: HttpService,
+		private usersService: UsersService,
 		private configService: ConfigService
 	) {}
 
+	async validateUser(email: string, password: string): Promise<any> {
+		const user = await this.usersService.findOne(email);
+		if (user && user.password === password) {
+			const { password, ...result } = user;
+			return result;
+		}
+		return null;
+	}
+
+	// ##### 카카오 로그인
 	async kakaoLogin(kakaoCodeDto: KakaoCodeDto) {
 		//1. getKakaoToken by KakaoAuthCode
 		const { access_token } = await this.getKakaoToken(kakaoCodeDto.code);
@@ -45,16 +57,5 @@ export class AuthService {
 
 		const { data } = await firstValueFrom(this.httpService.get('https://kapi.kakao.com/v2/user/me', { headers: header }));
 		return data;
-	}
-	findAll() {
-		return `This action returns all auth`;
-	}
-
-	findOne(id: number) {
-		return `This action returns a #${id} auth`;
-	}
-
-	remove(id: number) {
-		return `This action removes a #${id} auth`;
 	}
 }
