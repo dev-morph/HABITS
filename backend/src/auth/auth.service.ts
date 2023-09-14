@@ -1,18 +1,41 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { KakaoTokenDto } from './dto/kakao-token.dto';
 import { KakaoCodeDto } from './dto/kakao-code.dto';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from 'src/users/users.service';
+import { JwtService } from '@nestjs/jwt';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly httpService: HttpService,
 		private usersService: UsersService,
-		private configService: ConfigService
+		private configService: ConfigService,
+		private jwtService: JwtService
 	) {}
+
+	async signIn(email: string, password: string) {
+		const user = await this.usersService.findOne(email);
+		if (user?.password !== password) {
+			throw new UnauthorizedException();
+		}
+		const payload = { id: user.id, email: user.email };
+		const access_token = await this.jwtService.signAsync(payload);
+		return { access_token };
+	}
+
+	async getCookieWithJwtAccessToken(signInDto: SignInDto) {
+		const access_token = await this.jwtService.signAsync(signInDto);
+		return {
+			accessToken: access_token,
+			sameSite: true,
+			//maxAge 단위는 ms
+			maxAge: this.configService.get('AT_DURATION') * 1000,
+		};
+	}
 
 	async validateUser(email: string, password: string): Promise<any> {
 		const user = await this.usersService.findOne(email);
