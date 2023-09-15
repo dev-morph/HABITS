@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Prisma } from '@prisma/client';
 
 @Controller('users')
 export class UsersController {
@@ -13,5 +14,10 @@ export class UsersController {
 	getProfile(@Request() req) {
 		console.log('got it');
 		return req.user;
+	}
+
+	@Post('signup')
+	signUp(@Body() userDto: Prisma.UserCreateInput) {
+		return this.usersService.createUser(userDto);
 	}
 }
