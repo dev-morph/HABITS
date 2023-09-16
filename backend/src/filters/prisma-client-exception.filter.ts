@@ -10,6 +10,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 		const message = exception.message.replace(/\n/g, '');
+		console.log('###', exception.meta.cause, '$$$');
 
 		switch (exception.code) {
 			case 'P2002': {
@@ -17,6 +18,16 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 				response.status(status).json({
 					statusCode: status,
 					message: message,
+				});
+				break;
+			}
+			case 'P2025': {
+				const status = HttpStatus.BAD_REQUEST;
+				response.status(status).json({
+					statusCode: status,
+					message:
+						exception.meta.cause ||
+						'An operation failed because it depends on one or more records that were required but not found. Record to update not found.',
 				});
 				break;
 			}

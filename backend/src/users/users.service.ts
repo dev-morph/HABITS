@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
-import { PrismaService } from 'src/db/prisma.service';
+import { PrismaService } from 'src/database/prisma.service';
 import { Prisma } from '@prisma/client';
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private repository: UsersRepository
+	) {}
 	private readonly users = [
 		{
 			id: 1,
@@ -24,12 +28,10 @@ export class UsersService {
 	}
 
 	async createUser(data: Prisma.UserCreateInput): Promise<User> {
-		try {
-			return this.prisma.user.create({
-				data,
-			});
-		} catch (error) {
-			console.log('ERROR IS ', error);
-		}
+		return this.repository.createUser(data);
+	}
+
+	async updateUser(params: { where: Prisma.UserWhereUniqueInput; data: Prisma.UserUpdateInput }) {
+		return this.repository.updateUser(params);
 	}
 }

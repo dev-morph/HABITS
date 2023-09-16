@@ -18,6 +18,7 @@ export class UsersController {
 
 	@Post('signup')
 	signUp(@Body() userDto: Prisma.UserCreateInput) {
-		return this.usersService.createUser(userDto);
+		return this.usersService.updateUser({ where: { email: 'hoi@hoi.com' }, data: userDto });
+		// return this.usersService.createUser(userDto);
 	}
 }
