@@ -12,11 +12,10 @@ export class UsersRepository {
 		});
 	}
 
-	async getUserByEmail(email: string): Promise<User> {
+	async getUser(params: { where: Prisma.UserWhereUniqueInput }): Promise<User> {
+		const { where } = params;
 		return this.prisma.user.findUnique({
-			where: {
-				email: email,
-			},
+			where,
 		});
 	}
 

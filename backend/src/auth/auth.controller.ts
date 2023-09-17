@@ -4,6 +4,8 @@ import { AuthService } from './auth.service';
 import { KakaoCodeDto } from './dto/kakao-code.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { SignInDto } from './dto/sign-in.dto';
+import { Prisma } from '@prisma/client';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
@@ -11,20 +13,24 @@ export class AuthController {
 
 	@UseGuards(AuthGuard('local'))
 	@Post('/login')
-	async login(@Body() signInDto: SignInDto, @Res({ passthrough: true }) res: Response) {
+	async login(@Request() request, @Res({ passthrough: true }) res: Response) {
 		try {
-			const { access_token } = await this.authService.signIn(signInDto.email, signInDto.password);
-			const { accessToken, ...accessCookieOptions } = await this.authService.getCookieWithJwtAccessToken(signInDto);
+			const { access_token, ...accessCookieOptions } = await this.authService.signIn(request.user);
 			res.cookie('Authentication', access_token, accessCookieOptions);
 
 			const payload = {
-				user: signInDto.email,
+				user: request.user.email,
 				message: 'Login Success',
 			};
 			return payload;
 		} catch (error) {
 			throw new InternalServerErrorException('Failed to Login');
 		}
+	}
+
+	@Post('/signup')
+	async signup(@Body() signupDto: Prisma.UserCreateInput) {
+		return this.authService.signUp(signupDto);
 	}
 
 	@Post('/kakao/login')

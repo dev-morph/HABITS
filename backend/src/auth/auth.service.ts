@@ -7,6 +7,8 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDto } from './dto/sign-in.dto';
+import * as bcrypt from 'bcrypt';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -17,20 +19,20 @@ export class AuthService {
 		private jwtService: JwtService
 	) {}
 
-	async signIn(email: string, password: string) {
-		const user = await this.usersService.findOne(email);
-		if (user?.password !== password) {
-			throw new UnauthorizedException();
-		}
-		const payload = { id: user.id, email: user.email };
-		const access_token = await this.jwtService.signAsync(payload);
-		return { access_token };
+	async signUp(userData: Prisma.UserCreateInput): Promise<User> {
+		const hashedPassword = await bcrypt.hash(userData.password, 10);
+		return await this.usersService.createUser({ ...userData, password: hashedPassword });
 	}
 
-	async getCookieWithJwtAccessToken(signInDto: SignInDto) {
-		const access_token = await this.jwtService.signAsync(signInDto);
+	async signIn(user: User) {
+		const { password, ...payload } = user;
+		const access_token = await this.jwtService.signAsync(payload);
+		const cookieOptions = this.getCookieOptions();
+		return { access_token, ...cookieOptions };
+	}
+
+	getCookieOptions() {
 		return {
-			accessToken: access_token,
 			sameSite: true,
 			//maxAge 단위는 ms
 			maxAge: this.configService.get('AT_DURATION') * 1000,
@@ -38,12 +40,19 @@ export class AuthService {
 	}
 
 	async validateUser(email: string, password: string): Promise<any> {
-		const user = await this.usersService.findOne(email);
-		if (user && user.password === password) {
-			const { password, ...result } = user;
-			return result;
+		const user = await this.usersService.getUserByEmail(email);
+		try {
+			const validPassword = await this.verifyPassword(password, user.password);
+			if (user && validPassword) {
+				const { password, ...result } = user;
+				return result;
+			}
+			//비밀 번호가 틀린 경우
+			throw new UnauthorizedException('1로그인 인증에 실패 하였습니다.');
+		} catch (error) {
+			console.error(error);
+			throw new UnauthorizedException('2로그인 인증에 실패 하였습니다.');
 		}
-		return null;
 	}
 
 	// ##### 카카오 로그인
@@ -80,5 +89,10 @@ export class AuthService {
 
 		const { data } = await firstValueFrom(this.httpService.get('https://kapi.kakao.com/v2/user/me', { headers: header }));
 		return data;
+	}
+
+	// ##### bcrypt
+	async verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+		return bcrypt.compare(password, hashedPassword);
 	}
 }
