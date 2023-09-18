@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ### [title]
-describe something...
+* describe something...
 ---
  - [ ]
  - [ ]
