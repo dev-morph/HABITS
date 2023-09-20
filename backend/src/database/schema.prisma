@@ -2,43 +2,43 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+	provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+	provider = "mysql"
+	url      = env("DATABASE_URL")
 }
 
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  username String
-  password String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+	id    Int     @default(autoincrement()) @id
+	email String  @unique
+	username String
+	password String
+	created_at DateTime @default(now())
+	updated_at DateTime @updatedAt
 }
 
-model events {
-  id        Int      @default(autoincrement()) @id
-  user_id String
-  routine_id Int
-  event_day DateTime @db.Date
-  title String
-  priority Int
-  is_complete Boolean
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model Event {
+	id        Int      @default(autoincrement()) @id
+	user_email String
+	routine_id Int
+	event_day DateTime @db.Date
+	title String
+	priority Int
+	is_complete Boolean
+	created_at DateTime @default(now())
+	updated_at DateTime @updatedAt
 }
 
-model routine{
+model Routine {
 	id Int @default(autoincrement()) @id
-	user_id String
+	user_email String
 	title String
 	recur_pattern String
 	event_day String
-	start_day DateTime @db.Date
-	end_day DateTime @db.Date
+	start_day DateTime? @db.Date
+	end_day DateTime? @db.Date
 	created_at DateTime @default(now())
 	updated_at DateTime @updatedAt
 }

@@ -124,8 +124,6 @@ describe('UsersRepository', () => {
 			expect(deleteResult.id).toEqual(createdUser.id);
 			const deletedUser = await repository.getUser({ where: { email: userData.email } });
 			expect(deletedUser).toBeNull();
-			const afterDelete = await repository.getUser({ where: { email: userData.email } });
-			expect(afterDelete).toBeNull();
 		});
 
 		it('없는 데이터 삭제 시도 시 P2025 Exception 출력', async () => {
