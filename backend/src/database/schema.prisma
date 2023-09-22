@@ -23,7 +23,7 @@ model Event {
 	id        Int      @default(autoincrement()) @id
 	user_email String
 	routine_id Int
-	event_day DateTime @db.Date
+	due_day DateTime @db.Date
 	title String
 	priority Int
 	is_complete Boolean
