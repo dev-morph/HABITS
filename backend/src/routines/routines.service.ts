@@ -86,15 +86,22 @@ export class RoutinesService {
 
 	getValidStartEndDays(startDay, endDay) {
 		const dayFormat = 'YYYY-MM-DD';
+		const now = dayjs(dayjs().format(dayFormat));
+		if (!startDay) {
+			startDay = now;
+		}
+		if (!endDay) {
+			endDay = dayjs('2053-12-31', dayFormat);
+		}
 		const start = dayjs(startDay, dayFormat);
 		const end = dayjs(endDay, dayFormat);
+
 		const validDays = {
 			startDay: start.format(dayFormat),
 			endDay: end.format(dayFormat),
 		};
 
 		const gap = end.diff(start);
-		const now = dayjs(dayjs().format(dayFormat));
 
 		if (gap < 0) {
 			throw new InvalidArgumentException('Routine StartDay should be earlier than EndDay.');

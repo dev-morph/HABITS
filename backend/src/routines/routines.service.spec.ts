@@ -93,17 +93,77 @@ describe('RoutinesService', () => {
 
 			expect(() => service.getValidStartEndDays(muchEarlierStartDay, earlyEndDay)).toThrow(InvalidArgumentException);
 		});
+
+		it('시작일이 없으면, 현재 시점으로 갈음한다.', () => {
+			const now = dayjs().format('YYYY-MM-DD');
+			const validDays = service.getValidStartEndDays(undefined, endDay);
+			expect(validDays.startDay).toEqual(now);
+		});
+
+		it('종료일이 없으면, 2053-12-31 시점으로 갈음한다.', () => {
+			const farFuture = dayjs('2053-12-31').format('YYYY-MM-DD');
+			const validDays = service.getValidStartEndDays(startDay, undefined);
+			expect(validDays.endDay).toEqual(farFuture);
+		});
+
+		it('종료일과 시작일이 없으면, 시작일은 현재시점, 종료일은 2053-12-31 시점으로 갈음한다.', () => {
+			const now = dayjs().format('YYYY-MM-DD');
+			const farFuture = dayjs('2053-12-31').format('YYYY-MM-DD');
+			const validDays = service.getValidStartEndDays(undefined, undefined);
+			expect(validDays.startDay).toEqual(now);
+			expect(validDays.endDay).toEqual(farFuture);
+		});
 	});
 
-	describe('루틴으로 이벤트 생성 함수', () => {
-		it('주간 반복 이벤트 생성 테스트 - 09/24~ 10/2 기간 총 4개 이벤트 생성, 0(일), 3(수), 6(토)', () => {
-			const result = service.generateWeeklyEvents(routineWeeklyDummy);
+	describe('주간 반복 이벤트 생성 테스트', () => {
+		it('현재 날짜로부터 종료일이 1주일 후인 0(일), 3(수), 6(토) 이벤트 -  총 3개 이벤트 생성', () => {
+			const today = dayjs();
+			const validRoutine = {
+				...routineWeeklyDummy,
+				start_day: today.format('YYYY-MM-DD'),
+				end_day: today.add(6, 'day').format('YYYY-MM-DD'),
+			};
+			const result = service.generateWeeklyEvents(validRoutine);
 
-			expect(result.length).toBe(4);
-			expect(result[0].due_day).toBe('2023-09-24');
-			expect(result[1].due_day).toBe('2023-09-27');
-			expect(result[2].due_day).toBe('2023-09-30');
-			expect(result[3].due_day).toBe('2023-10-01');
+			expect(result.length).toBe(3);
+		});
+
+		it('현재 날짜로부터 종료일이 3주일 후인 0(일), 1(월), 3(수), 6(토) 이벤트 -  총 12개 이벤트 생성', () => {
+			const today = dayjs();
+			const validRoutine = {
+				...routineWeeklyDummy,
+				event_day: '0, 1, 3, 6',
+				start_day: today.format('YYYY-MM-DD'),
+				end_day: today.add(20, 'day').format('YYYY-MM-DD'),
+			};
+			const result = service.generateWeeklyEvents(validRoutine);
+
+			expect(result.length).toBe(12);
+		});
+
+		it('현재 날짜로부터 종료일이 2주일 후인 매일 반복 일정 - 기간 총 12개 생성', () => {
+			const today = dayjs();
+			const AllDayRoutine = {
+				...routineWeeklyDummy,
+				event_day: '0, 1, 2, 3, 4, 5, 6',
+				start_day: today.format('YYYY-MM-DD'),
+				end_day: today.add(13, 'day').format('YYYY-MM-DD'),
+			};
+			const result = service.generateWeeklyEvents(AllDayRoutine);
+
+			expect(result.length).toBe(14);
+		});
+
+		it('시작날짜가 현재 날짜보다 과거 + 종료일이 현재날짜로부터 2주일 후인 매일 반복 일정 - 기간 총 12개 생성', () => {
+			const today = dayjs();
+			const AllDayRoutine = {
+				...routineWeeklyDummy,
+				event_day: '0, 1, 2, 3, 4, 5, 6',
+				start_day: dayjs('2002-11-17', 'YYYY-MM-DD').format('YYYY-MM-DD'),
+				end_day: today.add(13, 'day').format('YYYY-MM-DD'),
+			};
+			const result = service.generateWeeklyEvents(AllDayRoutine);
+			expect(result.length).toBe(14);
 		});
 	});
 });
