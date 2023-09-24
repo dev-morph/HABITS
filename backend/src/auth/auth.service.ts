@@ -50,7 +50,6 @@ export class AuthService {
 			//비밀 번호가 틀린 경우
 			throw new UnauthorizedException('1로그인 인증에 실패 하였습니다.');
 		} catch (error) {
-			console.error(error);
 			throw new UnauthorizedException('2로그인 인증에 실패 하였습니다.');
 		}
 	}

@@ -14,6 +14,9 @@ import { CreateEventDto } from 'src/events/dto/create-event.dto';
 
 @Injectable()
 export class RoutinesService {
+	private dateFormat = 'YYYY-MM-DD';
+	private undefinedEndDate = '2053-12-31';
+
 	create(createRoutineDto: CreateRoutineDto) {
 		return 'This action adds a new routine';
 	}
@@ -42,19 +45,15 @@ export class RoutinesService {
 		return null;
 	}
 
-	getEventDays(event_day, start_day, end_day) {
-		const eventDays = event_day.replace(/ /g, '').split(',');
-	}
-
 	generateWeeklyEvents(data: CreateRoutineDto) {
 		const result = [];
 		const { event_day, start_day, end_day } = data;
-		const eventDays = event_day.replace(/ /g, '').split(',');
+		// const eventDays = event_day.replace(/ /g, '').split(',');
 		const { startDay, endDay } = this.getValidStartEndDays(start_day, end_day);
 		let target = dayjs(startDay);
 
 		while (dayjs(endDay).diff(target) >= 0) {
-			if (eventDays.includes(target.get('day').toString())) {
+			if (event_day.includes(target.get('day').toString())) {
 				const event = CreateEventDto.of({
 					user_email: data.user_email,
 					routine_id: 0,
@@ -85,20 +84,19 @@ export class RoutinesService {
 	}
 
 	getValidStartEndDays(startDay, endDay) {
-		const dayFormat = 'YYYY-MM-DD';
-		const now = dayjs(dayjs().format(dayFormat));
+		const now = dayjs(dayjs().format(this.dateFormat));
 		if (!startDay) {
 			startDay = now;
 		}
 		if (!endDay) {
-			endDay = dayjs('2053-12-31', dayFormat);
+			endDay = dayjs(this.undefinedEndDate, this.dateFormat);
 		}
-		const start = dayjs(startDay, dayFormat);
-		const end = dayjs(endDay, dayFormat);
+		const start = dayjs(startDay, this.dateFormat);
+		const end = dayjs(endDay, this.dateFormat);
 
 		const validDays = {
-			startDay: start.format(dayFormat),
-			endDay: end.format(dayFormat),
+			startDay: start.format(this.dateFormat),
+			endDay: end.format(this.dateFormat),
 		};
 
 		const gap = end.diff(start);
@@ -108,7 +106,7 @@ export class RoutinesService {
 		}
 
 		if (start.diff(now) < 0) {
-			validDays.startDay = now.format(dayFormat);
+			validDays.startDay = now.format(this.dateFormat);
 		}
 
 		if (end.diff(now) < 0) {

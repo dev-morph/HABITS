@@ -3,18 +3,10 @@ import { RoutinesService } from './routines.service';
 import { Event, Prisma, Routine } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { InvalidArgumentException } from 'src/exceptions/invalid-arguement.exception';
+import { CreateRoutineDto } from './dto/create-routine.dto';
 
 describe('RoutinesService', () => {
 	let service: RoutinesService;
-
-	const routineWeeklyDummy: Prisma.RoutineCreateInput = {
-		user_email: 'weekly@test.com',
-		title: 'RUN THE TEST',
-		recur_pattern: 'W',
-		event_day: '0, 3, 6',
-		start_day: dayjs('2023-09-24').format('YYYY-MM-DD'),
-		end_day: dayjs('2023-10-2').format('YYYY-MM-DD'),
-	};
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -22,33 +14,6 @@ describe('RoutinesService', () => {
 		}).compile();
 
 		service = module.get<RoutinesService>(RoutinesService);
-	});
-
-	describe('주간 반복 이벤트 데이터 유효성 검사', () => {
-		it('정상 통과', () => {
-			const validEventDays = ['1', '2', '6'];
-			const result = service.validateWeeklyEventDays(validEventDays);
-
-			expect(result).toBe(true);
-		});
-
-		it('0~6 범위 초과 할 시, InvalidArgumentException 출력', () => {
-			const invalidEventDays = ['1', '2', '6', '7'];
-
-			expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
-				"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
-			);
-			expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
-		});
-
-		it('0~6 범위 내 숫자는 중복되면 안된다., InvalidArgumentException 출력', () => {
-			const invalidEventDays = ['1', '0', '2', '6', '2', '3'];
-
-			expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
-				"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
-			);
-			expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
-		});
 	});
 
 	describe('루틴 시작일과 종료일 유효성 검사', () => {
@@ -115,55 +80,124 @@ describe('RoutinesService', () => {
 		});
 	});
 
-	describe('주간 반복 이벤트 생성 테스트', () => {
-		it('현재 날짜로부터 종료일이 1주일 후인 0(일), 3(수), 6(토) 이벤트 -  총 3개 이벤트 생성', () => {
-			const today = dayjs();
-			const validRoutine = {
-				...routineWeeklyDummy,
-				start_day: today.format('YYYY-MM-DD'),
-				end_day: today.add(6, 'day').format('YYYY-MM-DD'),
-			};
-			const result = service.generateWeeklyEvents(validRoutine);
+	describe('주간 반복 이벤트', () => {
+		const routineWeeklyDummy: CreateRoutineDto = {
+			user_email: 'weekly@test.com',
+			title: 'RUN THE TEST',
+			recur_pattern: 'W',
+			event_day: ['0', '3', '6'],
+			start_day: dayjs('2023-09-24').format('YYYY-MM-DD'),
+			end_day: dayjs('2023-10-2').format('YYYY-MM-DD'),
+		};
+		describe('주간 반복 이벤트 데이터 유효성 검사', () => {
+			it('정상 통과', () => {
+				const validEventDays = ['1', '2', '6'];
+				const result = service.validateWeeklyEventDays(validEventDays);
 
-			expect(result.length).toBe(3);
+				expect(result).toBe(true);
+			});
+
+			it('0~6 범위 초과 할 시, InvalidArgumentException 출력', () => {
+				const invalidEventDays = ['1', '2', '6', '7'];
+
+				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
+					"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
+				);
+				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
+			});
+
+			it('0~6 범위 내 숫자는 중복되면 안된다., InvalidArgumentException 출력', () => {
+				const invalidEventDays = ['1', '0', '2', '6', '2', '3'];
+
+				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
+					"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
+				);
+				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
+			});
 		});
 
-		it('현재 날짜로부터 종료일이 3주일 후인 0(일), 1(월), 3(수), 6(토) 이벤트 -  총 12개 이벤트 생성', () => {
-			const today = dayjs();
-			const validRoutine = {
-				...routineWeeklyDummy,
-				event_day: '0, 1, 3, 6',
-				start_day: today.format('YYYY-MM-DD'),
-				end_day: today.add(20, 'day').format('YYYY-MM-DD'),
-			};
-			const result = service.generateWeeklyEvents(validRoutine);
+		describe('주간 반복 이벤트 생성 테스트', () => {
+			it('현재 날짜로부터 종료일이 1주일 후인 0(일), 3(수), 6(토) 이벤트 -  총 3개 이벤트 생성', () => {
+				const today = dayjs();
+				const validRoutine = {
+					...routineWeeklyDummy,
+					start_day: today.format('YYYY-MM-DD'),
+					end_day: today.add(6, 'day').format('YYYY-MM-DD'),
+				};
+				const result = service.generateWeeklyEvents(validRoutine);
 
-			expect(result.length).toBe(12);
+				expect(result.length).toBe(3);
+			});
+
+			it('현재 날짜로부터 종료일이 3주일 후인 0(일), 1(월), 3(수), 6(토) 이벤트 -  총 12개 이벤트 생성', () => {
+				const today = dayjs();
+				const validRoutine = {
+					...routineWeeklyDummy,
+					event_day: ['0', '1', '3', '6'],
+					start_day: today.format('YYYY-MM-DD'),
+					end_day: today.add(20, 'day').format('YYYY-MM-DD'),
+				};
+				const result = service.generateWeeklyEvents(validRoutine);
+
+				expect(result.length).toBe(12);
+			});
+
+			it('현재 날짜로부터 종료일이 2주일 후인 매일 반복 일정 - 기간 총 12개 생성', () => {
+				const today = dayjs();
+				const AllDayRoutine = {
+					...routineWeeklyDummy,
+					event_day: ['0', '2', '1', '3', '4', '5', '6'],
+					start_day: today.format('YYYY-MM-DD'),
+					end_day: today.add(13, 'day').format('YYYY-MM-DD'),
+				};
+				const result = service.generateWeeklyEvents(AllDayRoutine);
+
+				expect(result.length).toBe(14);
+			});
+
+			it('시작날짜가 현재 날짜보다 과거 + 종료일이 현재날짜로부터 2주일 후인 매일 반복 일정 - 기간 총 12개 생성', () => {
+				const today = dayjs();
+				const AllDayRoutine = {
+					...routineWeeklyDummy,
+					event_day: ['0', '2', '1', '3', '4', '5', '6'],
+					start_day: dayjs('2002-11-17', 'YYYY-MM-DD').format('YYYY-MM-DD'),
+					end_day: today.add(13, 'day').format('YYYY-MM-DD'),
+				};
+				const result = service.generateWeeklyEvents(AllDayRoutine);
+				expect(result.length).toBe(14);
+			});
 		});
+	});
 
-		it('현재 날짜로부터 종료일이 2주일 후인 매일 반복 일정 - 기간 총 12개 생성', () => {
-			const today = dayjs();
-			const AllDayRoutine = {
-				...routineWeeklyDummy,
-				event_day: '0, 1, 2, 3, 4, 5, 6',
-				start_day: today.format('YYYY-MM-DD'),
-				end_day: today.add(13, 'day').format('YYYY-MM-DD'),
-			};
-			const result = service.generateWeeklyEvents(AllDayRoutine);
+	describe('월간 반복 이벤트', () => {
+		describe('월간 반복 이벤트 데이터 유효성 검사', () => {
+			it('정상 통과', () => {
+				const month = dayjs().format('MM-DD');
+				console.log('###', month, dayjs(month).format('YYYY-MM-DD'));
+				console.log('###2', dayjs(month).format('YYYY-MM-DD'));
+				const validEventDays = ['1', '2', '6'];
+				const result = service.validateWeeklyEventDays(validEventDays);
 
-			expect(result.length).toBe(14);
-		});
+				expect(result).toBe(true);
+			});
 
-		it('시작날짜가 현재 날짜보다 과거 + 종료일이 현재날짜로부터 2주일 후인 매일 반복 일정 - 기간 총 12개 생성', () => {
-			const today = dayjs();
-			const AllDayRoutine = {
-				...routineWeeklyDummy,
-				event_day: '0, 1, 2, 3, 4, 5, 6',
-				start_day: dayjs('2002-11-17', 'YYYY-MM-DD').format('YYYY-MM-DD'),
-				end_day: today.add(13, 'day').format('YYYY-MM-DD'),
-			};
-			const result = service.generateWeeklyEvents(AllDayRoutine);
-			expect(result.length).toBe(14);
+			it('0~6 범위 초과 할 시, InvalidArgumentException 출력', () => {
+				const invalidEventDays = ['1', '2', '6', '7'];
+
+				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
+					"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
+				);
+				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
+			});
+
+			it('0~6 범위 내 숫자는 중복되면 안된다., InvalidArgumentException 출력', () => {
+				const invalidEventDays = ['1', '0', '2', '6', '2', '3'];
+
+				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
+					"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
+				);
+				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
+			});
 		});
 	});
 });
