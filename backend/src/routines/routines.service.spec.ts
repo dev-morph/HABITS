@@ -4,6 +4,7 @@ import { Event, Prisma, Routine } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { InvalidArgumentException } from 'src/exceptions/invalid-arguement.exception';
 import { CreateRoutineDto } from './dto/create-routine.dto';
+import { BadGatewayException } from '@nestjs/common';
 
 describe('RoutinesService', () => {
 	let service: RoutinesService;
@@ -33,9 +34,8 @@ describe('RoutinesService', () => {
 		it('종료일이 시작일 보다 빠르다면, InvalidArguments 출력', () => {
 			const invalidEndDay = '2023-09-28';
 			expect(() => service.getValidStartEndDays(startDay, invalidEndDay)).toThrow(
-				'InvalidArguments - Routine StartDay should be earlier than EndDay.'
+				new InvalidArgumentException('Routine StartDay should be earlier than EndDay.')
 			);
-			expect(() => service.getValidStartEndDays(startDay, invalidEndDay)).toThrow(InvalidArgumentException);
 		});
 
 		it('시작일이 현재시점보다 빠르다면, 시작일로 오늘 날짜가 리턴되게 된다.', () => {
@@ -53,10 +53,8 @@ describe('RoutinesService', () => {
 			const now = dayjs().format('YYYY-MM-DD');
 
 			expect(() => service.getValidStartEndDays(muchEarlierStartDay, earlyEndDay)).toThrow(
-				'InvalidArguments - Routine EndDay should be later than Now.'
+				new InvalidArgumentException('Routine EndDay should be later than Now.')
 			);
-
-			expect(() => service.getValidStartEndDays(muchEarlierStartDay, earlyEndDay)).toThrow(InvalidArgumentException);
 		});
 
 		it('시작일이 없으면, 현재 시점으로 갈음한다.', () => {
@@ -99,20 +97,16 @@ describe('RoutinesService', () => {
 
 			it('0~6 범위 초과 할 시, InvalidArgumentException 출력', () => {
 				const invalidEventDays = ['1', '2', '6', '7'];
-
 				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
-					"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
+					new InvalidArgumentException("WeeklyEventDays should be from '0' to '6' and not be redundant.")
 				);
-				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
 			});
 
 			it('0~6 범위 내 숫자는 중복되면 안된다., InvalidArgumentException 출력', () => {
 				const invalidEventDays = ['1', '0', '2', '6', '2', '3'];
-
 				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
-					"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
+					new InvalidArgumentException("WeeklyEventDays should be from '0' to '6' and not be redundant.")
 				);
-				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
 			});
 		});
 
@@ -142,7 +136,7 @@ describe('RoutinesService', () => {
 				expect(result.length).toBe(12);
 			});
 
-			it('현재 날짜로부터 종료일이 2주일 후인 매일 반복 일정 - 기간 총 12개 생성', () => {
+			it('현재 날짜로부터 종료일이 2주일 후인 매일 반복 일정 - 기간 총 14개 생성', () => {
 				const today = dayjs();
 				const AllDayRoutine = {
 					...routineWeeklyDummy,
@@ -155,16 +149,16 @@ describe('RoutinesService', () => {
 				expect(result.length).toBe(14);
 			});
 
-			it('시작날짜가 현재 날짜보다 과거 + 종료일이 현재날짜로부터 2주일 후인 매일 반복 일정 - 기간 총 12개 생성', () => {
+			it('시작날짜가 현재 날짜보다 과거 + 종료일이 현재날짜로부터 5주일 후인 주 6일 반복 일정 - 기간 총 30개 생성', () => {
 				const today = dayjs();
 				const AllDayRoutine = {
 					...routineWeeklyDummy,
-					event_day: ['0', '2', '1', '3', '4', '5', '6'],
+					event_day: ['0', '2', '1', '3', '5', '6'],
 					start_day: dayjs('2002-11-17', 'YYYY-MM-DD').format('YYYY-MM-DD'),
-					end_day: today.add(13, 'day').format('YYYY-MM-DD'),
+					end_day: today.add(34, 'day').format('YYYY-MM-DD'),
 				};
 				const result = service.generateWeeklyEvents(AllDayRoutine);
-				expect(result.length).toBe(14);
+				expect(result.length).toBe(30);
 			});
 		});
 	});
@@ -172,31 +166,45 @@ describe('RoutinesService', () => {
 	describe('월간 반복 이벤트', () => {
 		describe('월간 반복 이벤트 데이터 유효성 검사', () => {
 			it('정상 통과', () => {
-				const month = dayjs().format('MM-DD');
-				console.log('###', month, dayjs(month).format('YYYY-MM-DD'));
-				console.log('###2', dayjs(month).format('YYYY-MM-DD'));
-				const validEventDays = ['1', '2', '6'];
-				const result = service.validateWeeklyEventDays(validEventDays);
-
+				//1 ~ 31
+				const month = ['1', '7', '28'];
+				const result = service.validateMonthlyEventDays(month);
 				expect(result).toBe(true);
 			});
 
-			it('0~6 범위 초과 할 시, InvalidArgumentException 출력', () => {
-				const invalidEventDays = ['1', '2', '6', '7'];
-
-				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
-					"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
+			it('1 ~ 31 범위 초과 하는 경우, InvalidArgumentException 출력', () => {
+				//1 ~ 31
+				const month = ['1', '0', '7', '28'];
+				expect(() => service.validateMonthlyEventDays(month)).toThrow(
+					new InvalidArgumentException("MonthlyEventDays should be from '1' to '31' and not be redundant.")
 				);
-				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
 			});
 
-			it('0~6 범위 내 숫자는 중복되면 안된다., InvalidArgumentException 출력', () => {
-				const invalidEventDays = ['1', '0', '2', '6', '2', '3'];
-
-				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(
-					"InvalidArguments - WeeklyEventDays should be from '0' to '6' and not be redundant."
+			it('1 ~ 31 범위이내 중복값이 있는 경우, InvalidArgumentException 출력', () => {
+				//1 ~ 31
+				const month = ['1', '2', '7', '28', '7'];
+				expect(() => service.validateMonthlyEventDays(month)).toThrow(
+					new InvalidArgumentException("MonthlyEventDays should be from '1' to '31' and not be redundant.")
 				);
-				expect(() => service.validateWeeklyEventDays(invalidEventDays)).toThrow(InvalidArgumentException);
+			});
+		});
+	});
+
+	describe('월간 반복 이벤트 생성', () => {
+		describe('달에 맞는 날짜 지정. 매월 31일 반복 -> 4월 30일, 매월 30일 반복 -> 2월 28일', () => {
+			it('윤년 체크 함수', () => {
+				const reuslt2023 = service.isLeapYear('2023');
+				const reuslt2024 = service.isLeapYear('2024');
+				const reuslt2028 = service.isLeapYear('2028');
+				const reuslt2100 = service.isLeapYear('2100');
+				const reuslt2150 = service.isLeapYear('2150');
+				const reuslt24000 = service.isLeapYear('24000');
+				expect(reuslt2023).toBe(false);
+				expect(reuslt2024).toBe(true);
+				expect(reuslt2028).toBe(true);
+				expect(reuslt2100).toBe(false);
+				expect(reuslt2150).toBe(false);
+				expect(reuslt24000).toBe(false);
 			});
 		});
 	});
