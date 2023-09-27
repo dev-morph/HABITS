@@ -69,8 +69,10 @@ describe('RoutinesRepository', () => {
 				...routineYearlyDummy,
 				user_email: 'newUser@test.com',
 			};
-			await repository.createRoutine(dummyWithNewUser);
-			const result = await repository.getRoutines({ where: { user_email: routineWeeklyDummy.user_email } });
+			const savedDto = await repository.createRoutine(dummyWithNewUser);
+			console.log('savedDto', savedDto);
+			const result = await repository.getRoutines({ where: { user_email: dummyWithNewUser.user_email } });
+			console.log('result', result);
 			expect(result.length).toBe(1);
 			expect(result[0].user_email).toEqual(routineWeeklyDummy.user_email);
 			expect(result[0].title).toEqual(routineWeeklyDummy.title);

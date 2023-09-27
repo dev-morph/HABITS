@@ -48,10 +48,11 @@ export class RoutinesService {
 	generateWeeklyEvents(data: CreateRoutineDto) {
 		const result = [];
 		const { event_day, start_day, end_day } = data;
+		const isEventValid = this.validateWeeklyEventDays(event_day);
 		const { startDay, endDay } = this.getValidStartEndDays(start_day, end_day);
 		let target = dayjs(startDay);
 
-		while (dayjs(endDay).diff(target) >= 0) {
+		while (isEventValid && dayjs(endDay).diff(target) >= 0) {
 			if (event_day.includes(target.get('day').toString())) {
 				const event = CreateEventDto.of({
 					user_email: data.user_email,
@@ -73,9 +74,10 @@ export class RoutinesService {
 		const monthWith31Days = [1, 3, 5, 7, 8, 10, 12];
 		const monthWith30Days = [4, 6, 9, 11];
 		const { event_day, start_day, end_day } = data;
+		const isEventValid = this.validateMonthlyEventDays(event_day);
 		const { startDay, endDay } = this.getValidStartEndDays(start_day, end_day);
 		let target = dayjs(startDay);
-		while (dayjs(endDay).diff(target) >= 0) {
+		while (isEventValid && dayjs(endDay).diff(target) >= 0) {
 			const adjustedEventDay = event_day.slice();
 			if (monthWith31Days.includes(target.get('month'))) {
 				console.log('pass');

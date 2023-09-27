@@ -12,6 +12,7 @@ export class RoutinesRepository {
 
 	async getRoutines(params: { where: Prisma.RoutineWhereInput }): Promise<Routine[]> {
 		const { where } = params;
+		console.log('where is ', where);
 		return this.prisma.routine.findMany({ where });
 	}
 
