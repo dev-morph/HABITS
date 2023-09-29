@@ -191,21 +191,28 @@ describe('RoutinesService', () => {
 	});
 
 	describe('월간 반복 이벤트 생성', () => {
-		describe('달에 맞는 날짜 지정. 매월 31일 반복 -> 4월 30일, 매월 30일 반복 -> 2월 28일', () => {
-			it('윤년 체크 함수', () => {
+		describe('윤년 체크 함수', () => {
+			it('해당년이 윤년인지 체크', () => {
 				const reuslt2023 = service.isLeapYear('2023');
 				const reuslt2024 = service.isLeapYear('2024');
 				const reuslt2028 = service.isLeapYear('2028');
-				const reuslt2100 = service.isLeapYear('2100');
 				const reuslt2150 = service.isLeapYear('2150');
-				const reuslt24000 = service.isLeapYear('24000');
 				expect(reuslt2023).toBe(false);
 				expect(reuslt2024).toBe(true);
 				expect(reuslt2028).toBe(true);
-				expect(reuslt2100).toBe(false);
 				expect(reuslt2150).toBe(false);
+			});
+
+			it('100으로 나누어 떨어지면서, 400으로 나누어 떨어지지 않는 경우 윤년이 아니다.', () => {
+				const reuslt2100 = service.isLeapYear('2100');
+				const reuslt24000 = service.isLeapYear('24000');
+				expect(reuslt2100).toBe(false);
 				expect(reuslt24000).toBe(false);
 			});
+		});
+
+		describe('달에 맞는 날짜 지정. 매월 31일 반복 -> 4월 30일, 매월 30일 반복 -> 2월 28일', () => {
+			it('윤년 체크 함수', () => {});
 		});
 	});
 });

@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RoutinesService } from './routines.service';
 import { RoutinesRepository } from './routines.repository';
 import { PrismaService } from 'src/database/prisma.service';
-import resetDb from 'src/tests/helpers/reset-db';
 import { Prisma } from '@prisma/client';
+import { PrismaModule } from 'src/database/prisma.module';
 
 describe('RoutinesRepository', () => {
 	let repository: RoutinesRepository;
@@ -33,8 +33,11 @@ describe('RoutinesRepository', () => {
 		// end_day: '',
 	};
 
+	beforeAll(async () => {});
+
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
+			imports: [PrismaModule],
 			providers: [RoutinesRepository, PrismaService],
 		}).compile();
 
@@ -43,7 +46,8 @@ describe('RoutinesRepository', () => {
 	});
 
 	afterEach(async () => {
-		await resetDb();
+		await prismaService.resetDb();
+		await prismaService.disconnect();
 	});
 
 	describe('루틴 생성', () => {
@@ -63,14 +67,16 @@ describe('RoutinesRepository', () => {
 
 	describe('조건에 맞는 여러 루틴 조회', () => {
 		it('루틴 정상 조회 - 일치하는 데이터만 조회 되어야 한다.', async () => {
-			await repository.createRoutine(routineWeeklyDummy);
+			const weeklyResult = await repository.createRoutine(routineWeeklyDummy);
 			await repository.createRoutine(routineMonthlyDummy);
 			const dummyWithNewUser = {
 				...routineYearlyDummy,
 				user_email: 'newUser@test.com',
 			};
 			await repository.createRoutine(dummyWithNewUser);
-			const result = await repository.getRoutines({ where: { user_email: routineWeeklyDummy.user_email } });
+			console.log('savedDto', weeklyResult);
+			const result = await repository.getRoutines({ where: { user_email: weeklyResult.user_email } });
+			console.log('result', result);
 			expect(result.length).toBe(1);
 			expect(result[0].user_email).toEqual(routineWeeklyDummy.user_email);
 			expect(result[0].title).toEqual(routineWeeklyDummy.title);
