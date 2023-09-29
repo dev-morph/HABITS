@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersRepository } from './users.repository';
 import { PrismaService } from 'src/database/prisma.service';
-import resetDb from 'src/tests/helpers/reset-db';
+import { PrismaModule } from 'src/database/prisma.module';
 
 describe('UsersRepository', () => {
 	let repository: UsersRepository;
@@ -12,8 +12,12 @@ describe('UsersRepository', () => {
 		password: 'hoi',
 	};
 
+	beforeAll(async () => {});
+
 	beforeEach(async () => {
+		console.log('#### beforeEach');
 		const module: TestingModule = await Test.createTestingModule({
+			imports: [PrismaModule],
 			providers: [UsersRepository, PrismaService],
 		}).compile();
 
@@ -21,12 +25,15 @@ describe('UsersRepository', () => {
 		prismaService = module.get<PrismaService>(PrismaService);
 	});
 	afterEach(async () => {
-		await resetDb();
+		console.log('#### afterEach');
+		await prismaService.resetDb();
+		await prismaService.disconnect();
 	});
 
 	describe('유저 생성', () => {
 		//1. user를 넣었을 때, 리턴 값으로 온 객체의 username이 같아야 한다.
 		it('user 정상 생성', async () => {
+			console.log('#### 정상 생성');
 			const result = await repository.createUser(userData);
 			expect(result.username).toEqual(userData.username);
 			expect(result.email).toEqual(userData.email);
@@ -37,6 +44,9 @@ describe('UsersRepository', () => {
 		});
 
 		it('unique값 중복 시 P2002 Exception 출력', async () => {
+			console.log('#### 중복');
+			const find = await repository.getUser({ where: { email: userData.email } });
+			console.log('find', find);
 			await repository.createUser(userData);
 			try {
 				await repository.createUser(userData);
