@@ -17,9 +17,14 @@ describe('RoutinesService', () => {
 		service = module.get<RoutinesService>(RoutinesService);
 	});
 
+	// afterEach(async () => {
+	// 	await prism
+	// })
+
 	describe('루틴 시작일과 종료일 유효성 검사', () => {
-		const startDay = '2023-09-29';
-		const endDay = '2023-09-30';
+		const today = dayjs();
+		const startDay = today.format('YYYY-MM-DD');
+		const endDay = today.add(3, 'day').format('YYYY-MM-DD');
 
 		const result = {
 			startDay: startDay,
