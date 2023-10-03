@@ -8,6 +8,7 @@ import { BadGatewayException } from '@nestjs/common';
 
 describe('RoutinesService', () => {
 	let service: RoutinesService;
+	const dateFormat = 'YYYY-MM-DD';
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -23,8 +24,8 @@ describe('RoutinesService', () => {
 
 	describe('루틴 시작일과 종료일 유효성 검사', () => {
 		const today = dayjs();
-		const startDay = today.format('YYYY-MM-DD');
-		const endDay = today.add(3, 'day').format('YYYY-MM-DD');
+		const startDay = today.format(dateFormat);
+		const endDay = today.add(3, 'day').format(dateFormat);
 
 		const result = {
 			startDay: startDay,
@@ -45,7 +46,7 @@ describe('RoutinesService', () => {
 
 		it('시작일이 현재시점보다 빠르다면, 시작일로 오늘 날짜가 리턴되게 된다.', () => {
 			const earlyStartDay = '1900-09-20';
-			const now = dayjs().format('YYYY-MM-DD');
+			const now = dayjs().format(dateFormat);
 			const validDays = service.getValidStartEndDays(earlyStartDay, endDay);
 
 			expect(validDays.startDay).toBe(now);
@@ -55,7 +56,7 @@ describe('RoutinesService', () => {
 		it('종료일이 현재시점보다 빠르다면, InvalidArguments 출력', () => {
 			const muchEarlierStartDay = '1900-09-18';
 			const earlyEndDay = '1900-09-20';
-			const now = dayjs().format('YYYY-MM-DD');
+			const now = dayjs().format(dateFormat);
 
 			expect(() => service.getValidStartEndDays(muchEarlierStartDay, earlyEndDay)).toThrow(
 				new InvalidArgumentException('Routine EndDay should be later than Now.')
@@ -63,20 +64,20 @@ describe('RoutinesService', () => {
 		});
 
 		it('시작일이 없으면, 현재 시점으로 갈음한다.', () => {
-			const now = dayjs().format('YYYY-MM-DD');
+			const now = dayjs().format(dateFormat);
 			const validDays = service.getValidStartEndDays(undefined, endDay);
 			expect(validDays.startDay).toEqual(now);
 		});
 
 		it('종료일이 없으면, 2053-12-31 시점으로 갈음한다.', () => {
-			const farFuture = dayjs('2053-12-31').format('YYYY-MM-DD');
+			const farFuture = dayjs('2053-12-31').format(dateFormat);
 			const validDays = service.getValidStartEndDays(startDay, undefined);
 			expect(validDays.endDay).toEqual(farFuture);
 		});
 
 		it('종료일과 시작일이 없으면, 시작일은 현재시점, 종료일은 2053-12-31 시점으로 갈음한다.', () => {
-			const now = dayjs().format('YYYY-MM-DD');
-			const farFuture = dayjs('2053-12-31').format('YYYY-MM-DD');
+			const now = dayjs().format(dateFormat);
+			const farFuture = dayjs('2053-12-31').format(dateFormat);
 			const validDays = service.getValidStartEndDays(undefined, undefined);
 			expect(validDays.startDay).toEqual(now);
 			expect(validDays.endDay).toEqual(farFuture);
@@ -89,8 +90,8 @@ describe('RoutinesService', () => {
 			title: 'RUN THE TEST',
 			recur_pattern: 'W',
 			event_day: ['0', '3', '6'],
-			start_day: dayjs('2023-09-24').format('YYYY-MM-DD'),
-			end_day: dayjs('2023-10-2').format('YYYY-MM-DD'),
+			start_day: dayjs('2023-09-24').format(dateFormat),
+			end_day: dayjs('2023-10-2').format(dateFormat),
 		};
 		describe('주간 반복 이벤트 데이터 유효성 검사', () => {
 			it('정상 통과', () => {
@@ -120,8 +121,8 @@ describe('RoutinesService', () => {
 				const today = dayjs();
 				const validRoutine = {
 					...routineWeeklyDummy,
-					start_day: today.format('YYYY-MM-DD'),
-					end_day: today.add(6, 'day').format('YYYY-MM-DD'),
+					start_day: today.format(dateFormat),
+					end_day: today.add(6, 'day').format(dateFormat),
 				};
 				const result = service.generateWeeklyEvents(validRoutine);
 
@@ -133,8 +134,8 @@ describe('RoutinesService', () => {
 				const validRoutine = {
 					...routineWeeklyDummy,
 					event_day: ['0', '1', '3', '6'],
-					start_day: today.format('YYYY-MM-DD'),
-					end_day: today.add(20, 'day').format('YYYY-MM-DD'),
+					start_day: today.format(dateFormat),
+					end_day: today.add(20, 'day').format(dateFormat),
 				};
 				const result = service.generateWeeklyEvents(validRoutine);
 
@@ -146,8 +147,8 @@ describe('RoutinesService', () => {
 				const AllDayRoutine = {
 					...routineWeeklyDummy,
 					event_day: ['0', '2', '1', '3', '4', '5', '6'],
-					start_day: today.format('YYYY-MM-DD'),
-					end_day: today.add(13, 'day').format('YYYY-MM-DD'),
+					start_day: today.format(dateFormat),
+					end_day: today.add(13, 'day').format(dateFormat),
 				};
 				const result = service.generateWeeklyEvents(AllDayRoutine);
 
@@ -159,8 +160,8 @@ describe('RoutinesService', () => {
 				const AllDayRoutine = {
 					...routineWeeklyDummy,
 					event_day: ['0', '2', '1', '3', '5', '6'],
-					start_day: dayjs('2002-11-17', 'YYYY-MM-DD').format('YYYY-MM-DD'),
-					end_day: today.add(34, 'day').format('YYYY-MM-DD'),
+					start_day: dayjs('2002-11-17', dateFormat).format(dateFormat),
+					end_day: today.add(34, 'day').format(dateFormat),
 				};
 				const result = service.generateWeeklyEvents(AllDayRoutine);
 				expect(result.length).toBe(30);
@@ -195,29 +196,47 @@ describe('RoutinesService', () => {
 		});
 	});
 
-	describe('월간 반복 이벤트 생성', () => {
-		describe('윤년 체크 함수', () => {
-			it('해당년이 윤년인지 체크', () => {
-				const reuslt2023 = service.isLeapYear('2023');
-				const reuslt2024 = service.isLeapYear('2024');
-				const reuslt2028 = service.isLeapYear('2028');
-				const reuslt2150 = service.isLeapYear('2150');
-				expect(reuslt2023).toBe(false);
-				expect(reuslt2024).toBe(true);
-				expect(reuslt2028).toBe(true);
-				expect(reuslt2150).toBe(false);
-			});
-
-			it('100으로 나누어 떨어지면서, 400으로 나누어 떨어지지 않는 경우 윤년이 아니다.', () => {
-				const reuslt2100 = service.isLeapYear('2100');
-				const reuslt24000 = service.isLeapYear('24000');
-				expect(reuslt2100).toBe(false);
-				expect(reuslt24000).toBe(false);
-			});
+	describe('윤년 체크 함수', () => {
+		it('해당년이 윤년인지 체크', () => {
+			const reuslt2023 = service.isLeapYear('2023');
+			const reuslt2024 = service.isLeapYear('2024');
+			const reuslt2028 = service.isLeapYear('2028');
+			const reuslt2150 = service.isLeapYear('2150');
+			expect(reuslt2023).toBe(false);
+			expect(reuslt2024).toBe(true);
+			expect(reuslt2028).toBe(true);
+			expect(reuslt2150).toBe(false);
 		});
 
-		describe('달에 맞는 날짜 지정. 매월 31일 반복 -> 4월 30일, 매월 30일 반복 -> 2월 28일', () => {
-			it('윤년 체크 함수', () => {});
+		it('100으로 나누어 떨어지면서, 400으로 나누어 떨어지지 않는 경우 윤년이 아니다.', () => {
+			const reuslt2100 = service.isLeapYear('2100');
+			const reuslt24000 = service.isLeapYear('24000');
+			expect(reuslt2100).toBe(false);
+			expect(reuslt24000).toBe(false);
+		});
+	});
+
+	describe('월 말일 조정 테스트', () => {
+		it('루틴 시작일, 종료일과 이벤트 발생일을 입력하면, 조정된 이벤트 날짜가 리턴되어야 한다.', () => {
+			const result = service.getAdjustedEventDays({ startDay: '2023-10-03', endDay: '2023-12-31', eventDays: ['31'] });
+			return null;
+		});
+	});
+
+	describe('월간 반복 이벤트 생성', () => {
+		const today = dayjs('2025-01-01');
+		const dummyRoutineDto: CreateRoutineDto = {
+			user_email: 'test@Test.com',
+			title: '코딩하기',
+			recur_pattern: 'M',
+			event_day: ['29'],
+			start_day: today.format(dateFormat),
+			end_day: today.add(1, 'year').format(dateFormat),
+		};
+		it('달에 맞는 날짜 지정. 매월 31일 반복 -> 4월 30일, 매월 30일 반복 -> 2월 28일', () => {
+			const result = service.generateMonthlyEvents(dummyRoutineDto);
+			console.log('result is ', result);
+			expect(result.length).toEqual(12);
 		});
 	});
 });

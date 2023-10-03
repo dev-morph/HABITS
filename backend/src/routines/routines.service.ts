@@ -73,6 +73,7 @@ export class RoutinesService {
 		const result = [];
 		const monthWith31Days = [1, 3, 5, 7, 8, 10, 12];
 		const monthWith30Days = [4, 6, 9, 11];
+		const specialDays = [31, 30, 29];
 		const { event_day, start_day, end_day } = data;
 		const isEventValid = this.validateMonthlyEventDays(event_day);
 		const { startDay, endDay } = this.getValidStartEndDays(start_day, end_day);
@@ -88,18 +89,22 @@ export class RoutinesService {
 				}
 			} else {
 				//2월 달인 경우,
+				const isLeapYear = this.isLeapYear(target.format(this.dateFormat));
 				const thirtyOneIndex = adjustedEventDay.indexOf('31');
 				const thirtyIndex = adjustedEventDay.indexOf('30');
-				if (thirtyOneIndex !== -1 && thirtyIndex !== -1) {
+				const twentyNineIndex = adjustedEventDay.indexOf('29');
+				if (thirtyOneIndex !== -1 && thirtyIndex !== -1 && twentyNineIndex !== -1) {
 					adjustedEventDay.splice(thirtyOneIndex, 1);
-					adjustedEventDay[thirtyIndex] = '28';
+					adjustedEventDay.splice(thirtyIndex, 1);
+					adjustedEventDay[twentyNineIndex] = '28';
 				} else if (thirtyOneIndex !== -1) {
 					adjustedEventDay[thirtyOneIndex] = '28';
 				} else if (thirtyIndex !== -1) {
 					adjustedEventDay[thirtyIndex] = '28';
 				}
 			}
-			if (adjustedEventDay.includes(target.get('day').toString())) {
+			console.log('check', target.format(this.dateFormat), '||', adjustedEventDay);
+			if (adjustedEventDay.includes(target.get('date').toString())) {
 				const event = CreateEventDto.of({
 					user_email: data.user_email,
 					routine_id: 0,
@@ -114,6 +119,10 @@ export class RoutinesService {
 		}
 
 		return result;
+	}
+
+	getAdjustedEventDays({ startDay, endDay, eventDays }: { startDay: string; endDay: string; eventDays: string[] }) {
+		console.log('here');
 	}
 
 	isLeapYear(date: string) {
