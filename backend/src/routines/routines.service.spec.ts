@@ -217,9 +217,41 @@ describe('RoutinesService', () => {
 	});
 
 	describe('월 말일 조정 테스트', () => {
-		it('루틴 시작일, 종료일과 이벤트 발생일을 입력하면, 조정된 이벤트 날짜가 리턴되어야 한다.', () => {
-			const result = service.getAdjustedEventDays({ startDay: '2023-10-03', endDay: '2023-12-31', eventDays: ['31'] });
-			return null;
+		const dummyResult = {
+			thirtyOneEventDays: [],
+			thirtyEventDays: [],
+			twentyNineEventDays: [],
+			twentyEightEventDays: [],
+		};
+		it('이벤트 발생일을 입력하면, 조정된 이벤트 날짜 리턴 - 1', () => {
+			const expectResult = {
+				thirtyOneEventDays: ['31'],
+				thirtyEventDays: ['30'],
+				twentyNineEventDays: ['29'],
+				twentyEightEventDays: ['28'],
+			};
+			const result = service.getAdjustedEventDays(['31']);
+			expect(result).toEqual(expectResult);
+		});
+		it('이벤트 발생일을 입력하면, 조정된 이벤트 날짜 리턴 - 2', () => {
+			const expectResult = {
+				thirtyOneEventDays: ['29', '31'],
+				thirtyEventDays: ['29', '30'],
+				twentyNineEventDays: ['29'],
+				twentyEightEventDays: ['28'],
+			};
+			const result = service.getAdjustedEventDays(['29', '31']);
+			expect(result).toEqual(expectResult);
+		});
+		it('이벤트 발생일을 입력하면, 조정된 이벤트 날짜 리턴 - 3', () => {
+			const expectResult = {
+				thirtyOneEventDays: ['1', '27', '28', '30', '31'],
+				thirtyEventDays: ['1', '27', '28', '30'],
+				twentyNineEventDays: ['1', '27', '28', '29'],
+				twentyEightEventDays: ['1', '27', '28'],
+			};
+			const result = service.getAdjustedEventDays(['1', '27', '28', '30', '31']);
+			expect(result).toEqual(expectResult);
 		});
 	});
 

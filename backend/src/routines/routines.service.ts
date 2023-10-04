@@ -78,33 +78,25 @@ export class RoutinesService {
 		const isEventValid = this.validateMonthlyEventDays(event_day);
 		const { startDay, endDay } = this.getValidStartEndDays(start_day, end_day);
 		let target = dayjs(startDay);
+		const adjustedEventDays = this.getAdjustedEventDays(event_day);
 		while (isEventValid && dayjs(endDay).diff(target) >= 0) {
-			const adjustedEventDay = event_day.slice();
-			if (monthWith31Days.includes(target.get('month'))) {
-				console.log('pass');
-			} else if (monthWith30Days.includes(target.get('month'))) {
-				const thirtyOneIndex = adjustedEventDay.indexOf('31');
-				if (thirtyOneIndex !== -1) {
-					adjustedEventDay[thirtyOneIndex] = '30';
-				}
+			let targetEventDays;
+			const nowMonth = target.get('month') + 1; // 0 ~ 11
+			if (monthWith31Days.includes(nowMonth)) {
+				targetEventDays = adjustedEventDays.thirtyOneEventDays;
+			} else if (monthWith30Days.includes(nowMonth)) {
+				targetEventDays = adjustedEventDays.thirtyEventDays;
 			} else {
 				//2월 달인 경우,
 				const isLeapYear = this.isLeapYear(target.format(this.dateFormat));
-				const thirtyOneIndex = adjustedEventDay.indexOf('31');
-				const thirtyIndex = adjustedEventDay.indexOf('30');
-				const twentyNineIndex = adjustedEventDay.indexOf('29');
-				if (thirtyOneIndex !== -1 && thirtyIndex !== -1 && twentyNineIndex !== -1) {
-					adjustedEventDay.splice(thirtyOneIndex, 1);
-					adjustedEventDay.splice(thirtyIndex, 1);
-					adjustedEventDay[twentyNineIndex] = '28';
-				} else if (thirtyOneIndex !== -1) {
-					adjustedEventDay[thirtyOneIndex] = '28';
-				} else if (thirtyIndex !== -1) {
-					adjustedEventDay[thirtyIndex] = '28';
+				if (isLeapYear) {
+					targetEventDays = adjustedEventDays.twentyNineEventDays;
+				} else {
+					targetEventDays = adjustedEventDays.twentyEightEventDays;
 				}
+				console.log('#####', targetEventDays, target.get('date').toString());
 			}
-			console.log('check', target.format(this.dateFormat), '||', adjustedEventDay);
-			if (adjustedEventDay.includes(target.get('date').toString())) {
+			if (targetEventDays.includes(target.get('date').toString())) {
 				const event = CreateEventDto.of({
 					user_email: data.user_email,
 					routine_id: 0,
@@ -121,8 +113,69 @@ export class RoutinesService {
 		return result;
 	}
 
-	getAdjustedEventDays({ startDay, endDay, eventDays }: { startDay: string; endDay: string; eventDays: string[] }) {
-		console.log('here');
+	getAdjustedEventDays(eventDays: string[]) {
+		const adjustedEventDays = {
+			thirtyOneEventDays: [],
+			thirtyEventDays: [],
+			twentyNineEventDays: [],
+			twentyEightEventDays: [],
+		};
+
+		for (const eventDay of eventDays) {
+			//1. 31, 30, 29 중에 해당하는지 체크한다.
+			if (eventDay !== '29' && eventDay !== '30' && eventDay !== '31') {
+				adjustedEventDays.thirtyOneEventDays.push(eventDay);
+				adjustedEventDays.thirtyEventDays.push(eventDay);
+				adjustedEventDays.twentyNineEventDays.push(eventDay);
+				adjustedEventDays.twentyEightEventDays.push(eventDay);
+				continue;
+			} else {
+				//29
+				if (eventDay === '29') {
+					if (adjustedEventDays.thirtyOneEventDays.indexOf(eventDay) === -1) {
+						adjustedEventDays.thirtyOneEventDays.push(eventDay);
+					}
+					if (adjustedEventDays.thirtyEventDays.indexOf(eventDay) === -1) {
+						adjustedEventDays.thirtyEventDays.push(eventDay);
+					}
+					if (adjustedEventDays.twentyNineEventDays.indexOf(eventDay) === -1) {
+						adjustedEventDays.twentyNineEventDays.push(eventDay);
+					}
+					if (adjustedEventDays.twentyEightEventDays.indexOf('28') === -1) {
+						adjustedEventDays.twentyEightEventDays.push('28');
+					}
+				} else if (eventDay === '30') {
+					//30
+					if (adjustedEventDays.thirtyOneEventDays.indexOf(eventDay) === -1) {
+						adjustedEventDays.thirtyOneEventDays.push(eventDay);
+					}
+					if (adjustedEventDays.thirtyEventDays.indexOf(eventDay) === -1) {
+						adjustedEventDays.thirtyEventDays.push(eventDay);
+					}
+					if (adjustedEventDays.twentyNineEventDays.indexOf('29') === -1) {
+						adjustedEventDays.twentyNineEventDays.push('29');
+					}
+					if (adjustedEventDays.twentyEightEventDays.indexOf('28') === -1) {
+						adjustedEventDays.twentyEightEventDays.push('28');
+					}
+				} else {
+					//31
+					if (adjustedEventDays.thirtyOneEventDays.indexOf(eventDay) === -1) {
+						adjustedEventDays.thirtyOneEventDays.push(eventDay);
+					}
+					if (adjustedEventDays.thirtyEventDays.indexOf('30') === -1) {
+						adjustedEventDays.thirtyEventDays.push('30');
+					}
+					if (adjustedEventDays.twentyNineEventDays.indexOf('29') === -1) {
+						adjustedEventDays.twentyNineEventDays.push('29');
+					}
+					if (adjustedEventDays.twentyEightEventDays.indexOf('28') === -1) {
+						adjustedEventDays.twentyEightEventDays.push('28');
+					}
+				}
+			}
+		}
+		return adjustedEventDays;
 	}
 
 	isLeapYear(date: string) {
