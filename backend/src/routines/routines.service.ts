@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, ServiceUnavailableException } from '@nestjs/common';
 
 import { CreateRoutineDto } from './dto/create-routine.dto';
 
@@ -37,10 +37,18 @@ export class RoutinesService {
 		return `This action removes a #${id} routine`;
 	}
 
-	generateEventsByRoutine(data: Prisma.RoutineCreateInput) {
-		const { start_day, event_day } = data;
-
-		//1. weekly, monthly, yearly 로 분리하여 처리.
+	generateEventsByRoutine(data: CreateRoutineDto) {
+		const { recur_pattern } = data;
+		//1. weekly, monthly, yearly 로 분기하여 처리.
+		if (recur_pattern === 'W') {
+			return this.generateWeeklyEvents(data);
+		} else if (recur_pattern === 'M') {
+			return this.generateMonthlyEvents(data);
+		} else if (recur_pattern === 'Y') {
+			throw new ServiceUnavailableException('Yearly Routine is not devleoped yet.');
+		} else {
+			throw new InvalidArgumentException("recur_pattern should be one of 'W', 'M' or 'Y'.");
+		}
 
 		return null;
 	}
@@ -69,7 +77,7 @@ export class RoutinesService {
 		return result;
 	}
 
-	generateMonthlyEvents(data: CreateRoutineDto) {
+	generateMonthlyEvents(data: CreateRoutineDto): CreateEventDto[] {
 		const result = [];
 		const monthWith31Days = [1, 3, 5, 7, 8, 10, 12];
 		const monthWith30Days = [4, 6, 9, 11];
@@ -94,7 +102,6 @@ export class RoutinesService {
 				} else {
 					targetEventDays = adjustedEventDays.twentyEightEventDays;
 				}
-				console.log('#####', targetEventDays, target.get('date').toString());
 			}
 			if (targetEventDays.includes(target.get('date').toString())) {
 				const event = CreateEventDto.of({

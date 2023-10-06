@@ -138,7 +138,7 @@ describe('RoutinesService', () => {
 					end_day: today.add(20, 'day').format(dateFormat),
 				};
 				const result = service.generateWeeklyEvents(validRoutine);
-
+				console.log('result is ', result);
 				expect(result.length).toBe(12);
 			});
 
@@ -256,7 +256,7 @@ describe('RoutinesService', () => {
 	});
 
 	describe('월간 반복 이벤트 생성', () => {
-		const today = dayjs('2025-01-01');
+		const today = dayjs('2055-01-01');
 		const dummyRoutineDto: CreateRoutineDto = {
 			user_email: 'test@Test.com',
 			title: '코딩하기',
@@ -265,10 +265,115 @@ describe('RoutinesService', () => {
 			start_day: today.format(dateFormat),
 			end_day: today.add(1, 'year').format(dateFormat),
 		};
-		it('달에 맞는 날짜 지정. 매월 31일 반복 -> 4월 30일, 매월 30일 반복 -> 2월 28일', () => {
+		it('특정 날로부터 1년간 반복되는 루틴 생성 시, 12개의 이벤트 생성', () => {
 			const result = service.generateMonthlyEvents(dummyRoutineDto);
-			console.log('result is ', result);
 			expect(result.length).toEqual(12);
+		});
+
+		it('반복일자가 29일 이후면서 윤년이 아닌 경우, 2월에 생성되는 이벤트는 28일이다.', () => {
+			const notLeapYearDummyRoutine = {
+				user_email: 'test@Test.com',
+				title: '코딩하기',
+				recur_pattern: 'M',
+				event_day: ['29'],
+				start_day: today.format(dateFormat),
+				end_day: today.add(1, 'year').format(dateFormat),
+			};
+
+			const result = service.generateMonthlyEvents(notLeapYearDummyRoutine);
+			expect(dayjs(result[1].due_day).get('date')).toEqual(28);
+			expect(dayjs(result[0].due_day).get('date')).toEqual(29);
+		});
+
+		it('반복일자가 29일 이후면서, 윤년인 경우, 2월에 생성되는 이벤트는 29일이다.', () => {
+			const leapYear = dayjs('2052-01-01');
+			const leapYearDummyRoutine = {
+				user_email: 'test@Test.com',
+				title: '코딩하기',
+				recur_pattern: 'M',
+				event_day: ['31'],
+				start_day: leapYear.format(dateFormat),
+				end_day: leapYear.add(1, 'year').format(dateFormat),
+			};
+
+			const result = service.generateMonthlyEvents(leapYearDummyRoutine);
+			expect(dayjs(result[1].due_day).get('date')).toEqual(29);
+			expect(dayjs(result[3].due_day).get('date')).toEqual(30);
+			expect(dayjs(result[4].due_day).get('date')).toEqual(31);
+		});
+
+		it('반복일자가 2일, 5일인 경우, 1년간 생성되는 이벤트는 24개이다.', () => {
+			const leapYear = dayjs('2052-01-01');
+			const leapYearDummyRoutine = {
+				user_email: 'test@Test.com',
+				title: '코딩하기',
+				recur_pattern: 'M',
+				event_day: ['2', '5'],
+				start_day: leapYear.format(dateFormat),
+				end_day: leapYear.add(1, 'year').format(dateFormat),
+			};
+
+			const result = service.generateMonthlyEvents(leapYearDummyRoutine);
+			expect(result.length).toBe(24);
+		});
+
+		it('반복일자가 유효하지 않은 값이 전달 되면, Exception을 던진다. ', () => {
+			const leapYear = dayjs('2052-01-01');
+			const leapYearDummyRoutine = {
+				user_email: 'test@Test.com',
+				title: '코딩하기',
+				recur_pattern: 'M',
+				event_day: ['2', '0'],
+				start_day: leapYear.format(dateFormat),
+				end_day: leapYear.add(1, 'year').format(dateFormat),
+			};
+
+			expect(() => service.generateMonthlyEvents(leapYearDummyRoutine)).toThrow(
+				new InvalidArgumentException("MonthlyEventDays should be from '1' to '31' and not be redundant.")
+			);
+		});
+	});
+
+	describe('루틴 dto로 이벤트 생성', () => {
+		it('주간 반복 루틴 - 3주간 주에 3번씩 반복되는 발생하는 경우 총 9개의 이벤트를 만든다.', () => {
+			const today = dayjs();
+			const routineWeeklyDummy: CreateRoutineDto = {
+				user_email: 'weekly@test.com',
+				title: 'RUN THE TEST',
+				recur_pattern: 'W',
+				event_day: ['0', '3', '4'],
+				start_day: today.format(dateFormat),
+				end_day: today.add(20, 'day').format(dateFormat),
+			};
+			const result = service.generateEventsByRoutine(routineWeeklyDummy);
+			expect(result.length).toBe(9);
+		});
+		it('월간 반복 루틴 - 2년간 월에 3번씩 반복되는 발생하는 경우 총 72개의 이벤트를 만든다.', () => {
+			const today = dayjs();
+			const routineWeeklyDummy: CreateRoutineDto = {
+				user_email: 'weekly@test.com',
+				title: 'RUN THE TEST',
+				recur_pattern: 'M',
+				event_day: ['1', '3', '4'],
+				start_day: today.format(dateFormat),
+				end_day: today.add(2, 'year').format(dateFormat),
+			};
+			const result = service.generateEventsByRoutine(routineWeeklyDummy);
+			expect(result.length).toBe(72);
+		});
+		it("recur_pattern은 'W','M','Y'중 하나이어야 한다.", () => {
+			const today = dayjs();
+			const routineWeeklyDummy: CreateRoutineDto = {
+				user_email: 'weekly@test.com',
+				title: 'RUN THE TEST',
+				recur_pattern: 'Z',
+				event_day: ['1', '3', '4'],
+				start_day: today.format(dateFormat),
+				end_day: today.add(2, 'year').format(dateFormat),
+			};
+			expect(() => service.generateEventsByRoutine(routineWeeklyDummy)).toThrow(
+				new InvalidArgumentException("recur_pattern should be one of 'W', 'M' or 'Y'.")
+			);
 		});
 	});
 });
