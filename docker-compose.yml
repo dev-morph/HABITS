@@ -8,12 +8,14 @@ services:
             dockerfile: Dockerfile
         ports:
             - 8080:8080
-        working_dir: /app/frontend
+        # working_dir: /app/frontend
         volumes:
-            - ./frontend:/app/frontend
-            - /app/node_modules
+            - ./frontend:/usr/app
+            # - /app/node_modules
         environment:
             TZ: 'Asia/Seoul'
+        networks:
+            - my_network
     backend:
         container_name: habits_backend
         image: habits_backend:dev
@@ -22,14 +24,20 @@ services:
             dockerfile: Dockerfile
         ports:
             - 3000:3000
-        working_dir: /app/backend
+        # working_dir: /app/backend
         volumes:
-            - ./backend:/app/backend
-            - /app/node_modules
+            - './backend:/app'
+            - '/app/node_modules'
         environment:
             TZ: 'Asia/Seoul'
-    db:
+        networks:
+            - my_network
+        depends_on:
+            - mysqldb
+    mysqldb:
         image: mysql:8.1.0
+        container_name: mysqldb
+        restart: always
         build:
             context: ./db
             dockerfile: Dockerfile
@@ -42,6 +50,12 @@ services:
         #     MYSQL_DATABASE_NAME: HABITS
         env_file:
             - ./db/.env
+        networks:
+            - my_network
 
 volumes:
     mysql-data:
+
+networks:
+    my_network:
+        driver: bridge
