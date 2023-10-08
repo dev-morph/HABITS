@@ -1,17 +1,15 @@
 <template>
-	<div class="home">
-		<KakaoLogin />
-	</div>
+	<Greeting />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import KakaoLogin from '@/components/KakaoLogin.vue';
+import Greeting from '@/components/Greeting.vue';
 
 export default defineComponent({
 	name: 'HomeView',
 	components: {
-		KakaoLogin,
+		Greeting,
 	},
 });
 </script>
