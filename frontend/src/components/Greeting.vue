@@ -1,140 +1,90 @@
 <template>
-	<section class="greeting__wrapper">
-		<div class="greeting__logo">
-			<img src="habit_nobackground.png" alt="greeting_logo" />
-		</div>
-
-		<div class="input__wrapper">
-			<Transition>
-				<div class="question" v-if="currentStage === 0">
-					<p>What's your name?</p>
-					<input
-						class="user__input"
-						type="text"
-						v-model="userInfo.name"
-						ref="nameInput"
-						@keyup.enter="enterHandler(currentStage)"
-						v-focus
-					/>
-				</div>
-			</Transition>
-			<Transition>
-				<div class="question" v-if="currentStage === 1">
-					<p>What's your email?</p>
-					<input
-						class="user__input"
-						type="text"
-						placeholder="Email"
-						v-model="userInfo.email"
-						ref="emailInput"
-						@keyup.enter="enterHandler(currentStage)"
-						v-focus
-					/>
-				</div>
-			</Transition>
-			<Transition>
-				<div class="question" v-if="currentStage === 2">
-					<p>Please choose a password.</p>
-					<input
-						class="user__input"
-						type="password"
-						placeholder="Password"
-						v-model="userInfo.password"
-						ref="passwordInput"
-						@keyup.enter="enterHandler(currentStage)"
-						v-focus
-					/>
-				</div>
-			</Transition>
-		</div>
-	</section>
+	<div>
+		<transition name="display">
+			<div class="greeting__wrapper" v-if="now">
+				<div class="clock">{{ now }}</div>
+				<div class="greeting__phrase">{{ greetingPhrases }}, Zaas.</div>
+			</div>
+		</transition>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue';
+import { defineComponent, onMounted, onUnmounted, ref, computed } from 'vue';
+import dayjs from 'dayjs';
+
 export default defineComponent({
-	name: 'Greeting',
+	name: 'greeting',
 	setup() {
-		const currentStage = ref(0);
-		const nameInput = ref();
-		const emailInput = ref();
-		const passwordInput = ref();
-		const userInfo = reactive({
-			name: '',
-			email: '',
-			password: '',
-		});
-		function enterHandler(curStage: number) {
-			if (curStage === 0) {
-				currentStage.value++;
-			} else if (curStage === 1) {
-				currentStage.value++;
+		const now = ref();
+		const hour = ref();
+		const timeCheckInterval = ref();
+		const greetingPhrases = computed(() => {
+			if (hour.value > 3 && hour.value < 12) {
+				return 'Good morning';
+			} else if (hour.value >= 12 && hour.value < 18) {
+				return 'Good afternnon';
+			} else if (hour.value >= 18 && hour.value < 21) {
+				return 'Good evening';
 			} else {
-				console.log(userInfo);
+				return 'Good night';
 			}
+		});
+		function getRealTime() {
+			const n = dayjs();
+			now.value = n.format('HH:mm:ss');
+			hour.value = n.get('hour');
 		}
+		onMounted(() => {
+			timeCheckInterval.value = setInterval(getRealTime, 1000);
+		});
+		onUnmounted(() => {
+			clearInterval(timeCheckInterval.value);
+		});
 		return {
-			//variables
-			currentStage,
-			nameInput,
-			emailInput,
-			passwordInput,
-			userInfo,
-			//functions
-			enterHandler,
+			//variables,
+			now,
+			//computed,
+			greetingPhrases,
+			//functions,
+			getRealTime,
 		};
-	},
-	directives: {
-		focus: {
-			mounted: el => el.focus(),
-		},
 	},
 });
 </script>
-
-<style lang="scss">
+<style lang="scss" scoped>
 .greeting__wrapper {
-	display: flex;
 	width: 100%;
-	height: calc(100vh - 100px);
-	justify-content: center;
-	align-items: center;
+	height: 100%;
+	// background-color: red;
+	display: flex;
 	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0;
 
-	.input__wrapper {
-		height: 200px;
+	.clock {
+		height: fit-content;
+		font-size: 10rem;
+		font-weight: 600;
+		letter-spacing: 0;
+		line-height: 100%;
 	}
-	.greeting__logo {
-		img {
-			width: 400px;
-			height: 400px;
-		}
-	}
-
-	.question {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
+	.greeting__phrase {
 		font-size: 3rem;
-		.user__input {
-			border: none;
-			border-bottom: 2.5px solid black;
-			outline: none;
-			text-align: center;
-		}
+		font-weight: 600;
 	}
 }
 
-.v-leave-active {
+.display-leave-active {
 	transition: opacity 0.5s ease;
 }
 
-.v-enter-active {
-	transition: opacity 0.5s ease 0.6s;
+.display-enter-active {
+	transition: opacity 0.5s ease;
 }
-
-.v-enter-from,
-.v-leave-to {
+.display-enter-from,
+.display-leave-to {
 	opacity: 0;
 }
 </style>
