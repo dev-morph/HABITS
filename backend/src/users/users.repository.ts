@@ -1,35 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Users } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class UsersRepository {
 	constructor(private prisma: PrismaService) {}
 
-	async createUser(data: Prisma.UserCreateInput): Promise<User> {
-		return this.prisma.user.create({
+	async createUser(data: Prisma.UsersCreateInput): Promise<Users> {
+		return this.prisma.users.create({
 			data,
 		});
 	}
 
-	async getUser(params: { where: Prisma.UserWhereUniqueInput }): Promise<User> {
+	async getUser(params: { where: Prisma.UsersWhereUniqueInput }): Promise<Users> {
 		const { where } = params;
-		return this.prisma.user.findUnique({
+		return this.prisma.users.findUnique({
 			where,
 		});
 	}
 
-	async updateUser(params: { where: Prisma.UserWhereUniqueInput; data: Prisma.UserUpdateInput }): Promise<User> {
+	async updateUser(params: { where: Prisma.UsersWhereUniqueInput; data: Prisma.UsersUpdateInput }): Promise<Users> {
 		const { where, data } = params;
-		return this.prisma.user.update({
+		return this.prisma.users.update({
 			where,
 			data,
 		});
 	}
 
-	async deleteUser(params: { where: Prisma.UserWhereUniqueInput }): Promise<User> {
+	async deleteUser(params: { where: Prisma.UsersWhereUniqueInput }): Promise<Users> {
 		const { where } = params;
-		return this.prisma.user.delete({
+		return this.prisma.users.delete({
 			where,
 		});
 	}

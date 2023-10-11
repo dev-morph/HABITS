@@ -5,7 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './database/prisma.module';
-import { EventsModule } from './events/events.module';
+import { TodoListsModule } from './todo-lists/todo-lists.module';
 import { RoutinesModule } from './routines/routines.module';
 
 @Module({
@@ -15,7 +15,7 @@ import { RoutinesModule } from './routines/routines.module';
 		ConfigModule.forRoot({
 			isGlobal: true,
 		}),
-		EventsModule,
+		TodoListsModule,
 		RoutinesModule,
 	],
 	controllers: [AppController],

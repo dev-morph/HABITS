@@ -13,13 +13,14 @@ export class AuthController {
 
 	@UseGuards(AuthGuard('local'))
 	@Post('/login')
-	async login(@Request() request, @Res({ passthrough: true }) res: Response) {
+	async signin(@Request() request, @Res({ passthrough: true }) res: Response) {
 		try {
 			const { access_token, ...accessCookieOptions } = await this.authService.signIn(request.user);
 			res.cookie('Authentication', access_token, accessCookieOptions);
 
 			const payload = {
-				user: request.user.email,
+				name: request.user.username,
+				email: request.user.email,
 				message: 'Login Success',
 			};
 			return payload;
@@ -29,8 +30,17 @@ export class AuthController {
 	}
 
 	@Post('/signup')
-	async signup(@Body() signupDto: Prisma.UserCreateInput) {
-		return this.authService.signUp(signupDto);
+	async signup(@Body() signupDto: Prisma.UsersCreateInput, @Res({ passthrough: true }) res: Response) {
+		const user = await this.authService.signUp(signupDto);
+		const { access_token, ...accessCookieOptions } = await this.authService.signIn(user);
+		res.cookie('Authentication', access_token, accessCookieOptions);
+
+		const payload = {
+			name: user.username,
+			email: user.email,
+			message: 'SignUp Success',
+		};
+		return payload;
 	}
 
 	@Post('/kakao/login')

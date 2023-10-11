@@ -1,11 +1,11 @@
 <template>
 	<div>
-		<transition name="display">
+		<Transition name="display">
 			<div class="greeting__wrapper" v-if="now">
 				<div class="clock">{{ now }}</div>
-				<div class="greeting__phrase">{{ greetingPhrases }}, Zaas.</div>
+				<div class="greeting__phrase">{{ greetingPhrases }}, {{ name }}.</div>
 			</div>
-		</transition>
+		</Transition>
 	</div>
 </template>
 
@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 
 export default defineComponent({
 	name: 'greeting',
+	props: { name: String },
 	setup() {
 		const now = ref();
 		const hour = ref();
@@ -36,6 +37,8 @@ export default defineComponent({
 			hour.value = n.get('hour');
 		}
 		onMounted(() => {
+			//초기 빠른 로딩을 위해 interval 세팅 이전 함수 호출
+			getRealTime();
 			timeCheckInterval.value = setInterval(getRealTime, 1000);
 		});
 		onUnmounted(() => {
@@ -74,17 +77,5 @@ export default defineComponent({
 		font-size: 3rem;
 		font-weight: 600;
 	}
-}
-
-.display-leave-active {
-	transition: opacity 0.5s ease;
-}
-
-.display-enter-active {
-	transition: opacity 0.5s ease;
-}
-.display-enter-from,
-.display-leave-to {
-	opacity: 0;
 }
 </style>

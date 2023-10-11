@@ -1,28 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Routine } from '@prisma/client';
+import { Prisma, Routines } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class RoutinesRepository {
 	constructor(private prisma: PrismaService) {}
 
-	async createRoutine(data: Prisma.RoutineCreateInput): Promise<Routine> {
-		return this.prisma.routine.create({ data });
+	async createRoutine(data: Prisma.RoutinesCreateInput): Promise<Routines> {
+		return this.prisma.routines.create({ data });
 	}
 
-	async getRoutines(params: { where: Prisma.RoutineWhereInput }): Promise<Routine[]> {
+	async getRoutines(params: { where: Prisma.RoutinesWhereInput }): Promise<Routines[]> {
 		const { where } = params;
 		console.log('where is ', where);
-		return this.prisma.routine.findMany({ where });
+		return this.prisma.routines.findMany({ where });
 	}
 
-	async updateRoutine(params: { where: Prisma.RoutineWhereUniqueInput; data: Prisma.RoutineUpdateInput }): Promise<Routine> {
+	async updateRoutine(params: { where: Prisma.RoutinesWhereUniqueInput; data: Prisma.RoutinesUpdateInput }): Promise<Routines> {
 		const { where, data } = params;
-		return this.prisma.routine.update({ where, data });
+		return this.prisma.routines.update({ where, data });
 	}
 
-	async deleteRoutine(params: { where: Prisma.RoutineWhereUniqueInput }): Promise<Routine> {
+	async deleteRoutine(params: { where: Prisma.RoutinesWhereUniqueInput }): Promise<Routines> {
 		const { where } = params;
-		return this.prisma.routine.delete({ where });
+		return this.prisma.routines.delete({ where });
 	}
 }

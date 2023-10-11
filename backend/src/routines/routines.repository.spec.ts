@@ -8,7 +8,7 @@ import { PrismaModule } from 'src/database/prisma.module';
 describe('RoutinesRepository', () => {
 	let repository: RoutinesRepository;
 	let prismaService: PrismaService;
-	const routineWeeklyDummy: Prisma.RoutineCreateInput = {
+	const routineWeeklyDummy: Prisma.RoutinesCreateInput = {
 		user_email: 'weekly@test.com',
 		title: 'RUN THE TEST',
 		recur_pattern: 'W',
@@ -16,7 +16,7 @@ describe('RoutinesRepository', () => {
 		// start_day: '',
 		// end_day: '',
 	};
-	const routineMonthlyDummy: Prisma.RoutineCreateInput = {
+	const routineMonthlyDummy: Prisma.RoutinesCreateInput = {
 		user_email: 'monthly@test.com',
 		title: 'RUN Montlhy TEST',
 		recur_pattern: 'M',
@@ -24,7 +24,7 @@ describe('RoutinesRepository', () => {
 		// start_day: '',
 		// end_day: '',
 	};
-	const routineYearlyDummy: Prisma.RoutineCreateInput = {
+	const routineYearlyDummy: Prisma.RoutinesCreateInput = {
 		user_email: 'yearly@test.com',
 		title: 'RUN Yearly TEST',
 		recur_pattern: 'Y',

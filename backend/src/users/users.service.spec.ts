@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { UsersRepository } from './users.repository';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Users } from '@prisma/client';
 
 const mockUserRepository = {
 	getUser: jest.fn(),
@@ -13,7 +13,7 @@ const mockUserRepository = {
 describe('UsersService', () => {
 	let service: UsersService;
 	let repository: UsersRepository;
-	let dummyUser: Prisma.UserCreateInput;
+	let dummyUser: Prisma.UsersCreateInput;
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -50,7 +50,7 @@ describe('UsersService', () => {
 
 	describe('유저 생성', () => {
 		it('유저 회원가입', async () => {
-			const createResult: User = { id: 1, ...dummyUser, created_at: new Date(), updated_at: new Date() };
+			const createResult: Users = { id: 1, ...dummyUser, created_at: new Date(), updated_at: new Date() };
 			mockUserRepository.createUser.mockImplementation(() => createResult);
 			const result = await service.createUser(dummyUser);
 			expect(result).toBe(createResult);

@@ -1,22 +1,31 @@
 <template>
 	<header>
 		<nav>
-			<router-link to="/" class="icon">
+			<router-link :to="loggedIn ? '/home' : '/'" class="icon">
 				<img src="habit_nobackground.png" alt="habits_logo" />
 			</router-link>
 			<div class="navigation">
-				<span>Login</span>
+				<div class="login__btn" v-if="!loggedIn">Login</div>
+				<div class="login__btn" v-else>MyPage</div>
 			</div>
 		</nav>
 	</header>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
+
 export default defineComponent({
 	name: 'HomeView',
 	setup() {
-		return {};
+		const loggedIn = ref();
+		onMounted(() => {
+			loggedIn.value = localStorage.getItem('user');
+		});
+		return {
+			//variables,
+			loggedIn,
+		};
 	},
 });
 </script>
@@ -33,6 +42,19 @@ nav {
 	img {
 		width: 75px;
 		height: 75px;
+	}
+	.login__btn {
+		padding: 1rem;
+		font-size: 1.2rem;
+		font-weight: 600;
+
+		&:hover {
+			text-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+		}
+
+		&:active {
+			transform: scale(1.05);
+		}
 	}
 }
 </style>

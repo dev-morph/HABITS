@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RoutinesService } from './routines.service';
-import { Event, Prisma, Routine } from '@prisma/client';
+import { TodoLists, Prisma, Routines } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { InvalidArgumentException } from 'src/exceptions/invalid-arguement.exception';
 import { CreateRoutineDto } from './dto/create-routine.dto';

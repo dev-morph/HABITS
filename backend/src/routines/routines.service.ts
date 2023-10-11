@@ -10,7 +10,7 @@ import { InvalidArgumentException } from '../exceptions/invalid-arguement.except
 
 import * as dayjs from 'dayjs';
 
-import { CreateEventDto } from 'src/events/dto/create-event.dto';
+import { CreateTodoListsDto } from 'src/todo-lists/dto/create-todo-lists.dto';
 
 @Injectable()
 export class RoutinesService {
@@ -62,7 +62,7 @@ export class RoutinesService {
 
 		while (isEventValid && dayjs(endDay).diff(target) >= 0) {
 			if (event_day.includes(target.get('day').toString())) {
-				const event = CreateEventDto.of({
+				const event = CreateTodoListsDto.of({
 					user_email: data.user_email,
 					routine_id: 0,
 					due_day: target.format('YYYY-MM-DD'),
@@ -77,7 +77,7 @@ export class RoutinesService {
 		return result;
 	}
 
-	generateMonthlyEvents(data: CreateRoutineDto): CreateEventDto[] {
+	generateMonthlyEvents(data: CreateRoutineDto): CreateTodoListsDto[] {
 		const result = [];
 		const monthWith31Days = [1, 3, 5, 7, 8, 10, 12];
 		const monthWith30Days = [4, 6, 9, 11];
@@ -104,7 +104,7 @@ export class RoutinesService {
 				}
 			}
 			if (targetEventDays.includes(target.get('date').toString())) {
-				const event = CreateEventDto.of({
+				const event = CreateTodoListsDto.of({
 					user_email: data.user_email,
 					routine_id: 0,
 					due_day: target.format('YYYY-MM-DD'),

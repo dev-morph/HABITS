@@ -99,7 +99,9 @@ export default defineComponent({
 			} else {
 				errorMsg.value = '';
 				try {
-					await signup(userInfo);
+					const { data } = await signup(userInfo);
+					const user = { name: data.name, email: data.email };
+					localStorage.setItem('user', JSON.stringify(user));
 					router.push('/home');
 				} catch (error) {
 					if (error instanceof AxiosError) {
@@ -152,11 +154,11 @@ export default defineComponent({
 			goPreviousStage,
 		};
 	},
-	directives: {
-		focus: {
-			mounted: el => el.focus(),
-		},
-	},
+	// directives: {
+	// 	focus: {
+	// 		mounted: el => el.focus(),
+	// 	},
+	// },
 });
 </script>
 
@@ -186,7 +188,8 @@ export default defineComponent({
 		font-size: 3rem;
 		.user__input {
 			border: none;
-			border-bottom: 2.5px solid black;
+			background-color: transparent;
+			border-bottom: 2.5px solid white;
 			outline: none;
 			text-align: center;
 		}
@@ -204,9 +207,9 @@ export default defineComponent({
 	justify-content: center;
 	align-items: center;
 	padding: 0.5rem 2rem;
-	border: 1.5px solid black;
+	border: 1.5px solid white;
 	border-radius: 50px;
-	box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
 	cursor: pointer;
 	font-size: 0.9375rem;
 	font-weight: 500;

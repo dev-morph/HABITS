@@ -10,7 +10,7 @@ datasource db {
 	url      = env("DATABASE_URL")
 }
 
-model User {
+model Users {
 	id    Int     @default(autoincrement()) @id
 	email String  @unique
 	username String
@@ -19,10 +19,10 @@ model User {
 	updated_at DateTime @updatedAt
 }
 
-model Event {
+model TodoLists {
 	id        Int      @default(autoincrement()) @id
 	user_email String
-	routine_id Int
+	routine_id Int?
 	due_day DateTime @db.Date
 	title String
 	priority Int
@@ -31,7 +31,7 @@ model Event {
 	updated_at DateTime @updatedAt
 }
 
-model Routine {
+model Routines {
 	id Int @default(autoincrement()) @id
 	user_email String
 	title String

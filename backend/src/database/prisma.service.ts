@@ -9,7 +9,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 	}
 
 	async resetDb() {
-		await this.$transaction([this.user.deleteMany(), this.routine.deleteMany(), this.event.deleteMany()]);
+		await this.$transaction([this.users.deleteMany(), this.routines.deleteMany(), this.todoLists.deleteMany()]);
 	}
 
 	async disconnect() {

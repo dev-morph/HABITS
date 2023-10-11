@@ -16,4 +16,10 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+#app {
+	background-image: url('@/assets/imgs/snow-head-mountain.jpg');
+	background-size: cover;
+	color: white;
+}
+</style>

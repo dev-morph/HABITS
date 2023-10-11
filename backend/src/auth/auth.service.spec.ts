@@ -5,7 +5,7 @@ import { UsersService } from 'src/users/users.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Users } from '@prisma/client';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 
 const mockHttpService = {
@@ -22,7 +22,7 @@ describe('AuthService', () => {
 	let usersService: UsersService;
 	let configService: ConfigService;
 	let jwtService: JwtService;
-	const dummyUser: Prisma.UserCreateInput = {
+	const dummyUser: Prisma.UsersCreateInput = {
 		email: 'hoi@hoi.com',
 		username: 'myNameIsHoi',
 		password: 'HOIHOIHOI',
@@ -91,7 +91,7 @@ describe('AuthService', () => {
 	});
 
 	describe('회원가입', () => {
-		const createdUser: User = {
+		const createdUser: Users = {
 			...dummyUser,
 			id: 1,
 			created_at: new Date(),
@@ -127,7 +127,7 @@ describe('AuthService', () => {
 	describe('유저 인증 테스트', () => {
 		it('validateUser - 인증 성공 테스트', async () => {
 			const hashedPassword = await bcrypt.hash(dummyUser.password, 10);
-			const foundUser: User = {
+			const foundUser: Users = {
 				...dummyUser,
 				id: 1,
 				password: hashedPassword,
@@ -146,7 +146,7 @@ describe('AuthService', () => {
 
 		it('validateUser - 비밀번호 불일치', async () => {
 			const hashedPassword = await bcrypt.hash(dummyUser.password, 10);
-			const foundUser: User = {
+			const foundUser: Users = {
 				...dummyUser,
 				id: 1,
 				password: hashedPassword,
@@ -181,7 +181,7 @@ describe('AuthService', () => {
 	//TODO
 	// describe('로그인 테스트', () => {
 	// 	it('토큰 및 쿠키 옵션 정상 발급', async () => {
-	// 		const foundUser: User = {
+	// 		const foundUser: Users = {
 	// 			...dummyUser,
 	// 			id: 1,
 	// 			password: 'password',
