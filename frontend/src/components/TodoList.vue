@@ -102,6 +102,7 @@ export default defineComponent({
 			target.is_complete = value;
 			await updateTodoList({ id: target.id, is_complete: target.is_complete });
 		}
+
 		onMounted(() => {
 			loaded.value = true;
 			getTodoLists();

@@ -1,9 +1,9 @@
 <template>
-	<!-- <img src="@/assets/icons/checked.png" /> -->
 	<label class="label__wrapper">
 		<div class="box"></div>
 		<input v-model="computedValue" type="checkbox" class="inside__input" />
 		<span class="label__text" :class="computedValue && 'checked'">{{ label }}</span>
+		<div class="delete__icon" @click.prevent="deleteHandler"></div>
 	</label>
 </template>
 
@@ -27,54 +27,80 @@ export default defineComponent({
 				emit('updateTodoState', value, props.id);
 			},
 		});
-		return { computedValue };
+
+		function deleteHandler() {
+			console.log('delete');
+		}
+		return {
+			//variables,
+			computedValue,
+			//functions,
+			deleteHandler,
+		};
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .label__wrapper {
+	position: relative;
 	display: flex;
 	align-items: center;
+	padding: 0 2rem;
 	gap: 0.25rem;
 	input[type='checkbox'] {
 		display: none;
 	}
 	.box {
+		cursor: pointer;
 		background: url('@/assets/icons/unchecked.svg');
-		// display: inline-block;
 		vertical-align: middle;
-		// position: absolute;
-		// margin-left: -1.75rem;
-		// transform: translate(0, -50%);
 		width: 1.5rem;
 		height: 1.5rem;
 	}
-	// .label__text::before {
-	// 	content: '';
-	// 	background: url('@/assets/icons/unchecked.svg');
-	// 	display: inline-block;
-	// 	vertical-align: middle;
-	// 	// position: absolute;
-	// 	// margin-left: -1.75rem;
-	// 	// transform: translate(0, -50%);
-	// 	width: 1.5rem;
-	// 	height: 1.5rem;
-	// 	// border: 1px solid black;
-	// }
-
 	&:has(> input:checked) .box {
 		background: url('@/assets/icons/checked.svg');
 	}
-	// &:has(> input:checked) .label__text::before {
+	.label__text {
+		cursor: pointer;
+		&.checked {
+			text-decoration: line-through;
+		}
+
+		&:hover &::after {
+			content: '';
+		}
+	}
+
+	// &:hover .label__text::after {
+	// 	position: absolute;
+	// 	top: 50%;
+	// 	right: -1.3rem;
+	// 	transform: translateY(-50%);
+	// 	// display: inline-block;
 	// 	content: '';
-	// 	background: url('@/assets/icons/checked.svg');
+	// 	width: 1.3rem;
+	// 	height: 1.3rem;
+	// 	background-image: url('@/assets/icons/delete_icon.svg');
 	// }
-}
-.label__text {
-	cursor: pointer;
-	&.checked {
-		text-decoration: line-through;
+
+	.delete__icon {
+		display: inline-block;
+		background-image: url('@/assets/icons/delete_icon.svg');
+		width: 1.5rem;
+		height: 1.5rem;
+		cursor: pointer;
+		position: absolute;
+		right: -0.5rem;
+		opacity: 0;
+		// padding: 1.5rem;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+	&:hover .delete__icon {
+		opacity: 1;
 	}
 }
 </style>

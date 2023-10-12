@@ -3,7 +3,9 @@
 		<div class="popup__layer" v-if="popupStore.isPopupOpen" @click="popupStore.closePopup">
 			<div class="popup" @click.stop>
 				<ul class="popup__list__wrapper">
-					<li v-for="(item, index) in mypageList" :key="index" class="list__item">{{ item }}</li>
+					<li v-for="(item, index) in mypageList" :key="index" class="list__item" @click="navHandler(item.to)">
+						{{ item.title }}
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -12,6 +14,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { usePopupStore } from '../../store/popup';
 
 export default defineComponent({
@@ -19,11 +22,24 @@ export default defineComponent({
 	components: {},
 	setup() {
 		const popupStore = usePopupStore();
-		const mypageList = ref(['마이 페이지', '캘린더 페이지', '루틴 설정', '테마 설정']);
+		const router = useRouter();
+		const mypageList = ref([
+			{ title: '마이 페이지', to: '/mypage' },
+			{ title: '캘린더 페이지', to: '/calendar' },
+			{ title: '루틴 설정', to: '/routine' },
+			{ title: '테마 설정', to: '/theme' },
+		]);
+
+		function navHandler(to: string) {
+			popupStore.closePopup();
+			router.push(to);
+		}
 		return {
 			//variables
 			popupStore,
 			mypageList,
+			//functions,
+			navHandler,
 		};
 	},
 	methods: {},
@@ -40,8 +56,6 @@ export default defineComponent({
 	height: 100%;
 
 	.popup {
-		width: 150px;
-		height: 180px;
 		position: absolute;
 		top: 5rem;
 		right: 0.75rem;
@@ -64,6 +78,7 @@ export default defineComponent({
 		.popup__list__wrapper {
 			width: 100%;
 			height: 100%;
+			padding: 1rem 1.25rem;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
