@@ -64,3 +64,14 @@ li {
 .display-leave-to {
 	opacity: 0;
 }
+.popup-leave-active {
+	transition: opacity 0.25s ease;
+}
+
+.popup-enter-active {
+	transition: opacity 0.25s ease;
+}
+.popup-enter-from,
+.popup-leave-to {
+	opacity: 0;
+}

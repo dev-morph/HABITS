@@ -6,7 +6,7 @@
 			</router-link>
 			<div class="navigation">
 				<div class="login__btn" v-if="!loggedIn">Login</div>
-				<div class="login__btn" v-else>MyPage</div>
+				<div class="login__btn" v-else @click="popupStore.openPopup">MyPage</div>
 			</div>
 		</nav>
 	</header>
@@ -14,16 +14,19 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
+import { usePopupStore } from '@/store/popup';
 
 export default defineComponent({
 	name: 'HomeView',
 	setup() {
+		const popupStore = usePopupStore();
 		const loggedIn = ref();
 		onMounted(() => {
 			loggedIn.value = localStorage.getItem('user');
 		});
 		return {
 			//variables,
+			popupStore,
 			loggedIn,
 		};
 	},
