@@ -1,14 +1,15 @@
 <template>
 	<div id="home">
-		<greeting v-if="user.name" :name="user.name" />
-		<todo-list v-if="user.email" :email="user.email" />
+		<greeting v-if="userStore.userInfo.username" :name="userStore.userInfo.username" />
+		<todo-list v-if="userStore.userInfo.email" :email="userStore.userInfo.email" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import Greeting from '@/components/Greeting.vue';
 import TodoList from '@/components/TodoList.vue';
+import { useUserStore } from '@/store/user';
 
 export default defineComponent({
 	name: 'HomeView',
@@ -17,18 +18,14 @@ export default defineComponent({
 		TodoList,
 	},
 	setup() {
-		const user = ref({ name: '', email: '' });
+		const userStore = useUserStore();
 
 		onMounted(() => {
-			const userInfo = localStorage.getItem('user');
-			if (userInfo) {
-				const parsedUser = JSON.parse(userInfo);
-				user.value = parsedUser;
-			}
+			userStore.getUserInfo();
 		});
 		return {
 			//variables,
-			user,
+			userStore,
 		};
 	},
 });

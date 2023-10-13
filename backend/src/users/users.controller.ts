@@ -12,13 +12,17 @@ export class UsersController {
 	@UseGuards(JwtAuthGuard)
 	@Get('profile')
 	getProfile(@Request() req) {
-		console.log('got it');
-		return req.user;
+		return this.usersService.getUserByEmail(req.user.email);
 	}
 
 	@Post('signup')
 	signUp(@Body() userDto: Prisma.UsersCreateInput) {
 		return this.usersService.updateUser({ where: { email: 'hoi@hoi.com' }, data: userDto });
 		// return this.usersService.createUser(userDto);
+	}
+
+	@Patch('')
+	update(@Body() userDto: UpdateUserDto) {
+		return this.usersService.updateUser({ where: { email: userDto.email }, data: userDto });
 	}
 }

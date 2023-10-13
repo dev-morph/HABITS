@@ -21,9 +21,7 @@ export default defineComponent({
 		});
 
 		async function loginHandler() {
-			console.log('userInfo', userInfo);
 			const result = await login(userInfo);
-			console.log('result is ', result);
 		}
 		return { userInfo, loginHandler };
 	},

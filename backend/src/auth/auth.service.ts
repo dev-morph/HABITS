@@ -60,7 +60,6 @@ export class AuthService {
 		const { access_token } = await this.getKakaoToken(kakaoCodeDto.code);
 		//2. getUserInfo from Kakao via Token
 		const userInfo = await this.getKakaoUserInfo(access_token);
-		console.log('userInfo is ---> ', userInfo);
 	}
 
 	async getKakaoToken(code: string) {

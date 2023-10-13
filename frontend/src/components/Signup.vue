@@ -66,10 +66,12 @@ import { defineComponent, ref, reactive, computed } from 'vue';
 import { signup } from '@/api/authApi';
 import { AxiosError } from 'axios';
 import router from '@/router';
+import { useUserStore } from '@/store/user';
 
 export default defineComponent({
 	name: 'Signup',
 	setup() {
+		const userStore = useUserStore();
 		const currentStage = ref(0);
 		const nameInput = ref();
 		const emailInput = ref();
@@ -100,8 +102,8 @@ export default defineComponent({
 				errorMsg.value = '';
 				try {
 					const { data } = await signup(userInfo);
-					const user = { name: data.name, email: data.email };
-					localStorage.setItem('user', JSON.stringify(user));
+					const user = { username: data.username, email: data.email };
+					userStore.storeUserInfo(user);
 					router.push('/home');
 				} catch (error) {
 					if (error instanceof AxiosError) {

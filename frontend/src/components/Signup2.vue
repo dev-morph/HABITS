@@ -32,9 +32,7 @@ export default defineComponent({
 		});
 
 		async function signupHandler() {
-			console.log('userInfo', userInfo);
 			const result = await signup(userInfo);
-			console.log('result is ', result);
 		}
 		return { userInfo, signupHandler };
 	},

@@ -138,7 +138,6 @@ describe('RoutinesService', () => {
 					end_day: today.add(20, 'day').format(dateFormat),
 				};
 				const result = service.generateWeeklyEvents(validRoutine);
-				console.log('result is ', result);
 				expect(result.length).toBe(12);
 			});
 

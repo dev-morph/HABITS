@@ -30,3 +30,13 @@ export type TodoListType = {
 	priority: number;
 	is_complete: boolean;
 };
+
+export type UserType = {
+	username: string;
+	email: string;
+};
+
+export type UpdateUserType = {
+	username: string;
+	email: string;
+};

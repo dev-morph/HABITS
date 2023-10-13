@@ -12,7 +12,6 @@ export class TodoListsController {
 	@UseGuards(JwtAuthGuard)
 	@Post('')
 	create(@Body() createTodoListsDto: CreateTodoListsDto) {
-		console.log('check todo, ', createTodoListsDto);
 		return this.service.create(createTodoListsDto);
 	}
 
@@ -31,7 +30,6 @@ export class TodoListsController {
 
 	@Delete('')
 	remove(@Query('id') id: number) {
-		console.log('id is', id);
 		return this.service.remove(+id);
 	}
 }

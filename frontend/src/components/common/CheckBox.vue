@@ -9,7 +9,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { deleteTodolist } from '@/api/todoListApi';
 
 export default defineComponent({
 	name: 'Checkbox',

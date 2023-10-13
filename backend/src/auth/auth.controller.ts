@@ -36,7 +36,7 @@ export class AuthController {
 		res.cookie('Authentication', access_token, accessCookieOptions);
 
 		const payload = {
-			name: user.username,
+			username: user.username,
 			email: user.email,
 			message: 'SignUp Success',
 		};
@@ -46,7 +46,6 @@ export class AuthController {
 	@Post('/kakao/login')
 	async kakaoLogin(@Body() kakaoLoginDto: KakaoCodeDto) {
 		const result = await this.authService.kakaoLogin(kakaoLoginDto);
-		console.log('controller --', result);
 		return 'success';
 	}
 }

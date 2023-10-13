@@ -42,7 +42,6 @@ describe('UsersRepository', () => {
 
 		it('unique값 중복 시 P2002 Exception 출력', async () => {
 			const find = await repository.getUser({ where: { email: userData.email } });
-			console.log('find', find);
 			await repository.createUser(userData);
 			try {
 				await repository.createUser(userData);
