@@ -29,8 +29,9 @@ export class TodoListsController {
 		return this.service.update(updateTodoListsDto);
 	}
 
-	@Delete(':id')
-	remove(@Param('id') id: string) {
+	@Delete('')
+	remove(@Query('id') id: number) {
+		console.log('id is', id);
 		return this.service.remove(+id);
 	}
 }

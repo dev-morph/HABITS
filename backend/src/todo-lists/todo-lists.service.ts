@@ -27,6 +27,6 @@ export class TodoListsService {
 	}
 
 	remove(id: number) {
-		return `This action removes a #${id} event`;
+		return this.repository.deleteTodoList({ where: { id } });
 	}
 }

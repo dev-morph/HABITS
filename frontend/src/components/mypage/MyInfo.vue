@@ -5,11 +5,11 @@
 		</div>
 		<div class="info__wrapper">
 			<div class="name">
-				<span>testMorph</span>
+				<span>{{ userStore.getUserInfo.name }}</span>
 			</div>
 			<div class="email">
 				<i class="email__icon"></i>
-				<span>morph@test.com</span>
+				<span>{{ userStore.getUserInfo.email }}</span>
 			</div>
 		</div>
 
@@ -18,12 +18,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted } from 'vue';
+import { useUserStore } from '@/store/user';
+
 export default defineComponent({
 	name: 'MyInfo',
 	components: {},
 	setup() {
-		return {};
+		const userStore = useUserStore();
+
+		onMounted(() => {
+			userStore.setUserInfo();
+		});
+		return {
+			userStore,
+		};
 	},
 	methods: {},
 });

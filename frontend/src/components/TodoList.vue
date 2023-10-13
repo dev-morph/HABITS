@@ -5,7 +5,14 @@
 			<div class="todos__wrapper">
 				<div class="todo__list__body">
 					<li v-for="(event, index) in todoList" :key="index">
-						<CheckBox :value="event.is_complete" @updateTodoState="updateTodoState" :label="event.title" :id="index" />
+						<CheckBox
+							:value="event.is_complete"
+							@updateTodoState="updateTodoState"
+							@deleteTodo="deleteTodo"
+							:label="event.title"
+							:idx="index"
+							:id="event.id"
+						/>
 					</li>
 				</div>
 			</div>
@@ -31,7 +38,7 @@ import { defineComponent, onMounted, ref, reactive, Ref } from 'vue';
 import PlusSvg from '@/components/common/svg/PlusSvg.vue';
 import CheckBox from '@/components/common/CheckBox.vue';
 import { CreateTodoType, FindAllTodoListsType, TodoListType } from '@/types/types';
-import { findAllTodoLists, createTodoList, updateTodoList } from '@/api/todoListApi';
+import { findAllTodoLists, createTodoList, updateTodoList, deleteTodolist } from '@/api/todoListApi';
 import dayjs from 'dayjs';
 
 export default defineComponent({
@@ -103,6 +110,13 @@ export default defineComponent({
 			await updateTodoList({ id: target.id, is_complete: target.is_complete });
 		}
 
+		async function deleteTodo(id: number) {
+			if (id) {
+				await deleteTodolist(id);
+				getTodoLists();
+			}
+		}
+
 		onMounted(() => {
 			loaded.value = true;
 			getTodoLists();
@@ -118,6 +132,7 @@ export default defineComponent({
 			inputModeHandler,
 			registerNewTodo,
 			updateTodoState,
+			deleteTodo,
 		};
 	},
 });

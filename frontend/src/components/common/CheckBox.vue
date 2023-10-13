@@ -3,18 +3,20 @@
 		<div class="box"></div>
 		<input v-model="computedValue" type="checkbox" class="inside__input" />
 		<span class="label__text" :class="computedValue && 'checked'">{{ label }}</span>
-		<div class="delete__icon" @click.prevent="deleteHandler"></div>
+		<button class="delete__icon" @click.prevent="deleteHandler"></button>
 	</label>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { deleteTodolist } from '@/api/todoListApi';
 
 export default defineComponent({
 	name: 'Checkbox',
 	props: {
 		value: Boolean,
 		id: Number,
+		idx: Number,
 		label: String,
 	},
 
@@ -24,12 +26,14 @@ export default defineComponent({
 				return props.value;
 			},
 			set(value) {
-				emit('updateTodoState', value, props.id);
+				emit('updateTodoState', value, props.idx);
 			},
 		});
 
 		function deleteHandler() {
-			console.log('delete');
+			if (props.id) {
+				emit('deleteTodo', props.id);
+			}
 		}
 		return {
 			//variables,
@@ -91,12 +95,15 @@ export default defineComponent({
 		height: 1.5rem;
 		cursor: pointer;
 		position: absolute;
-		right: -0.5rem;
+		right: -1rem;
 		opacity: 0;
 		// padding: 1.5rem;
 
 		&:hover {
 			opacity: 1;
+		}
+		&:active {
+			transform: scale(1.05);
 		}
 	}
 	&:hover .delete__icon {
