@@ -11,5 +11,6 @@ jobs:
     steps:
       - run: echo "Hello github Actions"
       - run: docker ps
-      - run: docker-compose build
+      - uses: actions/checkout@v4.1.0
       - run: docker ps
+      - run: docker-compose build
