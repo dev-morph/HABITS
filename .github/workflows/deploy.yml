@@ -1,0 +1,13 @@
+name: Build and Deploy HABITS
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  my_job:
+    name: deploy to staging
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello github Actions"
+    
