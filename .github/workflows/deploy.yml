@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Hello github Actions"
-      - run: ls
+      - run: docker ps
       - run: docker-compose build
       - run: docker ps
