@@ -14,7 +14,7 @@
 						type="text"
 						v-model="userInfo.username"
 						ref="nameInput"
-						@keyup.enter="enterHandler(currentStage)"
+						@keypress.enter="enterHandler(currentStage)"
 						v-focus
 					/>
 					<p class="error__msg" v-if="errorMsg.length > 0">{{ errorMsg }}</p>
@@ -30,7 +30,7 @@
 						placeholder="Email"
 						v-model="userInfo.email"
 						ref="emailInput"
-						@keyup.enter="enterHandler(currentStage)"
+						@keypress.enter="enterHandler(currentStage)"
 						v-focus
 					/>
 					<p class="error__msg" v-if="errorMsg.length > 0">{{ errorMsg }}</p>
@@ -46,7 +46,7 @@
 						placeholder="Password"
 						v-model="userInfo.password"
 						ref="passwordInput"
-						@keyup.enter="enterHandler(currentStage)"
+						@keypress.enter="enterHandler(currentStage)"
 						v-focus
 					/>
 					<p class="error__msg" v-if="errorMsg.length > 0">{{ errorMsg }}</p>

@@ -6,7 +6,15 @@
 		<div class="info__wrapper">
 			<div class="name">
 				<span :class="editMode && 'inactive'">{{ userStore.userInfo.username }}</span>
-				<input class="inactive__input" :class="editMode && 'active__input'" type="text" v-model="userInfo.username" v-focus />
+				<input
+					ref="nameInput"
+					class="inactive__input"
+					:class="editMode && 'active__input'"
+					type="text"
+					v-model="userInfo.username"
+					v-focus
+					@keypress.enter="saveInfoHandler"
+				/>
 			</div>
 			<div class="email">
 				<i class="email__icon"></i>
@@ -15,8 +23,13 @@
 			</div>
 		</div>
 
-		<button v-if="!editMode" class="my__info__btn" @click="editModeOpenHandler">Edit profile</button>
-		<button v-else class="my__info__btn" @click="saveInfoHandler">Save profile</button>
+		<div class="btn__wrapper">
+			<button v-if="!editMode" class="my__info__btn" @click="editModeOpenHandler">Edit profile</button>
+			<div v-else class="btn__wrapper">
+				<button class="my__info__btn" @click="saveInfoHandler">Save profile</button>
+				<button class="my__info__btn" @click="cancleHandler">Cancle</button>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -30,6 +43,7 @@ export default defineComponent({
 	components: {},
 	setup() {
 		const userStore = useUserStore();
+		const nameInput = ref();
 		const userInfo = reactive({
 			username: '',
 			email: '',
@@ -38,6 +52,7 @@ export default defineComponent({
 
 		function editModeOpenHandler() {
 			editMode.value = true;
+			nameInput.value.focus();
 		}
 		function editModeOffHandler() {
 			editMode.value = false;
@@ -52,13 +67,21 @@ export default defineComponent({
 			editModeOffHandler();
 		}
 
+		function cancleHandler() {
+			userInfo.email = userStore.userInfo.email;
+			userInfo.username = userStore.userInfo.username;
+			editModeOffHandler();
+		}
+
 		function inputHandler(event: Event, to: string) {
 			const target = event.target as HTMLInputElement;
 
 			if (to === 'name') {
-				userStore.setUserName(target.value);
+				userInfo.username = target.value;
+				// userStore.setUserName(target.value);
 			} else if (to === 'email') {
-				userStore.setUserEmail(target.value);
+				userInfo.email = target.value;
+				// userStore.setUserEmail(target.value);
 			}
 		}
 
@@ -70,11 +93,13 @@ export default defineComponent({
 		return {
 			//variables,
 			userStore,
+			nameInput,
 			userInfo,
 			editMode,
 			//functions,
 			editModeOpenHandler,
 			saveInfoHandler,
+			cancleHandler,
 			inputHandler,
 		};
 	},
@@ -134,8 +159,7 @@ export default defineComponent({
 
 			outline: none;
 			text-align: center;
-			transition: opacity 0.5s ease;
-			transition: border-bottom 0.5s ease;
+			transition: all 0.5s ease;
 			&.active__input {
 				opacity: 1;
 				height: 1.75rem;
@@ -147,17 +171,22 @@ export default defineComponent({
 		}
 	}
 
-	.my__info__btn {
-		font-size: 1.25rem;
-		padding: 0.5rem 3rem;
-		border: 1px solid rgb(83, 83, 83);
-		border-radius: 0.5rem;
+	.btn__wrapper {
+		display: flex;
+		gap: 1rem;
+		.my__info__btn {
+			font-size: 1.25rem;
+			padding: 0.5rem 3rem;
+			border: 1px solid rgb(83, 83, 83);
+			border-radius: 0.5rem;
+			background-color: rgba(66, 66, 66, 0.5);
 
-		&:hover {
-			background-color: rgba(66, 66, 66, 0.2);
-		}
-		&:active {
-			transform: scale(1.02);
+			&:hover {
+				background-color: rgba(66, 66, 66, 0.7);
+			}
+			&:active {
+				transform: scale(1.02);
+			}
 		}
 	}
 }
