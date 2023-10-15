@@ -9,7 +9,8 @@ jobs:
     name: deploy to staging
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello github Actions"
+      - run: echo "secret is ${{secrets.DATABASE_URL}}"
+      - run: echo "secret is ${{secrets.AT_DURATION}}"
       - run: docker ps
       - uses: actions/checkout@v4.1.0
       - run: docker ps
