@@ -30,3 +30,10 @@ jobs:
       # docker image build
       - run: docker-compose build
       - run: docker images
+      # deploy.sh권한 부여
+      - name: deploy.sh 실행
+        run: |
+          chmod +x deploy.sh
+          ./deploy.sh
+      - run: ls
+      
