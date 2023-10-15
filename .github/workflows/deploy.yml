@@ -10,11 +10,18 @@ jobs:
     environment: deploy
     runs-on: ubuntu-latest
     steps:
-      # .env 생성
+      # checkout
       - uses: actions/checkout@v4.1.0
-      - run: docker ps
-      - run : ls
-      - run: echo "secret is ${{secrets.DATABASE_URL}}"
-      - run: echo "secret is ${{secrets.MYSQL_ROOT_PASSWORD}}"
-      - run: docker ps
+      # frontend .env 생성
+      - run: touch ./frontend/.env
+      - run: echo "VUE_APP_KAKAO_REST_API_KEY=${{secrets.VUE_APP_KAKAO_REST_API_KEY}}" >> ./frontend/.env
+      - run: echo "VUE_APP_KAKAO_REDIRECT_URI=${{secrets.VUE_APP_KAKAO_REDIRECT_URI}}" >> ./frontend/.env
+      # backend .env 생성
+      - run: touch ./backend/.env.dev
+      - run: echo "KAKAO_CLIENT_ID=${{secrets.KAKAO_CLIENT_ID}}" >> ./backend/.env.dev
+      - run: echo "KAKAO_REDIRECT_URI=${{secrets.KAKAO_REDIRECT_URI}}" >> ./backend/.env.dev
+      - run: echo "JWT_SECRET=${{secrets.JWT_SECRET}}" >> ./backend/.env.dev
+      - run: echo "AT_DURATION=${{secrets.AT_DURATION}}" >> ./backend/.env.dev
+      - run: echo "DATABASE_URL=${{secrets.DATABASE_URL}}" >> ./backend/.env.dev
       - run: docker-compose build
+      - run: docker images
