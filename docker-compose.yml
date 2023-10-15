@@ -35,7 +35,7 @@ services:
         depends_on:
             - mysqldb
     mysqldb:
-        image: mysql:8.1.0
+        image: habits_mysql:dev
         container_name: mysqldb
         restart: always
         build:
