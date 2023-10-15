@@ -7,11 +7,14 @@ on:
 jobs:
   my_job:
     name: deploy to staging
+    environment: deploy
     runs-on: ubuntu-latest
     steps:
+      # .env 생성
+      - uses: actions/checkout@v4.1.0
+      - run: docker ps
+      - run : ls
       - run: echo "secret is ${{secrets.DATABASE_URL}}"
       - run: echo "secret is ${{secrets.MYSQL_ROOT_PASSWORD}}"
-      - run: docker ps
-      - uses: actions/checkout@v4.1.0
       - run: docker ps
       - run: docker-compose build
