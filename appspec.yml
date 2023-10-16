@@ -3,6 +3,7 @@ os: linux
 files:
   - source: /habits
     destination: /app/habits
+    overwrite: yes
 permissions:
   - object: /
     pattern: "**"
