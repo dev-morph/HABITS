@@ -10,31 +10,47 @@ jobs:
     environment: deploy
     runs-on: ubuntu-latest
     steps:
-      # checkout
-      - uses: actions/checkout@v4.1.0
+      - name: Checkout
+        uses: actions/checkout@v4.1.0
       # frontend .env 생성
-      - run: touch ./frontend/.env
-      - run: echo "VUE_APP_KAKAO_REST_API_KEY=${{secrets.VUE_APP_KAKAO_REST_API_KEY}}" >> ./frontend/.env
-      - run: echo "VUE_APP_KAKAO_REDIRECT_URI=${{secrets.VUE_APP_KAKAO_REDIRECT_URI}}" >> ./frontend/.env
-      # backend .env 생성
-      - run: touch ./backend/.env.dev
-      - run: echo "KAKAO_CLIENT_ID=${{secrets.KAKAO_CLIENT_ID}}" >> ./backend/.env.dev
-      - run: echo "KAKAO_REDIRECT_URI=${{secrets.KAKAO_REDIRECT_URI}}" >> ./backend/.env.dev
-      - run: echo "JWT_SECRET=${{secrets.JWT_SECRET}}" >> ./backend/.env.dev
-      - run: echo "AT_DURATION=${{secrets.AT_DURATION}}" >> ./backend/.env.dev
-      - run: echo "DATABASE_URL=${{secrets.DATABASE_URL}}" >> ./backend/.env.dev
-      # db .env 생성
-      - run: touch ./db/.env
-      - run: echo "MYSQL_ROOT_PASSWORD=${{secrets.MYSQL_ROOT_PASSWORD}}" >> ./db/.env
-      - run: echo "MYSQL_DATABASE=${{secrets.MYSQL_DATABASE}}" >> ./db/.env
-      # docker image build
-      - run: docker-compose build
-      - run: docker images
-      # deploy.sh권한 부여
+      - name: make .env for frontend
+        run: |
+          touch ./frontend/.env
+          echo "VUE_APP_KAKAO_REST_API_KEY=${{secrets.VUE_APP_KAKAO_REST_API_KEY}}" >> ./frontend/.env
+          echo "VUE_APP_KAKAO_REDIRECT_URI=${{secrets.VUE_APP_KAKAO_REDIRECT_URI}}" >> ./frontend/.env
+
+      - name: backend .env 생성
+      - run: |
+          touch ./backend/.env.dev
+          echo "KAKAO_CLIENT_ID=${{secrets.KAKAO_CLIENT_ID}}" >> ./backend/.env.dev
+          echo "KAKAO_REDIRECT_URI=${{secrets.KAKAO_REDIRECT_URI}}" >> ./backend/.env.dev
+          echo "JWT_SECRET=${{secrets.JWT_SECRET}}" >> ./backend/.env.dev
+          echo "AT_DURATION=${{secrets.AT_DURATION}}" >> ./backend/.env.dev
+          echo "DATABASE_URL=${{secrets.DATABASE_URL}}" >> ./backend/.env.dev
+
+      - name: db .env 생성
+      - run: |
+          touch ./db/.env
+          echo "MYSQL_ROOT_PASSWORD=${{secrets.MYSQL_ROOT_PASSWORD}}" >> ./db/.env
+          echo "MYSQL_DATABASE=${{secrets.MYSQL_DATABASE}}" >> ./db/.env
+
+      - name: docker image build
+      - run: |
+          docker-compose build
+          docker images
+
       - name: makeInstallPackage.sh 실행
         run: |
           chmod +x makeInstallPackage.sh
           ./makeInstallPackage.sh
+
+      - name: "Configure AWS Credentials"
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{secrets.AWS_REGION}}
+          aws-access-key-id: ${{secrets.AWS_ACCESSKEY}}
+          aws-secret-access-key: ${{secrets.AWS_SECRETKEY}}
+
       - name: Upload S3
         uses: shallwefootball/upload-s3-action@v1.3.3
         with:
