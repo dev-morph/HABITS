@@ -31,9 +31,17 @@ jobs:
       - run: docker-compose build
       - run: docker images
       # deploy.sh권한 부여
-      - name: deploy.sh 실행
+      - name: makeInstallPackage.sh 실행
         run: |
-          chmod +x deploy.sh
-          ./deploy.sh
-      - run: ls
-      
+          chmod +x makeInstallPackage.sh
+          ./makeInstallPackage.sh
+      - name: Upload S3
+        uses: shallwefootball/upload-s3-action@v1.3.3
+        with:
+          aws_key_id: ${{secrets.AWS_ACCESSKEY}}
+          aws_secret_access_key: ${{secrets.AWS_SECRETKEY}}
+          aws_bucket: morphhabits
+          # directory to upload
+          source_dir: ./installPackage
+          # destination directory for upload
+            
