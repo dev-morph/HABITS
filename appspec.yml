@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: habits/
+  - source: /
     destination: /app/habits
     overwrite: yes
 
