@@ -13,3 +13,4 @@ do
 done
 
 docker save -o ./$PACKAGENAME/habits_images.tar $IMAGE_LIST
+tar -czvf ./$PACKAGENAME.tar.gz ./$PACKAGENAME
