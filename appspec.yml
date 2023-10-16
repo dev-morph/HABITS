@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: /
+  - source: /habits
     destination: /app/habits
 permissions:
   - object: /
@@ -11,6 +11,6 @@ permissions:
     mode: 755
 hooks:
   AfterInstall:
-    - location: ./scripts/loadImage.sh
+    - location: ./loadImage.sh
       timeout: 60
       runas: root
