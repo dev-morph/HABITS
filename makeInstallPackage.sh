@@ -4,6 +4,8 @@ PACKAGENAME="installPackage"
 
 mkdir ./$PACKAGENAME
 cp ./docker-compose.yml ./$PACKAGENAME
+cp ./appspec.yml ./$PACKAGENAME
+cp ./loadImage.sh ./$PACKAGENAME
 
 IMAGE_LIST=$(docker images | grep $IMAGE_PREFIX | awk '{print $1":"$2}')
 
@@ -13,4 +15,5 @@ do
 done
 
 docker save -o ./$PACKAGENAME/habits_images.tar $IMAGE_LIST
-tar -czvf ./$PACKAGENAME.tar.gz ./$PACKAGENAME
+cd $PACKAGENAME
+tar -czvf ../$PACKAGENAME.tar.gz ./

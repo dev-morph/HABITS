@@ -1,0 +1,15 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /app/habits
+permissions:
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+hooks:
+  AfterInstall:
+    - location: ./scripts/loadImage.sh
+      timeout: 60
+      runas: root
