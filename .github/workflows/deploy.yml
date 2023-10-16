@@ -52,13 +52,7 @@ jobs:
           aws-secret-access-key: ${{secrets.AWS_SECRETKEY}}
 
       - name: 🚛 Upload S3
-        uses: shallwefootball/upload-s3-action@v1.3.3
-        with:
-          aws_key_id: ${{secrets.AWS_ACCESSKEY}}
-          aws_secret_access_key: ${{secrets.AWS_SECRETKEY}}
-          aws_bucket: morphhabits
-          source_dir: ./installPackage.tar.gz
-          destination_dir: ./habits
+        run: aws s3 cp --region ${{secrets.AWS_REGION}} ./installPackage.tar.gz s3://morphhabits/installPackage.tar.gz
 
       - name: 🚀 Code Deploy
         run: | 
