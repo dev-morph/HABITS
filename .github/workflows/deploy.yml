@@ -10,7 +10,8 @@ jobs:
     environment: deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.0
+      - name: Checkout
+        uses: actions/checkout@v4.1.0
       # frontend .env 생성
       - name: make .env for frontend
         run: |
@@ -19,7 +20,7 @@ jobs:
           echo "VUE_APP_KAKAO_REDIRECT_URI=${{secrets.VUE_APP_KAKAO_REDIRECT_URI}}" >> ./frontend/.env
 
       - name: backend .env 생성
-      - run: |
+        run: |
           touch ./backend/.env.dev
           echo "KAKAO_CLIENT_ID=${{secrets.KAKAO_CLIENT_ID}}" >> ./backend/.env.dev
           echo "KAKAO_REDIRECT_URI=${{secrets.KAKAO_REDIRECT_URI}}" >> ./backend/.env.dev
@@ -28,13 +29,13 @@ jobs:
           echo "DATABASE_URL=${{secrets.DATABASE_URL}}" >> ./backend/.env.dev
 
       - name: db .env 생성
-      - run: |
+        run: |
           touch ./db/.env
           echo "MYSQL_ROOT_PASSWORD=${{secrets.MYSQL_ROOT_PASSWORD}}" >> ./db/.env
           echo "MYSQL_DATABASE=${{secrets.MYSQL_DATABASE}}" >> ./db/.env
 
       - name: docker image build
-      - run: |
+        run: |
           docker-compose build
           docker images
 
