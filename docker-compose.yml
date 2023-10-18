@@ -48,8 +48,8 @@ services:
         # environment:
         #     MYSQL_ROOT_PASSWORD: '!docker'
         #     MYSQL_DATABASE_NAME: HABITS
-        env_file:
-            - ./db/.env
+        # env_file:
+        #     - ./db/.env
         networks:
             - my_network
 
