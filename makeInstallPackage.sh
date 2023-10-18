@@ -5,7 +5,7 @@ PACKAGENAME="installPackage"
 mkdir ./$PACKAGENAME
 cp ./docker-compose.yml ./$PACKAGENAME
 cp ./appspec.yml ./$PACKAGENAME
-cp ./loadImage.sh ./$PACKAGENAME
+cp ./deploy.sh ./$PACKAGENAME
 
 IMAGE_LIST=$(docker images | grep $IMAGE_PREFIX | awk '{print $1":"$2}')
 
