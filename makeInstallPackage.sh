@@ -1,19 +1,9 @@
 # BASE
 IMAGE_PREFIX="habits_"
-PACKAGENAME="installPackage"
+PACKAGE_NAME="installPackage"
+PATH_NAME=$(pwd)
 
-mkdir ./$PACKAGENAME
-# cp ./docker-compose.yml ./$PACKAGENAME
-# cp ./appspec.yml ./$PACKAGENAME
-# cp ./deploy.sh ./$PACKAGENAME
-
-# IMAGE_LIST=$(docker images | grep $IMAGE_PREFIX | awk '{print $1":"$2}')
-
-# for imgName in $IMAGE_LIST
-# do
-# 	echo $imgName
-# done
-
-# docker save -o ./$PACKAGENAME/habits_images.tar $IMAGE_LIST
-# cd $PACKAGENAME
-tar -czvf ./$PACKAGENAME/$PACKAGENAME.tar.gz ./
+echo $PATH_NAME
+cd ../
+mkdir $PACKAGE_NAME
+tar -czvf ./$PACKAGE_NAME/$PACKAGE_NAME.tar.gz $PATH_NAME
