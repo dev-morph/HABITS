@@ -34,10 +34,10 @@ jobs:
           echo "MYSQL_ROOT_PASSWORD=${{secrets.MYSQL_ROOT_PASSWORD}}" >> ./db/.env
           echo "MYSQL_DATABASE=${{secrets.MYSQL_DATABASE}}" >> ./db/.env
 
-      - name: 🐳 docker image build
-        run: |
-          docker-compose build
-          docker images
+      # - name: 🐳 docker image build
+      #   run: |
+      #     docker-compose build
+      #     docker images
 
       - name: 🔧 makeInstallPackage.sh 실행
         run: |
@@ -52,7 +52,7 @@ jobs:
           aws-secret-access-key: ${{secrets.AWS_SECRETKEY}}
 
       - name: 🚛 Upload S3
-        run: aws s3 cp --region ${{secrets.AWS_REGION}} ./installPackage.tar.gz s3://${{secrets.AWS_S3_BUCKET}}/${{secrets.AWS_S3_DIR}}/installPackage.tar.gz
+        run: aws s3 cp --region ${{secrets.AWS_REGION}} ./installPackage/installPackage.tar.gz s3://${{secrets.AWS_S3_BUCKET}}/${{secrets.AWS_S3_DIR}}/installPackage.tar.gz
 
       - name: 🚀 Code Deploy
         run: |
