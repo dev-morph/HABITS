@@ -13,11 +13,12 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4.1.0
 
-            - name: ⚙️ make .env for frontend
+            - name: ⚙️ frontend .env 생성
               run: |
                   touch ./frontend/.env
                   echo "VUE_APP_KAKAO_REST_API_KEY=${{secrets.VUE_APP_KAKAO_REST_API_KEY}}" >> ./frontend/.env
                   echo "VUE_APP_KAKAO_REDIRECT_URI=${{secrets.VUE_APP_KAKAO_REDIRECT_URI}}" >> ./frontend/.env
+                  echo "VUE_APP_BASE_URL=${{secrets.VUE_APP_BASE_URL}}" >> ./frontend/.env
 
             - name: ⚙️ backend .env 생성
               run: |

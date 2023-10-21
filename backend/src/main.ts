@@ -8,7 +8,8 @@ async function bootstrap() {
 	const { httpAdapter } = app.get(HttpAdapterHost);
 	app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 	app.enableCors({
-		origin: 'http://localhost:8080',
+		// origin: '*',
+		origin: ['http://localhost:8080', 'http://habits.co.kr:8080', 'http://habits.co.kr'],
 		credentials: true,
 	});
 	app.use(cookieParser());
