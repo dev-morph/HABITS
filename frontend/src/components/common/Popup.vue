@@ -16,11 +16,13 @@
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePopupStore } from '../../store/popup';
+import { useUserStore } from '@/store/user';
 
 export default defineComponent({
 	name: 'Popup',
 	components: {},
 	setup() {
+		const userStore = useUserStore();
 		const popupStore = usePopupStore();
 		const router = useRouter();
 		const mypageList = ref([
@@ -28,9 +30,13 @@ export default defineComponent({
 			{ title: '캘린더 페이지', to: '/calendar' },
 			{ title: '루틴 설정', to: '/routine' },
 			{ title: '테마 설정', to: '/theme' },
+			{ title: '로그아웃', to: '/login' },
 		]);
 
 		function navHandler(to: string) {
+			if (to === '/logout') {
+				userStore.clearUserInfo();
+			}
 			popupStore.closePopup();
 			router.push(to);
 		}

@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<Navbar />
+		<navbar />
 		<router-view />
 		<Popup />
 	</div>

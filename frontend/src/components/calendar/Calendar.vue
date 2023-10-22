@@ -1,16 +1,18 @@
 <template>
-	<login />
+	<div>달력 컴포넌트</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Login from '@/components/Login.vue';
 
 export default defineComponent({
-	components: { Login },
+	name: 'Calendar',
+	components: {},
+	// props: {},
 	setup() {
 		return {};
 	},
+	methods: {},
 });
 </script>
 

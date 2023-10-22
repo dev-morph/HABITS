@@ -18,6 +18,13 @@ export const useUserStore = defineStore({
 			const { data } = await getUserDetail();
 			localStorage.setItem('user', JSON.stringify(data));
 			this.$state.info = data;
+			window.dispatchEvent(
+				new CustomEvent('userInfoStored', {
+					detail: {
+						userInfo: JSON.parse(localStorage.getItem('user') as string),
+					},
+				})
+			);
 		},
 
 		storeUserInfo(user: UserType) {
@@ -36,6 +43,18 @@ export const useUserStore = defineStore({
 		},
 		setUserEmail(email: string) {
 			this.$state.info.email = email;
+		},
+		clearUserInfo() {
+			this.$state.info.email = '';
+			this.$state.info.username = '';
+			localStorage.removeItem('user');
+			window.dispatchEvent(
+				new CustomEvent('userInfoStored', {
+					detail: {
+						userInfo: {},
+					},
+				})
+			);
 		},
 	},
 });

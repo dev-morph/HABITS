@@ -1,7 +1,11 @@
 <template>
 	<div id="home">
 		<greeting v-if="userStore.userInfo.username" :name="userStore.userInfo.username" />
-		<todo-list v-if="userStore.userInfo.email" :email="userStore.userInfo.email" />
+		<section class="events__wrapper">
+			<todo-list v-if="userStore.userInfo.email" :email="userStore.userInfo.email" />
+			<!-- <Calendar />
+			asdfasdfasdf -->
+		</section>
 	</div>
 </template>
 
@@ -10,12 +14,14 @@ import { defineComponent, onMounted } from 'vue';
 import Greeting from '@/components/Greeting.vue';
 import TodoList from '@/components/TodoList.vue';
 import { useUserStore } from '@/store/user';
+import Calendar from '@/components/calendar/Calendar.vue';
 
 export default defineComponent({
 	name: 'HomeView',
 	components: {
 		Greeting,
 		TodoList,
+		// Calendar,
 	},
 	setup() {
 		const userStore = useUserStore();

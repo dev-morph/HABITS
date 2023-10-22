@@ -5,7 +5,7 @@
 				<img src="habit_nobackground.png" alt="habits_logo" />
 			</router-link>
 			<div class="navigation">
-				<div class="login__btn" v-if="!loggedIn">Login</div>
+				<div class="login__btn" v-if="!loggedIn" @click="toLogin">Login</div>
 				<div class="login__btn" v-else @click="popupStore.openPopup">MyPage</div>
 			</div>
 		</nav>
@@ -15,19 +15,34 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import { usePopupStore } from '@/store/popup';
+import router from '@/router';
 
 export default defineComponent({
 	name: 'HomeView',
 	setup() {
 		const popupStore = usePopupStore();
 		const loggedIn = ref();
-		onMounted(() => {
-			loggedIn.value = localStorage.getItem('user');
+
+		function toLogin() {
+			router.push('/login');
+		}
+
+		onMounted(function () {
+			window.addEventListener('userInfoStored', ((event: CustomEvent) => {
+				if (event.detail.userInfo?.email) {
+					loggedIn.value = true;
+				} else {
+					loggedIn.value = false;
+				}
+				// eslint-disable-next-line no-undef
+			}) as EventListener);
 		});
 		return {
 			//variables,
 			popupStore,
 			loggedIn,
+			//functions
+			toLogin,
 		};
 	},
 });

@@ -27,6 +27,7 @@
 					type="text"
 					v-model="newTodo.title"
 					@keypress.enter="registerNewTodo"
+					:disabled="!inputMode"
 				/>
 			</div>
 		</div>
@@ -40,6 +41,7 @@ import CheckBox from '@/components/common/CheckBox.vue';
 import { CreateTodoType, FindAllTodoListsType, TodoListType } from '@/types/types';
 import { findAllTodoLists, createTodoList, updateTodoList, deleteTodolist } from '@/api/todoListApi';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 
 export default defineComponent({
 	name: 'TodoList',
@@ -51,6 +53,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		dayjs.extend(utc);
 		const loaded = ref(false);
 		const inputMode = ref(false);
 		const newTodoInput = ref();
@@ -66,6 +69,7 @@ export default defineComponent({
 		function inputModeHandler(open: boolean) {
 			if (open) {
 				inputMode.value = true;
+				newTodoInput.value.disabled = false;
 				newTodoInput.value.focus();
 			} else {
 				inputMode.value = false;
@@ -75,8 +79,7 @@ export default defineComponent({
 
 		async function getTodoLists() {
 			const query: FindAllTodoListsType = {
-				// user_email: props.email,
-				due_day: dayjs().format('YYYY-MM-DD'),
+				due_day: dayjs().utc().format('YYYY-MM-DD'),
 			};
 
 			const result = await findAllTodoLists(query);
@@ -204,6 +207,7 @@ export default defineComponent({
 			text-align: center;
 			transition: all 0.5s ease;
 			&.active {
+				// display: none;
 				opacity: 1;
 				height: 1.75rem;
 				width: 180px;
