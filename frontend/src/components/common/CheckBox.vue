@@ -1,11 +1,9 @@
 <template>
 	<label class="label__wrapper">
 		<div class="box"></div>
-		<input v-model="computedValue" type="checkbox" class="inside__input" />
-		<div class="text__wrapper">
-			<span class="label__text" :class="computedValue && 'checked'">{{ label }}</span>
-			<button class="delete__icon" @click.prevent="deleteHandler"></button>
-		</div>
+		<input v-model="computedValue" type="checkbox" class="inside__input" :class="computedValue && 'checked'" />
+		<span class="label__text" :class="computedValue && 'checked'">{{ label }}</span>
+		<button class="delete__icon" @click.prevent="deleteHandler"></button>
 	</label>
 </template>
 
@@ -59,37 +57,38 @@ export default defineComponent({
 	}
 	.box {
 		cursor: pointer;
+		// background: red;
 		background: url('@/assets/icons/unchecked.svg');
 		vertical-align: middle;
 		width: 1.5rem;
 		height: 1.5rem;
 	}
-	&:has(> input:checked) .box {
+	&:has(> input[type='checkbox']:checked) .box {
 		background: url('@/assets/icons/checked.svg');
 	}
 
-	.text__wrapper {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		max-width: 750px;
-		gap: 2rem;
-		.label__text {
-			cursor: pointer;
-			max-width: 550px;
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			word-break: break-all;
-			&.checked {
-				text-decoration: line-through;
-			}
+	// .text__wrapper {
+	// 	display: flex;
+	// 	justify-content: center;
+	// 	align-items: center;
+	// 	max-width: 750px;
+	// 	gap: 2rem;
+	.label__text {
+		cursor: pointer;
+		max-width: 550px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		word-break: break-all;
+		&.checked {
+			text-decoration: line-through;
+		}
 
-			&:hover &::after {
-				content: '';
-			}
+		&:hover &::after {
+			content: '';
 		}
 	}
+	// }
 
 	// &:hover .label__text::after {
 	// 	position: absolute;

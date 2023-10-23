@@ -22,8 +22,8 @@
 				<div class="calendar" ref="calendarRef">
 					<div v-for="(row, index) in calendar" :key="index" class="calendar__row">
 						<div
-							v-for="cell in row"
-							:key="cell"
+							v-for="(cell, idx) in row"
+							:key="idx"
 							class="cell"
 							:class="{
 								not__cur: cell.month !== targetDate.month,
@@ -42,31 +42,44 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, onMounted, ref, reactive, computed } from 'vue';
+import { Ref, defineComponent, onMounted, ref, computed, PropType } from 'vue';
 import dayjs from 'dayjs';
+import { CalendarCellType } from '@/types/types';
 
 export default defineComponent({
 	name: 'Calendar',
 	components: {},
-	props: {},
-	setup() {
+	props: {
+		selected: {
+			type: Object as PropType<CalendarCellType>,
+			required: true,
+		},
+		selectHandler: {
+			type: Function,
+			required: true,
+		},
+	},
+	setup(props) {
+		console.log('props is ', props);
 		const calendarRef = ref();
 		const baseDate = ref(dayjs());
 		const today = ref(dayjs());
-		const selected = reactive({
-			month: today.value.get('month') + 1,
-			date: today.value.get('date'),
-		});
+		// const selected: CalendarCellType = reactive({
+		// 	month: today.value.get('month') + 1,
+		// 	date: today.value.get('date'),
+		// });
 
 		const targetDate = computed(() => {
 			return {
 				year: baseDate.value.get('year'),
 				month: baseDate.value.get('month') + 1,
+				prevYear: baseDate.value.subtract(1, 'year').get('year'),
+				nextYear: baseDate.value.add(1, 'year').get('year'),
 				prevMonth: baseDate.value.subtract(1, 'month').get('month') + 1,
 				nextMonth: baseDate.value.add(1, 'month').get('month') + 1,
 			};
 		});
-		const calendar: Ref<any[][]> = ref([]);
+		const calendar: Ref<CalendarCellType[][]> = ref([]);
 
 		function getDayOfFirstDayOfMonth(yearMonth: string) {
 			return dayjs(yearMonth).day();
@@ -75,6 +88,7 @@ export default defineComponent({
 			const { firstRow, prevDate } = generateFirstRow();
 			calendar.value.push(firstRow);
 			generateLeftRows(prevDate);
+			console.log(calendar.value);
 		}
 
 		/**
@@ -82,19 +96,24 @@ export default defineComponent({
 		 * @param row
 		 */
 		function generateFirstRow() {
-			const row = [];
+			const row: CalendarCellType[] = [];
 			const lastDayOfPreviousMonth = baseDate.value.subtract(1, 'month').daysInMonth();
 			const dayOfFirstDay = getDayOfFirstDayOfMonth(baseDate.value.format('YYYY-MM'));
 			let start = 0;
 			let date = lastDayOfPreviousMonth - (dayOfFirstDay - start - 1);
 			while (dayOfFirstDay - start > 0) {
-				row.push({ month: targetDate.value.prevMonth, date: date });
+				//만약 prevMonth가 1월이라면, 년도가 바뀐것
+				if (targetDate.value.prevMonth === 12) {
+					row.push({ year: targetDate.value.prevYear, month: targetDate.value.prevMonth, date: date });
+				} else {
+					row.push({ year: targetDate.value.year, month: targetDate.value.prevMonth, date: date });
+				}
 				start++;
 				date = lastDayOfPreviousMonth - (dayOfFirstDay - start - 1);
 			}
 			date = 1;
 			while (row.length < 7) {
-				row.push({ month: targetDate.value.month, date: date });
+				row.push({ year: targetDate.value.year, month: targetDate.value.month, date: date });
 				date++;
 			}
 			return { firstRow: row, prevDate: date };
@@ -102,10 +121,10 @@ export default defineComponent({
 
 		function generateLeftRows(prevDate: number) {
 			const lastDayOfThisMonth = baseDate.value.daysInMonth();
-			let row = [];
+			let row: CalendarCellType[] = [];
 			let date = prevDate;
 			while (date <= lastDayOfThisMonth) {
-				row.push({ month: targetDate.value.month, date: date });
+				row.push({ year: targetDate.value.year, month: targetDate.value.month, date: date });
 				date++;
 				if (row.length === 7) {
 					calendar.value.push(row);
@@ -115,7 +134,12 @@ export default defineComponent({
 			if (date >= lastDayOfThisMonth && row.length < 7) {
 				date = 1;
 				while (row.length < 7) {
-					row.push({ month: targetDate.value.nextMonth, date: date });
+					//만약 nextMonth가 1월이라면, 년도가 바뀐것
+					if (targetDate.value.nextMonth === 1) {
+						row.push({ year: targetDate.value.nextYear, month: targetDate.value.nextMonth, date: date });
+					} else {
+						row.push({ year: targetDate.value.year, month: targetDate.value.nextMonth, date: date });
+					}
 					date++;
 				}
 				calendar.value.push(row);
@@ -135,11 +159,6 @@ export default defineComponent({
 		function clearCalendar() {
 			calendar.value = [];
 		}
-
-		function selectHandler(cell: any) {
-			selected.date = cell.date;
-			selected.month = cell.month;
-		}
 		onMounted(() => {
 			generateCaledar();
 		});
@@ -148,14 +167,12 @@ export default defineComponent({
 			calendarRef,
 			baseDate,
 			today,
-			selected,
 			//computed
 			targetDate,
 			calendar,
 			//functions
 			getDayOfFirstDayOfMonth,
 			dpNavHandler,
-			selectHandler,
 		};
 	},
 	methods: {},

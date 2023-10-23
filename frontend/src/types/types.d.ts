@@ -40,3 +40,9 @@ export type UpdateUserType = {
 	username: string;
 	email: string;
 };
+
+export type CalendarCellType = {
+	year: number;
+	month: number;
+	date: number;
+};
