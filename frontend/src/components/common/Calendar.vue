@@ -1,26 +1,26 @@
 <template>
 	<div class="dp__calendar__wrapper">
 		<div class="dp__month__year__row">
-			<button>&lt;</button>
+			<button @click="dpNavHandler(false)">&lt;</button>
 			<div class="month__year__wrapper">
-				<button>{{ targetMonth }}</button>
-				<button>{{ targetYear }}</button>
+				<button>{{ targetDate.month }}</button>
+				<button>{{ targetDate.year }}</button>
 			</div>
-			<button>&gt;</button>
+			<button @click="dpNavHandler(true)">&gt;</button>
 		</div>
 		<div>
 			<div class="day__of__week__row">
-				<div>Su</div>
-				<div>Mo</div>
-				<div>Tu</div>
-				<div>We</div>
-				<div>Th</div>
-				<div>Fr</div>
-				<div>Sa</div>
+				<div class="day__of__week__cell">Su</div>
+				<div class="day__of__week__cell">Mo</div>
+				<div class="day__of__week__cell">Tu</div>
+				<div class="day__of__week__cell">We</div>
+				<div class="day__of__week__cell">Th</div>
+				<div class="day__of__week__cell">Fr</div>
+				<div class="day__of__week__cell">Sa</div>
 			</div>
 			<div class="calendar" ref="calendarRef">
 				<div v-for="(row, index) in calendar" :key="index" class="calendar__row">
-					<div v-for="cell in row" :key="cell">{{ cell }}</div>
+					<div v-for="cell in row" :key="cell" class="cell">{{ cell }}</div>
 				</div>
 			</div>
 		</div>
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, onMounted, ref } from 'vue';
+import { Ref, defineComponent, onMounted, ref, computed } from 'vue';
 import dayjs from 'dayjs';
 
 export default defineComponent({
@@ -37,20 +37,16 @@ export default defineComponent({
 	props: {},
 	setup() {
 		const calendarRef = ref();
-		const today = ref(dayjs('2023-06-03'));
-		const targetYear = ref(today.value.get('year'));
-		const targetMonth = ref(today.value.get('months'));
+		const today = ref(dayjs());
+
+		const targetDate = computed(() => {
+			return {
+				year: today.value.get('year'),
+				month: today.value.get('month') + 1,
+			};
+		});
 		const calendar: Ref<number[][]> = ref([]);
-		function generateCalendar() {
-			const calendarRowElement = document.createElement('div');
-			calendarRowElement.classList.add('calendar__row');
-			//이번 달 1일의 요일을 체크하고
-			const dayOfFirstDay = getDayOfFirstDayOfMonth(today.value.format('YYYY-MM'));
-			const day = dayjs('2023-06').day();
-			const total = dayjs('2023-06-01').daysInMonth();
-			// const dayjs('2023-06-01').day() //0=sun, 1=mon, 2=tue, ...6=sat
-			console.log(dayOfFirstDay, day, total);
-		}
+
 		function getDayOfFirstDayOfMonth(yearMonth: string) {
 			return dayjs(yearMonth).day();
 		}
@@ -67,10 +63,9 @@ export default defineComponent({
 				date = lastDayOfPreviousMonth - (dayOfFirstDay - start - 1);
 			}
 			date = 1;
-			row.push(1);
 			while (row.length < 7) {
-				date++;
 				row.push(date);
+				date++;
 			}
 			calendar.value.push(row);
 			row = [];
@@ -82,23 +77,44 @@ export default defineComponent({
 					row = [];
 				}
 			}
-			console.log('row is', row);
-			console.log('calendar is', calendar.value);
+			console.log('date is ', row);
+			console.log('date is ', date);
+			if (date >= lastDayOfThisMonth && row.length < 7) {
+				date = 1;
+				while (row.length < 7) {
+					row.push(date);
+					date++;
+				}
+				calendar.value.push(row);
+			}
+		}
+
+		function dpNavHandler(direction: boolean) {
+			if (direction) {
+				today.value = today.value.add(1, 'month');
+			} else {
+				today.value = today.value.subtract(1, 'month');
+			}
+			clearCalendar();
+			calculateTotalRows();
+		}
+
+		function clearCalendar() {
+			calendar.value = [];
 		}
 		onMounted(() => {
-			generateCalendar();
 			calculateTotalRows();
 		});
 		return {
 			//variables
 			calendarRef,
 			today,
-			targetYear,
-			targetMonth,
+			//computed
+			targetDate,
 			calendar,
 			//functions
-			generateCalendar,
 			getDayOfFirstDayOfMonth,
+			dpNavHandler,
 		};
 	},
 	methods: {},
@@ -108,8 +124,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .dp__calendar__wrapper {
 	width: 350px;
-	background-color: rgba(0, 0, 0, 0.4);
+	background-color: rgba(0, 0, 0, 0.3);
 	border-radius: 5px;
+	padding: 0.5rem 1rem;
 	.dp__month__year__row {
 		display: grid;
 		grid-template-columns: 15% 70% 15%;
@@ -119,13 +136,34 @@ export default defineComponent({
 		}
 	}
 	.day__of__week__row {
-		display: flex;
-		justify-content: space-around;
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		font-weight: 700;
+		border-bottom: 1px solid rgba(99, 99, 99, 0.8);
+		.day__of__week__cell {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			// aspect-ratio: 1/1;
+		}
 	}
 	.calendar {
 		.calendar__row {
-			display: flex;
-			justify-content: space-around;
+			display: grid;
+			grid-template-columns: repeat(7, 1fr);
+
+			.cell {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				aspect-ratio: 1/1;
+				cursor: pointer;
+				&:hover {
+					// background-color: red;
+					background-color: rgba(73, 73, 73, 0.9);
+					border-radius: 50%;
+				}
+			}
 		}
 	}
 }
