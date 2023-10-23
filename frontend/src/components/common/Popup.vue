@@ -30,12 +30,14 @@ export default defineComponent({
 			{ title: '캘린더 페이지', to: '/calendar' },
 			{ title: '루틴 설정', to: '/routine' },
 			{ title: '테마 설정', to: '/theme' },
-			{ title: '로그아웃', to: '/login' },
+			{ title: '로그아웃', to: '/logout' },
 		]);
 
-		function navHandler(to: string) {
+		async function navHandler(to: string) {
 			if (to === '/logout') {
-				userStore.clearUserInfo();
+				console.log('hmm');
+				await userStore.clearUserInfo();
+				to = '/login';
 			}
 			popupStore.closePopup();
 			router.push(to);

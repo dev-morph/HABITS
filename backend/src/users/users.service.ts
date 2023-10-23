@@ -6,7 +6,7 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
 	constructor(private repository: UsersRepository) {}
 
-	async getUserByEmail(email: string): Promise<Users | undefined> {
+	async getUserByEmail(email: string) {
 		return this.repository.getUser({ where: { email } });
 	}
 

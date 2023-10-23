@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { getUserDetail } from '@/api/userApi';
+import { logoutUser } from '@/api/authApi';
 import { UserType } from '@/types/types';
 
 export const useUserStore = defineStore({
@@ -44,10 +45,11 @@ export const useUserStore = defineStore({
 		setUserEmail(email: string) {
 			this.$state.info.email = email;
 		},
-		clearUserInfo() {
+		async clearUserInfo() {
 			this.$state.info.email = '';
 			this.$state.info.username = '';
 			localStorage.removeItem('user');
+			await logoutUser();
 			window.dispatchEvent(
 				new CustomEvent('userInfoStored', {
 					detail: {

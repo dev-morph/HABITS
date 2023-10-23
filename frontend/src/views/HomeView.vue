@@ -2,29 +2,29 @@
 	<div id="home">
 		<greeting v-if="userStore.userInfo.username" :name="userStore.userInfo.username" />
 		<section class="events__wrapper">
-			<todo-list v-if="userStore.userInfo.email" :email="userStore.userInfo.email" />
-			<!-- <Calendar />
-			asdfasdfasdf -->
+			<todo-list v-if="userStore.userInfo.email && !calendarMode" :email="userStore.userInfo.email" />
+			<monthly-todo v-else />
 		</section>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import Greeting from '@/components/Greeting.vue';
 import TodoList from '@/components/TodoList.vue';
 import { useUserStore } from '@/store/user';
-import Calendar from '@/components/calendar/Calendar.vue';
+import MonthlyTodo from '@/components/todos/MonthlyTodo.vue';
 
 export default defineComponent({
 	name: 'HomeView',
 	components: {
 		Greeting,
 		TodoList,
-		// Calendar,
+		MonthlyTodo,
 	},
 	setup() {
 		const userStore = useUserStore();
+		const calendarMode = ref(true);
 
 		onMounted(() => {
 			userStore.getUserInfo();
@@ -32,6 +32,7 @@ export default defineComponent({
 		return {
 			//variables,
 			userStore,
+			calendarMode,
 		};
 	},
 });

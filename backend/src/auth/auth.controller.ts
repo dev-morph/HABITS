@@ -43,6 +43,15 @@ export class AuthController {
 		return payload;
 	}
 
+	@Get('/logout')
+	async logout(@Res({ passthrough: true }) res: Response) {
+		res.clearCookie('Authentication');
+		const payload = {
+			message: 'Logout Success',
+		};
+		return payload;
+	}
+
 	@Post('/kakao/login')
 	async kakaoLogin(@Body() kakaoLoginDto: KakaoCodeDto) {
 		const result = await this.authService.kakaoLogin(kakaoLoginDto);
