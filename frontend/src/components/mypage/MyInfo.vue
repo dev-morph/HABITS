@@ -14,6 +14,7 @@
 					v-model="userInfo.username"
 					v-focus
 					@keypress.enter="saveInfoHandler"
+					:disabled="!editMode"
 				/>
 			</div>
 			<div class="email">
@@ -52,6 +53,7 @@ export default defineComponent({
 
 		function editModeOpenHandler() {
 			editMode.value = true;
+			nameInput.value.disabled = false;
 			nameInput.value.focus();
 		}
 		function editModeOffHandler() {
