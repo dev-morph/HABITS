@@ -28,7 +28,9 @@
 							:class="{
 								not__cur: cell.month !== targetDate.month,
 								today: cell.month === today.get('month') + 1 && cell.date === today.get('date'),
+								selected: cell.month === selected.month && cell.date === selected.date,
 							}"
+							@click="selectHandler(cell)"
 						>
 							{{ cell.date }}
 						</div>
@@ -40,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, onMounted, ref, computed } from 'vue';
+import { Ref, defineComponent, onMounted, ref, reactive, computed } from 'vue';
 import dayjs from 'dayjs';
 
 export default defineComponent({
@@ -51,6 +53,10 @@ export default defineComponent({
 		const calendarRef = ref();
 		const baseDate = ref(dayjs());
 		const today = ref(dayjs());
+		const selected = reactive({
+			month: today.value.get('month') + 1,
+			date: today.value.get('date'),
+		});
 
 		const targetDate = computed(() => {
 			return {
@@ -129,6 +135,11 @@ export default defineComponent({
 		function clearCalendar() {
 			calendar.value = [];
 		}
+
+		function selectHandler(cell: any) {
+			selected.date = cell.date;
+			selected.month = cell.month;
+		}
 		onMounted(() => {
 			generateCaledar();
 		});
@@ -137,12 +148,14 @@ export default defineComponent({
 			calendarRef,
 			baseDate,
 			today,
+			selected,
 			//computed
 			targetDate,
 			calendar,
 			//functions
 			getDayOfFirstDayOfMonth,
 			dpNavHandler,
+			selectHandler,
 		};
 	},
 	methods: {},
@@ -202,6 +215,13 @@ export default defineComponent({
 					&.today {
 						background-color: rgb(112, 112, 112);
 						border-radius: 50%;
+					}
+					&.selected {
+						background-color: rgb(152, 152, 152);
+						border-radius: 50%;
+						font-weight: 700;
+						font-size: 1.1rem;
+						color: white;
 					}
 				}
 			}

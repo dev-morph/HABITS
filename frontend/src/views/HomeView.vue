@@ -2,8 +2,10 @@
 	<div id="home">
 		<greeting v-if="userStore.userInfo.username" :name="userStore.userInfo.username" />
 		<section class="events__wrapper">
-			<todo-list v-if="userStore.userInfo.email && !calendarMode" :email="userStore.userInfo.email" />
-			<monthly-todo v-else />
+			<div class="todo__outside__wrapper">
+				<todo-list v-if="userStore.userInfo.email && !calendarMode" :email="userStore.userInfo.email" />
+				<monthly-todo v-else />
+			</div>
 		</section>
 	</div>
 </template>
@@ -24,7 +26,7 @@ export default defineComponent({
 	},
 	setup() {
 		const userStore = useUserStore();
-		const calendarMode = ref(true);
+		const calendarMode = ref(false);
 
 		onMounted(() => {
 			userStore.getUserInfo();
@@ -44,5 +46,15 @@ export default defineComponent({
 	height: calc(100vh - 100px);
 	display: grid;
 	grid-template-rows: min(55%) 45%;
+
+	.events__wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: baseline;
+		.todo__outside__wrapper {
+			// min-width: 500px;
+			max-width: 800px;
+		}
+	}
 }
 </style>

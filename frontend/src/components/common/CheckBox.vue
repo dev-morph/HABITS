@@ -2,8 +2,10 @@
 	<label class="label__wrapper">
 		<div class="box"></div>
 		<input v-model="computedValue" type="checkbox" class="inside__input" />
-		<span class="label__text" :class="computedValue && 'checked'">{{ label }}</span>
-		<button class="delete__icon" @click.prevent="deleteHandler"></button>
+		<div class="text__wrapper">
+			<span class="label__text" :class="computedValue && 'checked'">{{ label }}</span>
+			<button class="delete__icon" @click.prevent="deleteHandler"></button>
+		</div>
 	</label>
 </template>
 
@@ -49,8 +51,9 @@ export default defineComponent({
 	position: relative;
 	display: flex;
 	align-items: center;
-	padding: 0 2rem;
+	padding: 0 6rem;
 	gap: 0.25rem;
+	max-width: 750px;
 	input[type='checkbox'] {
 		display: none;
 	}
@@ -64,14 +67,27 @@ export default defineComponent({
 	&:has(> input:checked) .box {
 		background: url('@/assets/icons/checked.svg');
 	}
-	.label__text {
-		cursor: pointer;
-		&.checked {
-			text-decoration: line-through;
-		}
 
-		&:hover &::after {
-			content: '';
+	.text__wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		max-width: 750px;
+		gap: 2rem;
+		.label__text {
+			cursor: pointer;
+			max-width: 550px;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			word-break: break-all;
+			&.checked {
+				text-decoration: line-through;
+			}
+
+			&:hover &::after {
+				content: '';
+			}
 		}
 	}
 
@@ -88,17 +104,20 @@ export default defineComponent({
 	// }
 
 	.delete__icon {
-		display: inline-block;
+		// display: block;
 		background-image: url('@/assets/icons/delete_icon.svg');
 		width: 1.5rem;
 		height: 1.5rem;
 		cursor: pointer;
 		position: absolute;
-		right: -1rem;
+		right: 1.5rem;
 		opacity: 0;
 		// padding: 1.5rem;
+		z-index: 9999;
+		// display: none;
 
 		&:hover {
+			display: block;
 			opacity: 1;
 		}
 		&:active {
@@ -106,6 +125,7 @@ export default defineComponent({
 		}
 	}
 	&:hover .delete__icon {
+		display: block;
 		opacity: 1;
 	}
 }
