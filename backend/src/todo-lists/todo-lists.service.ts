@@ -9,6 +9,7 @@ export class TodoListsService {
 	constructor(private repository: TodoListsRepository) {}
 
 	create(todo: CreateTodoListsDto) {
+		todo.due_day = new Date(todo.due_day);
 		const prismaDto = CreateTodoListsDto.toPrisma(todo);
 		return this.repository.createTodoList(prismaDto);
 	}

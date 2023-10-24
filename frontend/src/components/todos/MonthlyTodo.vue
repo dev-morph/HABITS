@@ -43,10 +43,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .calendar__wrapper {
+	grid-column: 1/3;
 	height: 100%;
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
-	// justify-content: center;
-	// align-items: center;
+	gap: 2rem;
 }
 </style>

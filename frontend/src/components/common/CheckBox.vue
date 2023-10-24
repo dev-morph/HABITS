@@ -1,22 +1,34 @@
 <template>
-	<label class="label__wrapper">
-		<div class="box"></div>
-		<input v-model="computedValue" type="checkbox" class="inside__input" :class="computedValue && 'checked'" />
-		<span class="label__text" :class="computedValue && 'checked'">{{ label }}</span>
-		<button class="delete__icon" @click.prevent="deleteHandler"></button>
-	</label>
+	<div class="checkbox__wrapper">
+		<label class="label__wrapper">
+			<div class="box"></div>
+			<input v-model="computedValue" type="checkbox" class="inside__input" :class="computedValue && 'checked'" />
+			<span class="label__text" :class="computedValue && 'checked'">{{ label }}</span>
+		</label>
+		<button class="delete__icon" @click.prevent="deleteHandler">
+			<delete-svg :size="'1.3rem'" />
+		</button>
+	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import DeleteSvg from '@/components/common/svg/DeleteSvg.vue';
 
 export default defineComponent({
 	name: 'Checkbox',
+	components: {
+		DeleteSvg,
+	},
 	props: {
 		value: Boolean,
 		id: Number,
 		idx: Number,
 		label: String,
+		fontSize: {
+			type: String,
+			required: false,
+		},
 	},
 
 	setup: (props, { emit }) => {
@@ -45,75 +57,71 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.label__wrapper {
+.checkbox__wrapper {
+	flex-shrink: 1;
+	flex-grow: 0;
+	max-width: fit-content;
 	position: relative;
-	display: flex;
-	align-items: center;
-	padding: 0 6rem;
-	gap: 0.25rem;
-	max-width: 750px;
-	input[type='checkbox'] {
-		display: none;
-	}
-	.box {
-		cursor: pointer;
-		// background: red;
-		background: url('@/assets/icons/unchecked.svg');
-		vertical-align: middle;
-		width: 1.5rem;
-		height: 1.5rem;
-	}
-	&:has(> input[type='checkbox']:checked) .box {
-		background: url('@/assets/icons/checked.svg');
-	}
-
-	// .text__wrapper {
-	// 	display: flex;
-	// 	justify-content: center;
-	// 	align-items: center;
-	// 	max-width: 750px;
-	// 	gap: 2rem;
-	.label__text {
-		cursor: pointer;
-		max-width: 550px;
+	min-width: 0;
+	// text-overflow: ellipsis;
+	// word-break: break-all;
+	.label__wrapper {
+		// max-width: 100%;
+		display: flex;
+		align-items: center;
+		padding: 0 6rem;
+		gap: 0.25rem;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		word-break: break-all;
-		&.checked {
-			text-decoration: line-through;
+		input[type='checkbox'] {
+			display: none;
 		}
+		.box {
+			cursor: pointer;
+			// background: red;
+			background: url('@/assets/icons/unchecked.svg');
+			vertical-align: middle;
+			width: 1.5rem;
+			height: 1.5rem;
+		}
+		&:has(> input[type='checkbox']:checked) .box {
+			background: url('@/assets/icons/checked.svg');
+		}
+		.label__text {
+			width: 100%;
+			cursor: pointer;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			word-break: break-all;
+			&.checked {
+				text-decoration: line-through;
+			}
 
-		&:hover &::after {
-			content: '';
+			&:hover &::after {
+				content: '';
+			}
+		}
+		&:hover + .delete__icon {
+			display: block;
+			opacity: 1;
 		}
 	}
-	// }
-
-	// &:hover .label__text::after {
-	// 	position: absolute;
-	// 	top: 50%;
-	// 	right: -1.3rem;
-	// 	transform: translateY(-50%);
-	// 	// display: inline-block;
-	// 	content: '';
-	// 	width: 1.3rem;
-	// 	height: 1.3rem;
-	// 	background-image: url('@/assets/icons/delete_icon.svg');
-	// }
-
 	.delete__icon {
-		// display: block;
-		background-image: url('@/assets/icons/delete_icon.svg');
+		//위치지정
+		position: absolute;
+		right: 1.5rem;
+		top: 0.35rem;
+		// transform: translateY(-50%);
+		display: inline-block;
+		// background-image: url('@/assets/icons/delete_icon.svg');
 		width: 1.5rem;
 		height: 1.5rem;
 		cursor: pointer;
-		position: absolute;
-		right: 1.5rem;
 		opacity: 0;
-		// padding: 1.5rem;
 		z-index: 9999;
-		// display: none;
 
 		&:hover {
 			display: block;
@@ -122,10 +130,6 @@ export default defineComponent({
 		&:active {
 			transform: scale(1.05);
 		}
-	}
-	&:hover .delete__icon {
-		display: block;
-		opacity: 1;
 	}
 }
 </style>

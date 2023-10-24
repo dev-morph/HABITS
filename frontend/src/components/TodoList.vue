@@ -79,7 +79,8 @@ export default defineComponent({
 
 		async function getTodoLists() {
 			const query: FindAllTodoListsType = {
-				due_day: dayjs().utc().format('YYYY-MM-DD'),
+				// due_day: dayjs().utc().format('YYYY-MM-DD'),
+				due_day: dayjs().format('YYYY-MM-DD'),
 			};
 
 			const result = await findAllTodoLists(query);
@@ -92,7 +93,8 @@ export default defineComponent({
 				inputModeHandler(false);
 				return;
 			}
-			newTodo.due_day = dayjs().toISOString();
+			// newTodo.due_day = dayjs().toISOString();
+			newTodo.due_day = dayjs().format('YYYY-MM-DD');
 			await createTodoList(newTodo);
 			//close inputMode
 			inputModeHandler(false);
@@ -143,29 +145,33 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .todo__list__wrapper {
-	height: 100%;
+	min-width: 0;
+	grid-column: 1/3;
+
 	display: flex;
 	flex-direction: column;
+	width: 100%;
 	gap: 0.5rem;
-
+	max-height: 100%;
 	.todo__list__header {
 		font-size: 1.5rem;
 		font-weight: 600;
 		text-align: center;
 	}
 	.todos__wrapper {
-		max-height: 65%;
-		overflow: scroll;
-		// background-color: red;
 		display: flex;
 		flex-direction: column;
 		justify-content: baseline;
 		align-items: center;
-		// background-color: antiquewhite;
+		overflow-y: scroll;
 
 		.todo__list__body {
+			width: 100%;
 			font-size: 1.5rem;
+			max-height: 15rem;
+			overflow-y: scroll;
 			li {
+				width: 100%;
 				display: flex;
 				justify-content: center;
 			}

@@ -4,7 +4,7 @@
 		<section class="events__wrapper">
 			<div class="todo__outside__wrapper">
 				<todo-list v-if="userStore.userInfo.email && !calendarMode" :email="userStore.userInfo.email" />
-				<monthly-todo v-else />
+				<monthly-todo v-if="calendarMode" />
 			</div>
 			<div class="change__btn__wrapper">
 				<button @click="calendarModeHandler"><arrow-svg :size="'3rem'" /></button>
@@ -31,7 +31,7 @@ export default defineComponent({
 	},
 	setup() {
 		const userStore = useUserStore();
-		const calendarMode = ref(false);
+		const calendarMode = ref(true);
 
 		function calendarModeHandler() {
 			calendarMode.value = !calendarMode.value;
@@ -56,20 +56,24 @@ export default defineComponent({
 	width: 100%;
 	height: calc(100vh - 100px);
 	display: grid;
-	grid-template-rows: min(55%) 45%;
+	grid-template-rows: minmax(0, 55%) minmax(0, 45%);
 
 	.events__wrapper {
-		display: flex;
-		justify-content: center;
-		align-items: center;
+		max-height: 100%;
+		display: grid;
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+
 		.todo__outside__wrapper {
-			max-width: 800px;
-			min-width: 750px;
+			grid-column: 2/6;
 			align-self: baseline;
-			// flex-grow: 0;
+			justify-self: center;
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
 		}
 
 		.change__btn__wrapper {
+			grid-column: 6/7;
+			min-width: 0;
 			display: flex;
 			align-items: center;
 			font-size: 3rem;

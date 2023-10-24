@@ -59,8 +59,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props) {
-		console.log('props is ', props);
+	setup() {
 		const calendarRef = ref();
 		const baseDate = ref(dayjs());
 		const today = ref(dayjs());
@@ -88,7 +87,6 @@ export default defineComponent({
 			const { firstRow, prevDate } = generateFirstRow();
 			calendar.value.push(firstRow);
 			generateLeftRows(prevDate);
-			console.log(calendar.value);
 		}
 
 		/**
@@ -182,8 +180,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .dp__outside__wrapper {
 	height: 100%;
+	min-width: 400px;
 	.dp__calendar__wrapper {
-		width: 350px;
 		background-color: rgba(0, 0, 0, 0.3);
 		border-radius: 5px;
 		padding: 0.5rem 1rem;
