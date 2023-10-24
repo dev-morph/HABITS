@@ -4,4 +4,4 @@ echo "CURRENT PWD IS "$(pwd)
 # IMAGE_LIST=$(docker images | grep $IMAGE_PREFIX | awk '{print $1":"$2}')
 # # 기존 image 삭제
 # docker rmi $IMAGE_LIST
-# docker compose up -d
+docker compose up --build -d backend frontend
