@@ -179,9 +179,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .dp__outside__wrapper {
+	grid-column: 1/2;
+	width: 100%;
 	height: 100%;
-	min-width: 400px;
+
+	display: flex;
+	justify-content: end;
 	.dp__calendar__wrapper {
+		flex-shrink: 0;
+		flex-grow: 1;
+		max-width: 350px;
+		max-height: 350px;
 		background-color: rgba(0, 0, 0, 0.3);
 		border-radius: 5px;
 		padding: 0.5rem 1rem;

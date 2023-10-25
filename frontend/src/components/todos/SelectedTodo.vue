@@ -1,18 +1,23 @@
 <template>
-	<div class="selected__todo__wrapper">
-		<div class="selected__date">{{ selectedDate }}</div>
-		<div class="todo__list__body">
-			<li class="todo__list" v-for="(event, index) in todoList" :key="index">
-				<check-box
-					:value="event.is_complete"
-					@updateTodoState="updateTodoState"
-					@deleteTodo="deleteTodo"
-					:label="event.title"
-					:idx="index"
-					:id="event.id"
-					:fontSize="'1.3rem'"
-				/>
-			</li>
+	<div class="outside__wrapper">
+		<div class="selected__todo__wrapper">
+			<div class="selected__date">{{ selectedDate }}</div>
+			<div class="todo__list__body">
+				<li class="list__wrapper" v-for="(event, index) in todoList" :key="index">
+					<check-box
+						:value="event.is_complete"
+						@updateTodoState="updateTodoState"
+						@deleteTodo="deleteTodo"
+						:label="event.title"
+						:idx="index"
+						:id="event.id"
+						:fontSize="'1.3rem'"
+					/>
+					<button class="delete__icon" @click.prevent="deleteTodo(event.id)">
+						<delete-svg :size="'1.3rem'" />
+					</button>
+				</li>
+			</div>
 		</div>
 	</div>
 </template>
@@ -21,12 +26,14 @@
 import { defineComponent, PropType, computed, Ref, ref, onMounted, watch } from 'vue';
 import { FindAllTodoListsType, TodoListType, CalendarCellType } from '@/types/types';
 import CheckBox from '@/components/common/CheckBox.vue';
+import DeleteSvg from '@/components/common/svg/DeleteSvg.vue';
 import { findAllTodoLists, updateTodoList, deleteTodolist } from '@/api/todoListApi';
 
 export default defineComponent({
 	name: 'SelectedTodo',
 	components: {
 		CheckBox,
+		DeleteSvg,
 	},
 	props: {
 		selected: {
@@ -83,57 +90,71 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.selected__todo__wrapper {
-	min-width: 400px;
+.outside__wrapper {
 	grid-column: 2/3;
+	width: 100%;
 	height: 100%;
-	// align-self: baseline;
-	// display: flex;
-	// flex-direction: column;
-	// justify-content: baseline;
-	// align-items: center;
-	// display: grid;
-	// grid-template-columns: repeat(1, 1fr);
-	display: flex;
-	flex-direction: column;
-	// justify-content: center;
-	align-items: center;
-	// grid-template-rows: max(5.7rem) 1fr;
+	.selected__todo__wrapper {
+		flex-shrink: 0;
+		flex-grow: 1;
+		max-width: 350px;
+		max-height: 350px;
+		padding: 0.5rem 1rem;
 
-	background-color: rgba(0, 0, 0, 0.3);
-	border-radius: 5px;
+		background-color: rgba(0, 0, 0, 0.3);
+		border-radius: 5px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		.selected__date {
+			width: 100%;
+			font-size: 1.2rem;
+			font-weight: 400;
+			padding: 0.5rem 0;
+			border-bottom: 1px solid rgba(97, 97, 97, 0.8);
+			width: 90%;
+			text-align: center;
+			// height: 6rem;
+			// line-height: 6rem;
+		}
 
-	.selected__date {
-		grid-column: 1/2;
-		font-size: 1.3rem;
-		font-weight: 400;
-		padding: 0.5rem 0;
-		border-bottom: 1px solid rgba(97, 97, 97, 0.8);
-		width: 95%;
-		text-align: center;
-		height: 6rem;
-		line-height: 6rem;
-	}
+		.todo__list__body {
+			width: 100%;
+			height: 280px;
+			// max-height: 200px;
+			overflow-y: scroll;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: baseline;
+			padding: 1rem;
+			.list__wrapper {
+				max-width: 80%;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				// gap: 2rem;
+				position: relative;
 
-	.todo__list__body {
-		grid-column: 1/2;
-		padding: 0.5rem 0;
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 0.5rem;
-		align-self: baseline;
-		justify-self: baseline;
+				&:hover > .delete__icon {
+					display: block;
+					opacity: 1;
+				}
 
-		max-height: 15rem;
-		overflow-y: scroll;
-		.todo__list {
-			display: grid;
-			grid-template-columns: 1fr;
-			max-width: 400px;
-			& > * {
-				max-width: 400px;
-				grid-column: 1/2;
-				min-width: 0;
+				.delete__icon {
+					position: absolute;
+					right: -3rem;
+					opacity: 0;
+					z-index: 9999;
+
+					&:hover {
+						opacity: 1;
+						transform: scale(1.05);
+					}
+					&:active {
+						transform: scale(1.07);
+					}
+				}
 			}
 		}
 	}

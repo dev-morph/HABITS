@@ -4,8 +4,8 @@
 			<h1 class="todo__list__header">Today</h1>
 			<div class="todos__wrapper">
 				<div class="todo__list__body">
-					<li v-for="(event, index) in todoList" :key="index">
-						<CheckBox
+					<li v-for="(event, index) in todoList" :key="index" class="list__wrapper">
+						<check-box
 							:value="event.is_complete"
 							@updateTodoState="updateTodoState"
 							@deleteTodo="deleteTodo"
@@ -13,6 +13,9 @@
 							:idx="index"
 							:id="event.id"
 						/>
+						<button class="delete__icon" @click.prevent="deleteTodo(event.id)">
+							<delete-svg :size="'1.3rem'" />
+						</button>
 					</li>
 				</div>
 			</div>
@@ -38,6 +41,7 @@
 import { defineComponent, onMounted, ref, reactive, Ref } from 'vue';
 import PlusSvg from '@/components/common/svg/PlusSvg.vue';
 import CheckBox from '@/components/common/CheckBox.vue';
+import DeleteSvg from '@/components/common/svg/DeleteSvg.vue';
 import { CreateTodoType, FindAllTodoListsType, TodoListType } from '@/types/types';
 import { findAllTodoLists, createTodoList, updateTodoList, deleteTodolist } from '@/api/todoListApi';
 import dayjs from 'dayjs';
@@ -45,7 +49,11 @@ import utc from 'dayjs/plugin/utc';
 
 export default defineComponent({
 	name: 'TodoList',
-	components: { PlusSvg, CheckBox },
+	components: {
+		PlusSvg,
+		CheckBox,
+		DeleteSvg,
+	},
 	props: {
 		email: {
 			type: String,
@@ -170,10 +178,37 @@ export default defineComponent({
 			font-size: 1.5rem;
 			max-height: 15rem;
 			overflow-y: scroll;
-			li {
-				width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: baseline;
+			align-items: center;
+			.list__wrapper {
+				max-width: 80%;
 				display: flex;
 				justify-content: center;
+				align-items: center;
+				// gap: 2rem;
+				position: relative;
+
+				&:hover > .delete__icon {
+					display: block;
+					opacity: 1;
+				}
+
+				.delete__icon {
+					position: absolute;
+					right: -3rem;
+					opacity: 0;
+					z-index: 9999;
+
+					&:hover {
+						opacity: 1;
+						transform: scale(1.05);
+					}
+					&:active {
+						transform: scale(1.07);
+					}
+				}
 			}
 		}
 	}

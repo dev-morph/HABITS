@@ -31,7 +31,7 @@ export default defineComponent({
 	},
 	setup() {
 		const userStore = useUserStore();
-		const calendarMode = ref(true);
+		const calendarMode = ref(false);
 
 		function calendarModeHandler() {
 			calendarMode.value = !calendarMode.value;
@@ -64,6 +64,9 @@ export default defineComponent({
 		grid-template-columns: repeat(6, minmax(0, 1fr));
 
 		.todo__outside__wrapper {
+			width: 100%;
+			max-height: 100%;
+			min-height: 0;
 			grid-column: 2/6;
 			align-self: baseline;
 			justify-self: center;

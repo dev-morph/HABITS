@@ -5,20 +5,20 @@
 			<input v-model="computedValue" type="checkbox" class="inside__input" :class="computedValue && 'checked'" />
 			<span class="label__text" :class="computedValue && 'checked'">{{ label }}</span>
 		</label>
-		<button class="delete__icon" @click.prevent="deleteHandler">
+		<!-- <button class="delete__icon" @click.prevent="deleteHandler">
 			<delete-svg :size="'1.3rem'" />
-		</button>
+		</button> -->
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import DeleteSvg from '@/components/common/svg/DeleteSvg.vue';
+// import DeleteSvg from '@/components/common/svg/DeleteSvg.vue';
 
 export default defineComponent({
 	name: 'Checkbox',
 	components: {
-		DeleteSvg,
+		// DeleteSvg,
 	},
 	props: {
 		value: Boolean,
@@ -63,18 +63,12 @@ export default defineComponent({
 	max-width: fit-content;
 	position: relative;
 	min-width: 0;
-	// text-overflow: ellipsis;
-	// word-break: break-all;
+	max-width: 100%;
 	.label__wrapper {
 		// max-width: 100%;
 		display: flex;
 		align-items: center;
-		padding: 0 6rem;
 		gap: 0.25rem;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		word-break: break-all;
 		input[type='checkbox'] {
 			display: none;
 		}
@@ -107,28 +101,6 @@ export default defineComponent({
 		&:hover + .delete__icon {
 			display: block;
 			opacity: 1;
-		}
-	}
-	.delete__icon {
-		//위치지정
-		position: absolute;
-		right: 1.5rem;
-		top: 0.35rem;
-		// transform: translateY(-50%);
-		display: inline-block;
-		// background-image: url('@/assets/icons/delete_icon.svg');
-		width: 1.5rem;
-		height: 1.5rem;
-		cursor: pointer;
-		opacity: 0;
-		z-index: 9999;
-
-		&:hover {
-			display: block;
-			opacity: 1;
-		}
-		&:active {
-			transform: scale(1.05);
 		}
 	}
 }
