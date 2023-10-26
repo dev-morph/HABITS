@@ -24,7 +24,7 @@ export default defineComponent({
 			if (hour.value > 3 && hour.value < 12) {
 				return 'Good morning';
 			} else if (hour.value >= 12 && hour.value < 18) {
-				return 'Good afternnon';
+				return 'Good afternoon';
 			} else if (hour.value >= 18 && hour.value < 21) {
 				return 'Good evening';
 			} else {
@@ -33,7 +33,7 @@ export default defineComponent({
 		});
 		function getRealTime() {
 			const n = dayjs();
-			now.value = n.format('HH:mm:ss');
+			now.value = n.format('HH:mm');
 			hour.value = n.get('hour');
 		}
 		onMounted(() => {
@@ -72,9 +72,10 @@ export default defineComponent({
 		font-weight: 600;
 		letter-spacing: 0;
 		line-height: 100%;
+		letter-spacing: -5px;
 	}
 	.greeting__phrase {
-		font-size: 3rem;
+		font-size: 2.5rem;
 		font-weight: 600;
 	}
 }

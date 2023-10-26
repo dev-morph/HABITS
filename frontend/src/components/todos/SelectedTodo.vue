@@ -101,7 +101,7 @@ export default defineComponent({
 		max-height: 350px;
 		padding: 0.5rem 1rem;
 
-		background-color: rgba(0, 0, 0, 0.3);
+		background-color: var(--bg--dark-300);
 		border-radius: 5px;
 		display: flex;
 		flex-direction: column;

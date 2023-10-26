@@ -25,9 +25,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@import url('./styles/variables.scss');
 #app {
 	background-image: url('@/assets/imgs/snow-head-mountain.jpg');
 	background-size: cover;
-	color: white;
+	color: var(--text--primary);
 }
 </style>

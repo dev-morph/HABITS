@@ -190,7 +190,7 @@ export default defineComponent({
 		flex-grow: 1;
 		max-width: 350px;
 		max-height: 350px;
-		background-color: rgba(0, 0, 0, 0.3);
+		background-color: var(--bg--dark-300);
 		border-radius: 5px;
 		padding: 0.5rem 1rem;
 		.dp__month__year__row {
@@ -228,23 +228,23 @@ export default defineComponent({
 					cursor: pointer;
 					&:hover {
 						// background-color: red;
-						background-color: rgba(73, 73, 73, 0.9);
+						background-color: var(--bg--gray--600);
 						border-radius: 50%;
 					}
 
 					&.not__cur {
-						color: rgb(149, 149, 149);
+						color: var(--text--inactive);
 					}
 					&.today {
-						background-color: rgb(112, 112, 112);
+						background-color: var(--bg--gray--600);
 						border-radius: 50%;
 					}
 					&.selected {
-						background-color: rgb(152, 152, 152);
+						background-color: var(--bg--gray--800);
 						border-radius: 50%;
 						font-weight: 700;
 						font-size: 1.1rem;
-						color: white;
+						color: var(--text--primary);
 					}
 				}
 			}
