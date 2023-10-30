@@ -2,7 +2,7 @@
 	<div class="outside__wrapper">
 		<div class="selected__todo__wrapper">
 			<div class="selected__date">{{ selectedDate }}</div>
-			<div class="todo__list__body">
+			<!-- <div class="todo__list__body">
 				<li class="list__wrapper" v-for="(event, index) in todoList" :key="index">
 					<check-box
 						:value="event.is_complete"
@@ -17,7 +17,8 @@
 						<delete-svg :size="'1.3rem'" />
 					</button>
 				</li>
-			</div>
+			</div> -->
+			<todo-molecule :selectedDate="selectedDate" :fontSize="'1.1rem'" />
 		</div>
 	</div>
 </template>
@@ -25,15 +26,15 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, Ref, ref, onMounted, watch } from 'vue';
 import { FindAllTodoListsType, TodoListType, CalendarCellType } from '@/types/types';
-import CheckBox from '@/components/common/CheckBox.vue';
-import DeleteSvg from '@/components/common/svg/DeleteSvg.vue';
 import { findAllTodoLists, updateTodoList, deleteTodolist } from '@/api/todoListApi';
+import TodoMolecule from './TodoMolecule.vue';
 
 export default defineComponent({
 	name: 'SelectedTodo',
 	components: {
-		CheckBox,
-		DeleteSvg,
+		// CheckBox,
+		// DeleteSvg,
+		TodoMolecule,
 	},
 	props: {
 		selected: {
@@ -69,7 +70,7 @@ export default defineComponent({
 			}
 		}
 
-		watch(props.selected, (newSelected, oldSelected) => {
+		watch(props.selected, () => {
 			getTodoLists();
 		});
 
