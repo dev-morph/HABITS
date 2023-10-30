@@ -35,7 +35,6 @@ export default defineComponent({
 
 		async function navHandler(to: string) {
 			if (to === '/logout') {
-				console.log('hmm');
 				await userStore.clearUserInfo();
 				to = '/login';
 			}

@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, reactive, Ref, watch, computed } from 'vue';
+import { defineComponent, onMounted, ref, reactive, Ref, watch, computed, toRefs } from 'vue';
 import PlusSvg from '@/components/common/svg/PlusSvg.vue';
 import CheckBox from '@/components/common/CheckBox.vue';
 import DeleteSvg from '@/components/common/svg/DeleteSvg.vue';
@@ -64,6 +64,7 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const loaded = ref(false);
 		const inputMode = ref(false);
+		const { selectedDate } = toRefs(props);
 		const newTodoInput = ref();
 		const newTodo: CreateTodoType = reactive({
 			user_email: '',
@@ -88,7 +89,7 @@ export default defineComponent({
 		async function getTodoLists() {
 			const query: FindAllTodoListsType = {
 				// due_day: dayjs().format('YYYY-MM-DD'),
-				due_day: props.selectedDate,
+				due_day: selectedDate.value,
 			};
 
 			const result = await findAllTodoLists(query);
@@ -97,14 +98,12 @@ export default defineComponent({
 		}
 
 		async function registerNewTodo() {
-			console.log('111', newTodo);
 			if (newTodo.title.length === 0 || newTodo.user_email.length === 0) {
 				inputModeHandler(false);
 				return;
 			}
 			// newTodo.due_day = dayjs().toISOString();
-			newTodo.due_day = props.selectedDate;
-			console.log(newTodo);
+			newTodo.due_day = selectedDate.value;
 			await createTodoList(newTodo);
 			//close inputMode
 			inputModeHandler(false);
@@ -138,7 +137,7 @@ export default defineComponent({
 			return props.fontSize ? props.fontSize : '1rem';
 		});
 
-		watch(props, async () => {
+		watch(selectedDate, async () => {
 			resetTodo(newTodo);
 			await getTodoLists();
 		});

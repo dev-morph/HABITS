@@ -19,7 +19,6 @@ export default defineComponent({
 			if (result.data === 'success') {
 				router.replace('/');
 			}
-			console.log('result is ---> ', result);
 		});
 		return {};
 	},

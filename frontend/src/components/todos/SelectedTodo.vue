@@ -28,6 +28,7 @@ import { defineComponent, PropType, computed, Ref, ref, onMounted, watch } from 
 import { FindAllTodoListsType, TodoListType, CalendarCellType } from '@/types/types';
 import { findAllTodoLists, updateTodoList, deleteTodolist } from '@/api/todoListApi';
 import TodoMolecule from './TodoMolecule.vue';
+import dayjs from 'dayjs';
 
 export default defineComponent({
 	name: 'SelectedTodo',
@@ -45,7 +46,8 @@ export default defineComponent({
 	setup(props) {
 		const todoList: Ref<TodoListType[]> = ref([]);
 		const selectedDate = computed(() => {
-			return `${props.selected.year}-${props.selected.month}-${props.selected.date}`;
+			const computedDate = dayjs(`${props.selected.year}-${props.selected.month}-${props.selected.date}`).format('YYYY-MM-DD');
+			return computedDate;
 		});
 
 		async function getTodoLists() {

@@ -19,6 +19,7 @@ export class TodoListsController {
 	@Post('/all')
 	findAll(@Request() request, @Body() whereInput: WhereTodoListsDto) {
 		const { id, email } = request.user;
+		console.log('id is', id, 'email is', email, whereInput.due_day);
 		whereInput.user_email = email;
 		return this.service.findAll(whereInput);
 	}
