@@ -2,20 +2,21 @@
 	<div id="app">
 		<navbar />
 		<router-view />
-		<Popup />
+		<NavPopupMolecule />
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Navbar from './components/Navbar.vue';
-import Popup from './components/common/Popup.vue';
+import NavPopupMolecule from './components/nav/NavPopupMolecule.vue';
 
 export default defineComponent({
 	name: 'App',
 	components: {
 		Navbar,
-		Popup,
+		// Popup,
+		NavPopupMolecule,
 	},
 
 	setup() {
