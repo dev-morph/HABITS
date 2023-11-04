@@ -23,7 +23,7 @@
 			</Transition>
 			<Transition name="display" mode="out-in">
 				<div class="question" v-if="currentStage === 1">
-					<label for="password">Please choose a password.</label>
+					<label for="password">Please enter password.</label>
 					<input
 						class="user__input"
 						id="password"
@@ -47,8 +47,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { signup, login } from '@/api/authApi';
+import { defineComponent, ref, reactive, computed, onMounted } from 'vue';
+import { login } from '@/api/authApi';
 import { AxiosError } from 'axios';
 import router from '@/router';
 import { useUserStore } from '@/store/user';
@@ -121,6 +121,14 @@ export default defineComponent({
 			);
 			return regex.test(email);
 		}
+
+		function initPage() {
+			(userInfo.email = ''), (userInfo.password = ''), (currentStage.value = 0);
+		}
+
+		onMounted(() => {
+			initPage();
+		});
 		return {
 			//variables
 			currentStage,

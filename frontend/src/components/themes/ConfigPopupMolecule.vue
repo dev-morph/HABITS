@@ -1,17 +1,22 @@
 <template>
-	<div></div>
+	<popup :position="'bottom-right'" :target="'Config'">
+		<configAutom></configAutom>
+	</popup>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { usePopupStore } from '@/store/popup';
 import Popup from '../common/Popup.vue';
+import ConfigAutom from './ConfigAutom.vue';
+
 export default defineComponent({
 	name: 'ConfigPopupMolecule',
-	components: {},
-	props: {},
+	components: {
+		Popup,
+		ConfigAutom,
+	},
+	// props: {},
 	setup() {
-		const popupStore = usePopupStore();
 		return {};
 	},
 	methods: {},

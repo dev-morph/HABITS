@@ -6,7 +6,7 @@
 			</router-link>
 			<div class="navigation">
 				<div class="login__btn" v-if="!loggedIn" @click="toLogin">Login</div>
-				<div class="login__btn" v-else @click="popupStore.openPopup">MyPage</div>
+				<div class="login__btn" v-else @click="popupStore.openPopup('UserInfo')">MyPage</div>
 			</div>
 		</nav>
 	</header>

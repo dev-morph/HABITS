@@ -3,6 +3,7 @@ import { getUserDetail } from '@/api/userApi';
 
 const whiteList = ['/', '/login'];
 router.beforeEach(async (to, from, next) => {
+	console.log('hmm');
 	let loggedIn = false;
 	try {
 		await getUserDetail();

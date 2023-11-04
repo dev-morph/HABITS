@@ -1,5 +1,5 @@
 <template>
-	<popup>
+	<popup :target="'UserInfo'">
 		<ul class="popup__list__wrapper">
 			<li v-for="(item, index) in mypageList" :key="index" class="list__item" @click="navHandler(item.to)">
 				{{ item.title }}

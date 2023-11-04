@@ -10,6 +10,9 @@
 				<button @click="calendarModeHandler"><arrow-svg :size="'3rem'" /></button>
 			</div>
 		</section>
+		<footer class="footer">
+			<config-molecule />
+		</footer>
 	</div>
 </template>
 
@@ -20,6 +23,7 @@ import TodoList from '@/components/TodoList.vue';
 import { useUserStore } from '@/store/user';
 import MonthlyTodo from '@/components/todos/MonthlyTodo.vue';
 import ArrowSvg from '@/components/common/svg/ArrowSvg.vue';
+import ConfigMolecule from '@/components/molecules/ConfigMolecule.vue';
 
 export default defineComponent({
 	name: 'HomeView',
@@ -28,6 +32,7 @@ export default defineComponent({
 		TodoList,
 		MonthlyTodo,
 		ArrowSvg,
+		ConfigMolecule,
 	},
 	setup() {
 		const userStore = useUserStore();
@@ -56,7 +61,7 @@ export default defineComponent({
 	width: 100%;
 	height: calc(100vh - 100px);
 	display: grid;
-	grid-template-rows: minmax(0, 55%) minmax(0, 45%);
+	grid-template-rows: minmax(0, 47.5%) minmax(0, 47.5%) minmax(0, 5%);
 
 	.events__wrapper {
 		max-height: 100%;

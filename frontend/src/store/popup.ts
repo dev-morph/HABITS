@@ -1,19 +1,20 @@
 import { defineStore } from 'pinia';
+import { PopupStateType, OpenableType, PopupType } from '@/types/types';
 
 export const usePopupStore = defineStore({
 	id: 'popup',
-	state: () => ({
-		isPopupOpen: false,
+	state: (): PopupStateType => ({
+		openedPopup: null,
 	}),
 	getters: {
-		getPopupState: state => state.isPopupOpen,
+		getOpenedPopup: state => state.openedPopup,
 	},
 	actions: {
 		closePopup() {
-			this.isPopupOpen = false;
+			this.openedPopup = null;
 		},
-		openPopup() {
-			this.isPopupOpen = true;
+		openPopup(target: OpenableType) {
+			this.openedPopup = target;
 		},
 	},
 });

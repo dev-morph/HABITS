@@ -17,7 +17,6 @@ export class TodoListsService {
 	findAll(whereInput: WhereTodoListsDto) {
 		whereInput.due_day = new Date(whereInput.due_day);
 		const prismaDto = WhereTodoListsDto.toPrisma(whereInput);
-		console.log('prisma Dto is ', prismaDto);
 		return this.repository.getTodoLists({ where: prismaDto });
 	}
 

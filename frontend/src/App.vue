@@ -3,6 +3,7 @@
 		<navbar />
 		<router-view />
 		<NavPopupMolecule />
+		<ConfigPopupMolecule />
 	</div>
 </template>
 
@@ -10,6 +11,7 @@
 import { defineComponent } from 'vue';
 import Navbar from './components/Navbar.vue';
 import NavPopupMolecule from './components/nav/NavPopupMolecule.vue';
+import ConfigPopupMolecule from './components/themes/ConfigPopupMolecule.vue';
 
 export default defineComponent({
 	name: 'App',
@@ -17,6 +19,7 @@ export default defineComponent({
 		Navbar,
 		// Popup,
 		NavPopupMolecule,
+		ConfigPopupMolecule,
 	},
 
 	setup() {
@@ -28,8 +31,10 @@ export default defineComponent({
 <style lang="scss">
 @import url('./styles/variables.scss');
 #app {
-	background-image: url('@/assets/imgs/snow-head-mountain.jpg');
+	background-image: var(--bg-image-url);
 	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
 	color: var(--text--primary);
 }
 </style>

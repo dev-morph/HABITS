@@ -42,3 +42,14 @@ model Routines {
 	created_at DateTime @default(now())
 	updated_at DateTime @updatedAt
 }
+
+model Themes{
+	id Int @default(autoincrement()) @id
+	background_path String
+	font_family String
+	color String
+	logo_color String
+	popup_color String
+	created_at DateTime @default(now())
+	updated_at DateTime @updatedAt
+}

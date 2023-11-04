@@ -46,3 +46,12 @@ export type CalendarCellType = {
 	month: number;
 	date: number;
 };
+
+export type PopupPositionType = 'top-right' | 'bottom-right';
+
+export type PopupType = 'UserInfo' | 'Config' | null;
+export type OpenableType = 'UserInfo' | 'Config';
+export type CloseablePopupType = 'UserInfo' | 'Config' | 'All';
+export type PopupStateType = {
+	openedPopup: PopupType;
+};
