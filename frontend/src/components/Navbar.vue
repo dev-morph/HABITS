@@ -54,6 +54,7 @@ nav {
 	align-items: center;
 	justify-content: space-between;
 	height: 100px;
+
 	div {
 		cursor: pointer;
 	}

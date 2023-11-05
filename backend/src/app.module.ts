@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './database/prisma.module';
 import { TodoListsModule } from './todo-lists/todo-lists.module';
 import { RoutinesModule } from './routines/routines.module';
+import { ThemesModule } from './themes/themes.module';
 
 @Module({
 	imports: [
@@ -17,6 +18,7 @@ import { RoutinesModule } from './routines/routines.module';
 		}),
 		TodoListsModule,
 		RoutinesModule,
+		ThemesModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

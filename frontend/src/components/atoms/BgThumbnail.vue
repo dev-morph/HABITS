@@ -1,7 +1,6 @@
 <template>
 	<div class="img__thumbnail">
 		<img :src="loadImage(url)" alt="" />
-		<!-- <img src="@/assets/imgs/snow-head-mountain.jpg" alt="" /> -->
 	</div>
 </template>
 

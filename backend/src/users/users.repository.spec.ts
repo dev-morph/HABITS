@@ -122,7 +122,7 @@ describe('UsersRepository', () => {
 	});
 
 	describe('유저 삭제', () => {
-		it('정상 삭제 시 리턴값은 null', async () => {
+		it('정상 삭제 시 delete의 리턴값은 삭제 데이터, 다시 조회시 리턴값은 null', async () => {
 			const createdUser = await repository.createUser(userData);
 			expect(createdUser.id).not.toBeNull();
 			const deleteResult = await repository.deleteUser({ where: { email: userData.email } });

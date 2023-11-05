@@ -28,6 +28,11 @@ const routes: Array<RouteRecordRaw> = [
 		component: () => import(/* webpackChunkName: "about" */ '../views/LoginView.vue'),
 	},
 	{
+		path: '/theme',
+		name: 'theme',
+		component: () => import(/* webpackChunkName: "about" */ '../views/ThemeView.vue'),
+	},
+	{
 		path: '/oauth/kakao/redirect',
 		name: 'kakao',
 		component: () => import(/* webpackChunkName: "about" */ '../views/KakaoRedirectView.vue'),

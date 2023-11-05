@@ -22,7 +22,9 @@ export default defineComponent({
 			if (props.color) {
 				return props.color;
 			} else {
-				return 'gray';
+				const root = document.querySelector(':root') as Element;
+				const primaryColor = getComputedStyle(root).getPropertyValue('--text--primary');
+				return primaryColor;
 			}
 		});
 		return {

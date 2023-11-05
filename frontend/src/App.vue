@@ -35,6 +35,7 @@ export default defineComponent({
 	background-size: cover;
 	background-position: center;
 	background-attachment: fixed;
+	text-shadow: var(--text-shadow);
 	color: var(--text--primary);
 }
 </style>
