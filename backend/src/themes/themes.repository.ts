@@ -10,6 +10,10 @@ export class ThemesRepositoy {
 		return this.prisma.themes.create({ data });
 	}
 
+	async findAllThemes() {
+		return this.prisma.themes.findMany();
+	}
+
 	async getTheme(params: { where: Prisma.ThemesWhereUniqueInput }): Promise<Themes> {
 		const { where } = params;
 		return this.prisma.themes.findUnique({ where });

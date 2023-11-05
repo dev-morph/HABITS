@@ -5,30 +5,30 @@ import { UpdateThemeDto } from './dto/update-theme.dto';
 
 @Controller('themes')
 export class ThemesController {
-	constructor(private readonly themesService: ThemesService) {}
+	constructor(private readonly service: ThemesService) {}
 
 	@Post()
 	create(@Body() createThemeDto: CreateThemeDto) {
-		return this.themesService.create(createThemeDto);
+		return this.service.create(createThemeDto);
 	}
 
 	@Get()
 	findAll() {
-		return this.themesService.findAll();
+		return this.service.findAll();
 	}
 
 	@Get(':id')
 	findOne(@Param('id') id: string) {
-		return this.themesService.findOne(+id);
+		return this.service.findOne(+id);
 	}
 
-	@Patch(':id')
-	update(@Param('id') id: string, @Body() updateThemeDto: UpdateThemeDto) {
-		return this.themesService.update(+id, updateThemeDto);
+	@Patch('')
+	update(@Body() updateThemeDto: UpdateThemeDto) {
+		return this.service.update(updateThemeDto);
 	}
 
 	@Delete(':id')
-	remove(@Param('id') id: string) {
-		return this.themesService.remove(+id);
+	remove(@Param('id') id: number) {
+		return this.service.remove(+id);
 	}
 }
