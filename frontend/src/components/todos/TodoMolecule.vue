@@ -41,7 +41,6 @@ import CheckBox from '@/components/common/CheckBox.vue';
 import DeleteSvg from '@/components/common/svg/DeleteSvg.vue';
 import { CreateTodoType, FindAllTodoListsType, TodoListType } from '@/types/types';
 import { findAllTodoLists, createTodoList, updateTodoList, deleteTodolist } from '@/api/todoListApi';
-import dayjs from 'dayjs';
 import { useUserStore } from '@/store/user';
 
 export default defineComponent({

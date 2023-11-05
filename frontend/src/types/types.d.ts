@@ -55,3 +55,20 @@ export type CloseablePopupType = 'UserInfo' | 'Config' | 'All';
 export type PopupStateType = {
 	openedPopup: PopupType;
 };
+
+export type CreateThemeType = {
+	background_path: string;
+	font_family: string;
+	color: string;
+	logo_color: string;
+	popup_color: string;
+};
+
+export type UpdateThemeType = {
+	id: number;
+	background_path?: string;
+	font_family?: string;
+	color?: string;
+	logo_color?: string;
+	popup_color?: string;
+};
