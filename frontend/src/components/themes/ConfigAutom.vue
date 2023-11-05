@@ -26,24 +26,7 @@ export default defineComponent({
 	// props: {},
 	setup() {
 		const configMenuList = ref(['배경설정', '테마설정']);
-		const bgImages = ref([
-			'big_starry_night_bg.png',
-			'cat_bg.png',
-			'clouds_bg.png',
-			'coral_bg.jpg',
-			'coral_big_bg.png',
-			'coral_big_dark_bg.png',
-			'coral_dark_bg.png',
-			'coral_pink_bg.png',
-			'milky_way_bg.png',
-			'rain_drop_bg.png',
-			'sea_ships_bg.png',
-			'snow-head-mountain.jpg',
-			'starry_night_bg.jpg',
-			'starry_tree_bg.png',
-			'trees_bg.png',
-			'trees_fairy_bg.png',
-		]);
+		const bgImages = ref(['big_starry_night_bg.png', 'clouds_bg.png', 'coral_bg.jpg', 'coral_big_bg.png', 'sea_ships_bg.png']);
 		const curNavPosition = ref(0);
 
 		function handleNav(index: number) {
