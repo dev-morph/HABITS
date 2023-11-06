@@ -33,6 +33,12 @@ export default defineComponent({
 			'coral_big_bg.png',
 			'sea_ships_bg.png',
 			'rainy_town_bg.png',
+			'rain_house_bg.png',
+			'rain_leaf_tree_bg.png',
+			'rain_moon_bg.png',
+			'rain_moon_flowers_bg.png',
+			'rain_no_leaf_tree_bg.png',
+			'rain_woman_bg.png',
 		]);
 		const curNavPosition = ref(0);
 
