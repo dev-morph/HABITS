@@ -10,6 +10,7 @@ describe('ThemesRepository', () => {
 	let prismaService: PrismaService;
 
 	const dummyTheme: Prisma.ThemesCreateInput = {
+		title: 'dummy_title',
 		background_path: 'some_awesome_bg_test_image',
 		font_family: 'nice-ff',
 		color: 'white',

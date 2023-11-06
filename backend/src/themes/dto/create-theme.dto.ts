@@ -1,4 +1,5 @@
 export class CreateThemeDto {
+	title: string;
 	background_path: string;
 	font_family: string;
 	color: string;

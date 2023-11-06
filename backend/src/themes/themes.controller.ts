@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ThemesService } from './themes.service';
 import { CreateThemeDto } from './dto/create-theme.dto';
 import { UpdateThemeDto } from './dto/update-theme.dto';
@@ -27,8 +27,8 @@ export class ThemesController {
 		return this.service.update(updateThemeDto);
 	}
 
-	@Delete(':id')
-	remove(@Param('id') id: number) {
+	@Delete('')
+	remove(@Query('id') id: number) {
 		return this.service.remove(+id);
 	}
 }

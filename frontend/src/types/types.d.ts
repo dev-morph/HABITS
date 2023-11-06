@@ -57,6 +57,7 @@ export type PopupStateType = {
 };
 
 export type CreateThemeType = {
+	title: string;
 	background_path: string;
 	font_family: string;
 	color: string;
@@ -66,6 +67,7 @@ export type CreateThemeType = {
 
 export type UpdateThemeType = {
 	id: number;
+	title?: string;
 	background_path?: string;
 	font_family?: string;
 	color?: string;

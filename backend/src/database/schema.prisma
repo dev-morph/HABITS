@@ -45,6 +45,7 @@ model Routines {
 
 model Themes{
 	id Int @default(autoincrement()) @id
+	title String @unique
 	background_path String
 	font_family String
 	color String
