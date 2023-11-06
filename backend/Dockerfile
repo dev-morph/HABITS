@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY ./src/database/ ./src/database/
 
-# RUN npm install -g dotenv-cli
+RUN npm install -g dotenv-cli
 RUN npm ci
 
 COPY ./ ./
