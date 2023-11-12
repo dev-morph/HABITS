@@ -12,10 +12,13 @@
 		</div>
 
 		<div class="theme__detail__wrapper">
+			<div>상세정보</div>
 			<div v-for="(item, idx) in headerFields" :key="idx">
 				<div v-if="item !== 'id'">{{ item }} : {{ selected && selected[item as keyof CreateThemeType] }}</div>
 			</div>
-			<button class="theme__btn" @click="deleteThemeHandler">테마 삭제</button>
+			<div class="btn__wrapper">
+				<button class="theme__btn" @click="deleteThemeHandler">테마 삭제</button>
+			</div>
 		</div>
 		<div class="theme__form__wrapper">
 			<div>테마 생성</div>
@@ -29,12 +32,14 @@
 					@input="newTheme[item as keyof CreateThemeType] = ($event.target as HTMLInputElement).value"
 				/>
 			</div>
-			<button class="theme__btn" @click="createThemeHandler">테마 생성</button>
+			<div class="btn__wrapper">
+				<button class="theme__btn" @click="createThemeHandler">테마 생성</button>
+			</div>
 		</div>
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" scoped>
 import { defineComponent, onMounted, ref, reactive } from 'vue';
 import { findAllThemes, createTheme, deleteTheme } from '@/api/themeApi';
 import { CreateThemeType } from '@/types/types';
@@ -82,6 +87,7 @@ export default defineComponent({
 			}
 			await createTheme(newTheme);
 			await getThemeList();
+			initThemeForm();
 		}
 
 		async function deleteThemeHandler() {
@@ -97,6 +103,15 @@ export default defineComponent({
 		function initSelectedTheme() {
 			const temp = { id: null, title: '', background_path: '', font_family: '', color: '', logo_color: '', popup_color: '' };
 			selected.value = temp;
+		}
+
+		function initThemeForm() {
+			newTheme.title = '';
+			newTheme.background_path = '';
+			newTheme.font_family = '';
+			newTheme.color = '';
+			newTheme.logo_color = '';
+			newTheme.popup_color = '';
 		}
 
 		onMounted(async () => {
@@ -118,13 +133,25 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/common.scss';
+// 아래방식으로 하면 안됨.
+// @import '../styles/common.scss';
+
 .theme__admin__wrapper {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(2, 1fr);
+	grid-template-areas:
+		'list list'
+		'detail form';
 	gap: 2rem;
 	padding: 1rem;
+	background-color: hsl(213 18% 10%/0.5);
+	border: 1px solid rgb(120, 126, 135);
+	border-radius: 1rem;
 	.themes__wrapper {
-		grid-column: 1/3;
+		grid-area: list;
+		// grid-column: 1/3;
 		display: flex;
 		flex-direction: column;
 		text-align: center;
@@ -132,7 +159,9 @@ export default defineComponent({
 			display: grid;
 			grid-template-columns: repeat(7, 1fr);
 			font-weight: 700;
-			border-bottom: 1px solid black;
+			// border-bottom: 1px solid black;
+			// background-color: hsl(213 18% 12% / 1);
+			background-color: rgb(55 65 81/1);
 		}
 
 		.theme__item__wrapper {
@@ -144,21 +173,27 @@ export default defineComponent({
 				grid-template-columns: repeat(7, minmax(0, 1fr));
 				cursor: pointer;
 				&:hover {
-					background-color: rgba(0, 0, 0, 0.6);
+					background-color: rgb(55 65 81/1);
 				}
 			}
 		}
 	}
 
 	.theme__detail__wrapper {
-		background-color: rgba(0, 0, 0, 0.6);
+		@extend .glass__card;
+		// background-color: rgba(0, 0, 0, 0.6);
+		grid-area: detail;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
 	}
 
 	.theme__form__wrapper {
-		background-color: rgba(0, 0, 0, 0.6);
+		@extend .glass__card;
+		grid-area: form;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
+		// align-items: center;
 		gap: 0.25rem;
 
 		.input__wrapper {
@@ -167,14 +202,26 @@ export default defineComponent({
 			input {
 				background-color: transparent;
 				border: none;
-				border: 1px solid rgba(0, 0, 0, 0.6);
+				border: 1px solid rgba(255, 255, 255, 0.6);
 			}
 		}
 	}
-	.theme__btn {
-		background-color: blue;
-		border-radius: 5px;
-		padding: 0.5rem 1rem;
+
+	.btn__wrapper {
+		width: 100%;
+		display: flex;
+		justify-content: flex-end;
+		.theme__btn {
+			width: 100%;
+			background-color: hsl(213 18% 12%/1);
+			border-radius: 5px;
+			padding: 0.5rem 1rem;
+
+			&:hover {
+				border-color: hsl(213 18% 10%/1);
+				background-color: hsl(213 18% 10%/1);
+			}
+		}
 	}
 }
 </style>

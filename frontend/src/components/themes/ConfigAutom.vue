@@ -1,15 +1,23 @@
 <template>
 	<div class="grid__wrapper">
 		<div class="config__menu__wrapper">
-			<div class="config__menu" v-for="(item, index) in configMenuList" :key="index" @click="handleNav(index)">{{ item }}</div>
+			<div
+				class="config__menu"
+				:class="selectedMenu === item && 'selected'"
+				v-for="(item, index) in configMenuList"
+				:key="index"
+				@click="handleNav(item)"
+			>
+				{{ item }}
+			</div>
 		</div>
 		<div class="config__detail__wrapper">
 			<div class="config__detail__container">
-				<div class="thumbnail__list">
-					<bg-thumbnail v-for="(image, idx) in bgImages" :key="idx" :url="image" @click="bgHandler(image)" />
+				<div class="thumbnail__list" v-if="selectedMenu === '테마설정'">
+					<BgThumbnail v-for="(image, idx) in bgImages" :key="idx" :url="image" @click="bgHandler(image)" />
 				</div>
+				<div class="extra__config" v-else>TBD</div>
 			</div>
-			<img id="test" src="" alt="" />
 		</div>
 	</div>
 </template>
@@ -25,25 +33,20 @@ export default defineComponent({
 	},
 	// props: {},
 	setup() {
-		const configMenuList = ref(['배경설정', '테마설정']);
+		const configMenuList = ref(['테마설정', '기타설정']);
+		const selectedMenu = ref('테마설정');
 		const bgImages = ref([
-			'big_starry_night_bg.png',
-			'clouds_bg.png',
-			'coral_bg.png',
-			'coral_big_bg.png',
-			'sea_ships_bg.png',
-			'rainy_town_bg.png',
-			'rain_house_bg.png',
-			'rain_leaf_tree_bg.png',
-			'rain_moon_bg.png',
-			'rain_moon_flowers_bg.png',
-			'rain_no_leaf_tree_bg.png',
-			'rain_woman_bg.png',
+			'starry_night_bg.webp',
+			'clouds_bg.webp',
+			'coral_bg.webp',
+			'coral_big_bg.webp',
+			'sea_ships_bg.webp',
+			'rain_woman_bg.webp',
 		]);
 		const curNavPosition = ref(0);
 
-		function handleNav(index: number) {
-			curNavPosition.value = index;
+		function handleNav(menu: string) {
+			selectedMenu.value = menu;
 		}
 
 		function bgHandler(imageName: string) {
@@ -53,6 +56,7 @@ export default defineComponent({
 		}
 		return {
 			//variables
+			selectedMenu,
 			configMenuList,
 			curNavPosition,
 			bgImages,
@@ -95,9 +99,14 @@ export default defineComponent({
 			cursor: pointer;
 			color: var(--text--inactive);
 			font-weight: var(--ff-nav-weight);
-			&:hover {
+
+			&.selected {
 				color: var(--text--primary);
 				transform: scale(1.05);
+			}
+			&:hover {
+				transform: scale(1.05);
+				color: var(--text--primary);
 			}
 		}
 	}

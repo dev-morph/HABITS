@@ -184,7 +184,7 @@ export default defineComponent({
 	height: 100%;
 
 	display: flex;
-	justify-content: end;
+	justify-content: flex-end;
 	.dp__calendar__wrapper {
 		flex-shrink: 0;
 		flex-grow: 1;

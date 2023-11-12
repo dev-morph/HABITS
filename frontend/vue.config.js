@@ -5,6 +5,5 @@ module.exports = defineConfig({
 	filenameHashing: false,
 	devServer: {
 		allowedHosts: 'all',
-		// https: true,
 	},
 });

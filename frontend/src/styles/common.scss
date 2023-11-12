@@ -1,4 +1,4 @@
-@import url('./fonts.scss');
+@import url('@/styles/fonts.scss');
 
 * {
 	margin: 0;
@@ -90,4 +90,16 @@ input:focus {
 .popup-enter-from,
 .popup-leave-to {
 	opacity: 0;
+}
+
+.glass__card {
+	background-color: rgb(31 41 55/1);
+	border-radius: 0.25rem;
+	padding: 1rem;
+	box-shadow: 0 0 #ffffff00, 0 0 #ffffff00, 0 0 #ffffff00, 0 0 #ffffff00, 0 1px 3px 0 rgba(255, 255, 255, 0.1),
+		0 1px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+@mixin glass__card {
+	background-color: white;
 }
