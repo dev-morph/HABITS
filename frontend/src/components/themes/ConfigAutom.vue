@@ -14,7 +14,7 @@
 		<div class="config__detail__wrapper">
 			<div class="config__detail__container">
 				<div class="thumbnail__list" v-if="selectedMenu === '테마설정'">
-					<BgThumbnail v-for="(image, idx) in bgImages" :key="idx" :url="image" @click="bgHandler(image)" />
+					<BgThumbnail v-for="theme in themeList" :key="theme.id" :url="theme.background_path" @click="bgHandler(theme)" />
 				</div>
 				<div class="extra__config" v-else>TBD</div>
 			</div>
@@ -23,8 +23,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, onBeforeMount, ref, Ref } from 'vue';
 import BgThumbnail from '@/components/atoms/BgThumbnail.vue';
+import { updateUserInfo } from '@/api/userApi';
+import { findAllThemes } from '@/api/themeApi';
+import { ThemeType, UserInfoType } from '@/types/types';
+import { useUserStore } from '@/store/user';
 
 export default defineComponent({
 	name: 'ConfigAutom',
@@ -33,33 +37,43 @@ export default defineComponent({
 	},
 	// props: {},
 	setup() {
+		const userStore = useUserStore();
 		const configMenuList = ref(['테마설정', '기타설정']);
 		const selectedMenu = ref('테마설정');
-		const bgImages = ref([
-			'starry_night_bg.webp',
-			'clouds_bg.webp',
-			'coral_bg.webp',
-			'coral_big_bg.webp',
-			'sea_ships_bg.webp',
-			'rain_woman_bg.webp',
-		]);
+		const themeList: Ref<ThemeType[]> = ref([]);
 		const curNavPosition = ref(0);
 
 		function handleNav(menu: string) {
 			selectedMenu.value = menu;
 		}
 
-		function bgHandler(imageName: string) {
-			const bgPath = `/imgs/${imageName}`;
-			const bgUrl = `url(${bgPath})`;
-			document.documentElement.style.setProperty('--bg-image-url', bgUrl);
+		async function bgHandler(theme: ThemeType) {
+			userStore.setBg(theme);
+			updateUserTheme(theme.id);
 		}
+
+		async function updateUserTheme(themeId: number) {
+			const stringifiedUser = localStorage.getItem('user');
+			if (stringifiedUser) {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const { theme, ...userInfo } = JSON.parse(stringifiedUser) as UserInfoType;
+				userInfo.theme_id = themeId;
+				await updateUserInfo(userInfo);
+				await userStore.getUserInfo();
+			}
+		}
+
+		onBeforeMount(async () => {
+			const { data } = await findAllThemes();
+			themeList.value = data;
+		});
+
 		return {
 			//variables
 			selectedMenu,
 			configMenuList,
 			curNavPosition,
-			bgImages,
+			themeList,
 			//functions
 			handleNav,
 			bgHandler,

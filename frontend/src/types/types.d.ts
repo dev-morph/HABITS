@@ -36,9 +36,17 @@ export type UserType = {
 	email: string;
 };
 
+export type UserInfoType = {
+	username: string;
+	email: string;
+	theme_id: number;
+	theme: ThemeType | undefined;
+};
+
 export type UpdateUserType = {
 	username: string;
 	email: string;
+	theme_id?: number;
 };
 
 export type CalendarCellType = {
@@ -73,4 +81,14 @@ export type UpdateThemeType = {
 	color?: string;
 	logo_color?: string;
 	popup_color?: string;
+};
+
+export type ThemeType = {
+	id: number;
+	title: string;
+	background_path: string;
+	font_family: string;
+	color: string;
+	logo_color: string;
+	popup_color: string;
 };

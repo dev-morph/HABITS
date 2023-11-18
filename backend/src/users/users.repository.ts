@@ -16,6 +16,9 @@ export class UsersRepository {
 		const { where } = params;
 		return this.prisma.users.findUnique({
 			where,
+			include: {
+				theme: true,
+			},
 		});
 	}
 

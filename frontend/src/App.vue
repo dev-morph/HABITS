@@ -11,11 +11,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onBeforeMount } from 'vue';
 import Navbar from './components/Navbar.vue';
 import NavPopupMolecule from './components/nav/NavPopupMolecule.vue';
 import ConfigPopupMolecule from './components/themes/ConfigPopupMolecule.vue';
 import ThemeLayer from './components/common/ThemeLayer.vue';
+import { useUserStore } from './store/user';
 
 export default defineComponent({
 	name: 'App',
@@ -28,6 +29,13 @@ export default defineComponent({
 	},
 
 	setup() {
+		const userStore = useUserStore();
+
+		onBeforeMount(async () => {
+			await userStore.getUserInfo();
+			userStore.setBg();
+		});
+
 		return {};
 	},
 });

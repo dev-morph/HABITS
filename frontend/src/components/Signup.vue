@@ -101,9 +101,9 @@ export default defineComponent({
 			} else {
 				errorMsg.value = '';
 				try {
-					const { data } = await signup(userInfo);
-					const user = { username: data.username, email: data.email };
-					userStore.storeUserInfo(user);
+					await signup(userInfo);
+					// const user = { username: data.username, email: data.email };
+					userStore.getUserInfo();
 					router.push('/home');
 				} catch (error) {
 					if (error instanceof AxiosError) {

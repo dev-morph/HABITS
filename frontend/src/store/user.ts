@@ -1,59 +1,61 @@
 import { defineStore } from 'pinia';
+import { useStorage } from '@vueuse/core';
 import { getUserDetail } from '@/api/userApi';
 import { logoutUser } from '@/api/authApi';
-import { UserType } from '@/types/types';
+import { UserInfoType, ThemeType } from '@/types/types';
 
 export const useUserStore = defineStore({
 	id: 'user',
 	state: () => ({
-		info: {
+		info: useStorage('user', {
 			username: '',
 			email: '',
-		},
+			theme_id: 1,
+			theme: undefined as ThemeType | undefined,
+		}),
 	}),
 	getters: {
 		userInfo: state => state.info,
+		curTheme: state => state.info.theme,
 	},
 	actions: {
 		async getUserInfo() {
 			const { data } = await getUserDetail();
-			localStorage.setItem('user', JSON.stringify(data));
 			this.$state.info = data;
 			window.dispatchEvent(
 				new CustomEvent('userInfoStored', {
 					detail: {
-						userInfo: JSON.parse(localStorage.getItem('user') as string),
+						userInfo: data,
 					},
 				})
 			);
 		},
 
-		storeUserInfo(user: UserType) {
-			localStorage.setItem('user', JSON.stringify(user));
+		storeUserInfo(user: UserInfoType) {
 			this.$state.info = user;
 		},
 
-		setUserInfo() {
-			const stringifiedUser = localStorage.getItem('user');
-			if (stringifiedUser) {
-				this.$state.info = JSON.parse(stringifiedUser);
+		setBg(theme?: ThemeType) {
+			let bgPath = '/imgs/';
+			if (theme) {
+				bgPath += theme.background_path;
+			} else {
+				bgPath += this.curTheme?.background_path;
 			}
+			const bgUrl = `url(${bgPath})`;
+			document.documentElement.style.setProperty('--bg-image-url', bgUrl);
 		},
-		setUserName(name: string) {
-			this.$state.info.username = name;
-		},
-		setUserEmail(email: string) {
-			this.$state.info.email = email;
-		},
+
 		async clearUserInfo() {
 			this.$state.info.email = '';
 			this.$state.info.username = '';
-			localStorage.removeItem('user');
+			this.$state.info.theme_id = 1;
+			this.$state.info.theme = undefined;
 			await logoutUser();
 			window.dispatchEvent(
 				new CustomEvent('userInfoStored', {
 					detail: {
-						userInfo: {},
+						userInfo: this.$state.info,
 					},
 				})
 			);

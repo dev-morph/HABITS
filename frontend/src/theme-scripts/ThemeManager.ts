@@ -1,24 +1,33 @@
 import { StarGroup } from './StarGroup';
-import { Wave } from './wave';
 
 class ThemeManager {
 	private canvas: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
 	private stageWidth = 0;
 	private stageHeight = 0;
-	private wave;
-	private starGroup;
-	constructor(canvas: HTMLCanvasElement) {
+	private themeEffect;
+	private theme: string;
+	private raf: number;
+	constructor(canvas: HTMLCanvasElement, theme: string) {
 		this.canvas = canvas;
+		this.theme = theme;
 		this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
 
 		window.addEventListener('resize', this.resize.bind(this), false);
 		this.resize();
+		if (this.theme === 'starryNight') {
+			this.themeEffect = new StarGroup(this.stageWidth, this.stageHeight);
+		}
 
-		this.wave = new Wave(this.stageWidth, this.stageHeight);
-		this.starGroup = new StarGroup(this.stageWidth, this.stageHeight);
+		this.raf = requestAnimationFrame(this.animate.bind(this));
+	}
 
-		requestAnimationFrame(this.animate.bind(this));
+	startAnimation() {
+		this.resize();
+		if (this.theme === 'starryNight') {
+			this.themeEffect = new StarGroup(this.stageWidth, this.stageHeight);
+			this.raf = requestAnimationFrame(this.animate.bind(this));
+		}
 	}
 
 	resize() {
@@ -28,17 +37,30 @@ class ThemeManager {
 		this.canvas.width = this.stageWidth * 2;
 		this.canvas.height = this.stageHeight * 2;
 		this.ctx?.scale(2, 2);
-		if (this.starGroup) {
-			console.log('here2', this.starGroup);
-			this.starGroup.resize(this.stageWidth, this.stageHeight);
+		if (this.themeEffect) {
+			this.themeEffect.resize(this.stageWidth, this.stageHeight);
 		}
 	}
 
-	animate(t: number) {
+	animate() {
 		this.ctx?.clearRect(0, 0, this.stageWidth, this.stageHeight);
+		if (this.themeEffect) {
+			this.themeEffect.draw(this.ctx);
+			if (this.theme !== 'starryNight') {
+				cancelAnimationFrame(this.raf);
+				return;
+			}
+			requestAnimationFrame(this.animate.bind(this));
+		}
+	}
 
-		this.starGroup.draw(this.ctx);
-		requestAnimationFrame(this.animate.bind(this));
+	stopAnimation() {
+		cancelAnimationFrame(this.raf);
+	}
+
+	setTheme(theme: string) {
+		this.theme = theme;
+		this.startAnimation();
 	}
 }
 
