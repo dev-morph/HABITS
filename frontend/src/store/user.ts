@@ -3,6 +3,7 @@ import { useStorage } from '@vueuse/core';
 import { getUserDetail } from '@/api/userApi';
 import { logoutUser } from '@/api/authApi';
 import { UserInfoType, ThemeType } from '@/types/types';
+import router from '@/router';
 
 export const useUserStore = defineStore({
 	id: 'user',
@@ -20,15 +21,19 @@ export const useUserStore = defineStore({
 	},
 	actions: {
 		async getUserInfo() {
-			const { data } = await getUserDetail();
-			this.$state.info = data;
-			window.dispatchEvent(
-				new CustomEvent('userInfoStored', {
-					detail: {
-						userInfo: data,
-					},
-				})
-			);
+			try {
+				const { data } = await getUserDetail();
+				this.$state.info = data;
+				window.dispatchEvent(
+					new CustomEvent('userInfoStored', {
+						detail: {
+							userInfo: data,
+						},
+					})
+				);
+			} catch (error) {
+				router.push('/login');
+			}
 		},
 
 		storeUserInfo(user: UserInfoType) {
@@ -40,9 +45,14 @@ export const useUserStore = defineStore({
 			if (theme) {
 				bgPath += theme.background_path;
 			} else {
-				bgPath += this.curTheme?.background_path;
+				if (this.curTheme) {
+					bgPath += this.curTheme?.background_path;
+				} else {
+					bgPath += 'starry_night_bg.webp';
+				}
 			}
 			const bgUrl = `url(${bgPath})`;
+			// const bgUrl = `url(${'black'})`;
 			document.documentElement.style.setProperty('--bg-image-url', bgUrl);
 		},
 
