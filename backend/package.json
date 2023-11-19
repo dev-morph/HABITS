@@ -20,8 +20,7 @@
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 		"test:e2e": "jest --config ./test/jest-e2e.json",
 		"migrate:test": "dotenv -e .env.test -- npx prisma migrate dev --name init",
-		"migrate:dev": "dotenv -e .env.dev -- npx prisma migrate deploy --name init && dotenv -e .env.dev -- nest start --watch",
-		"reset:prisma": "dotenv -e .env.dev -- npx prisma migrate reset --force"
+		"migrate:dev": "dotenv -e .env.dev -- npx prisma migrate deploy --name init && dotenv -e .env.dev -- nest start --watch"
 	},
 	"dependencies": {
 		"@nestjs/axios": "^3.0.0",
