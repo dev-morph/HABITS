@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
     - source: /
-      destination: /app/habits2
+      destination: /app/habits
       overwrite: yes
 
 permissions:
