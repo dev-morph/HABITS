@@ -1,34 +1,18 @@
 <template>
 	<div class="config__wrapper">
-		<config-popup-molecule />
+		<ConfigPopup />
 		<div class="config__btn__wrapper" @click="popupStore.openPopup('Config')">
 			<gear-svg :size="'2rem'" />
 		</div>
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import GearSvg from '@/components/common/svg/GearSvg.vue';
-import ConfigPopupMolecule from '../themes/ConfigPopupMolecule.vue';
 import { usePopupStore } from '@/store/popup';
+import ConfigPopup from '@/components/popups/ConfigPopup.vue';
 
-export default defineComponent({
-	name: 'ConfigMolecule',
-	components: {
-		GearSvg,
-		ConfigPopupMolecule,
-	},
-	// props: {},
-	setup() {
-		const popupStore = usePopupStore();
-		return {
-			//variables
-			popupStore,
-		};
-	},
-	methods: {},
-});
+const popupStore = usePopupStore();
 </script>
 
 <style lang="scss" scoped>

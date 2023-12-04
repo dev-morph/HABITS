@@ -29,7 +29,6 @@ export default defineComponent({
 		const popupStore = usePopupStore();
 
 		const computedPosition: ComputedRef<PopupPositionType> = computed(() => {
-			console.log('props.position', props.position);
 			if (props.position) return props.position;
 			else return 'top-right';
 		});

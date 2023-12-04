@@ -82,13 +82,16 @@ export default defineComponent({
 				errorMsg.value = '';
 				try {
 					await login(userInfo);
+					await userStore.getUserInfo();
+					userStore.setBg();
 					// const user = { username: data.username, email: data.email };
-					userStore.getUserInfo();
 					router.push('/home');
 				} catch (error) {
 					if (error instanceof AxiosError) {
 						if (error.response?.status === 401) {
 							errorMsg.value = '잘못된 로그인 정보입니다. 다시 로그인 해주세요.';
+						} else if (error.code === 'ERR_NETWORK') {
+							errorMsg.value = '백엔드 서버가 불안정 합니다. 잠시 후 다시 시도해주세요.';
 						}
 					}
 				}
@@ -143,11 +146,6 @@ export default defineComponent({
 			goPreviousStage,
 		};
 	},
-	// directives: {
-	// 	focus: {
-	// 		mounted: el => el.focus(),
-	// 	},
-	// },
 });
 </script>
 

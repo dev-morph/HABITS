@@ -22,64 +22,42 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onBeforeMount, ref, Ref } from 'vue';
-import BgThumbnail from '@/components/atoms/BgThumbnail.vue';
+<script setup lang="ts">
+import BgThumbnail from '@/components/configs/include/BgThumbnail.vue';
+import { onBeforeMount, ref, Ref } from 'vue';
 import { updateUserInfo } from '@/api/userApi';
 import { findAllThemes } from '@/api/themeApi';
 import { ThemeType, UserInfoType } from '@/types/types';
 import { useUserStore } from '@/store/user';
 
-export default defineComponent({
-	name: 'ConfigAutom',
-	components: {
-		BgThumbnail,
-	},
-	// props: {},
-	setup() {
-		const userStore = useUserStore();
-		const configMenuList = ref(['테마설정', '기타설정']);
-		const selectedMenu = ref('테마설정');
-		const themeList: Ref<ThemeType[]> = ref([]);
-		const curNavPosition = ref(0);
+const userStore = useUserStore();
+const configMenuList = ref(['테마설정', '기타설정']);
+const selectedMenu = ref('테마설정');
+const themeList: Ref<ThemeType[]> = ref([]);
 
-		function handleNav(menu: string) {
-			selectedMenu.value = menu;
-		}
+function handleNav(menu: string) {
+	selectedMenu.value = menu;
+}
 
-		async function bgHandler(theme: ThemeType) {
-			userStore.setBg(theme);
-			updateUserTheme(theme.id);
-		}
+async function bgHandler(theme: ThemeType) {
+	userStore.setBg(theme);
+	updateUserTheme(theme.id);
+}
 
-		async function updateUserTheme(themeId: number) {
-			const stringifiedUser = localStorage.getItem('user');
-			if (stringifiedUser) {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const { theme, ...userInfo } = JSON.parse(stringifiedUser) as UserInfoType;
-				userInfo.theme_id = themeId;
-				await updateUserInfo(userInfo);
-				await userStore.getUserInfo();
-			}
-		}
+async function updateUserTheme(themeId: number) {
+	const stringifiedUser = localStorage.getItem('user');
+	if (stringifiedUser) {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { theme, ...userInfo } = JSON.parse(stringifiedUser) as UserInfoType;
+		userInfo.theme_id = themeId;
+		await updateUserInfo(userInfo);
+		await userStore.getUserInfo();
+	}
+}
 
-		onBeforeMount(async () => {
-			const { data } = await findAllThemes();
-			themeList.value = data;
-		});
-
-		return {
-			//variables
-			selectedMenu,
-			configMenuList,
-			curNavPosition,
-			themeList,
-			//functions
-			handleNav,
-			bgHandler,
-		};
-	},
-	methods: {},
+onBeforeMount(async () => {
+	const { data } = await findAllThemes();
+	themeList.value = data;
 });
 </script>
 

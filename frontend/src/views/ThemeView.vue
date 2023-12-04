@@ -39,96 +39,78 @@
 	</div>
 </template>
 
-<script lang="ts" scoped>
-import { defineComponent, onMounted, ref, reactive } from 'vue';
+<script setup lang="ts">
+import { onMounted, ref, reactive } from 'vue';
 import { findAllThemes, createTheme, deleteTheme } from '@/api/themeApi';
 import { CreateThemeType } from '@/types/types';
 
-export default defineComponent({
-	name: 'ThemeView',
-	components: {},
-	// props: {},
-	setup() {
-		const headerFields = ['id', 'title', 'background_path', 'font_family', 'color', 'logo_color', 'popup_color'];
-		const themeList = ref([]);
-		const selected = ref({
-			id: null,
-			title: '',
-			background_path: '',
-			font_family: '',
-			color: '',
-			logo_color: '',
-			popup_color: '',
-		});
-		const newTheme: CreateThemeType = reactive({
-			title: '',
-			background_path: '',
-			font_family: '',
-			color: '',
-			logo_color: '',
-			popup_color: '',
-		});
-		async function getThemeList() {
-			const { data } = await findAllThemes();
-			themeList.value = data;
-		}
+const headerFields = ['id', 'title', 'background_path', 'font_family', 'color', 'logo_color', 'popup_color'];
+const themeList = ref([]);
+const selected = ref({
+	id: null,
+	title: '',
+	background_path: '',
+	font_family: '',
+	color: '',
+	logo_color: '',
+	popup_color: '',
+});
+const newTheme: CreateThemeType = reactive({
+	title: '',
+	background_path: '',
+	font_family: '',
+	color: '',
+	logo_color: '',
+	popup_color: '',
+});
+async function getThemeList() {
+	const { data } = await findAllThemes();
+	themeList.value = data;
+}
 
-		async function createThemeHandler() {
-			if (
-				newTheme.title.trim().length === 0 ||
-				newTheme.background_path.trim().length === 0 ||
-				newTheme.font_family.trim().length === 0 ||
-				newTheme.color.trim().length === 0 ||
-				newTheme.logo_color.trim().length === 0 ||
-				newTheme.popup_color.trim().length === 0
-			) {
-				alert('All fileds are Required.');
-				return;
-			}
-			await createTheme(newTheme);
-			await getThemeList();
-			initThemeForm();
-		}
+async function createThemeHandler() {
+	if (
+		newTheme.title.trim().length === 0 ||
+		newTheme.background_path.trim().length === 0 ||
+		newTheme.font_family.trim().length === 0 ||
+		newTheme.color.trim().length === 0 ||
+		newTheme.logo_color.trim().length === 0 ||
+		newTheme.popup_color.trim().length === 0
+	) {
+		alert('All fileds are Required.');
+		return;
+	}
+	await createTheme(newTheme);
+	await getThemeList();
+	initThemeForm();
+}
 
-		async function deleteThemeHandler() {
-			if (selected.value.id) {
-				await deleteTheme(selected.value.id);
-				await getThemeList();
-				initSelectedTheme();
-			} else {
-				alert('select theme deleted');
-			}
-		}
+async function deleteThemeHandler() {
+	if (selected.value.id) {
+		await deleteTheme(selected.value.id);
+		await getThemeList();
+		initSelectedTheme();
+	} else {
+		alert('select theme deleted');
+	}
+}
 
-		function initSelectedTheme() {
-			const temp = { id: null, title: '', background_path: '', font_family: '', color: '', logo_color: '', popup_color: '' };
-			selected.value = temp;
-		}
+function initSelectedTheme() {
+	const temp = { id: null, title: '', background_path: '', font_family: '', color: '', logo_color: '', popup_color: '' };
+	selected.value = temp;
+}
 
-		function initThemeForm() {
-			newTheme.title = '';
-			newTheme.background_path = '';
-			newTheme.font_family = '';
-			newTheme.color = '';
-			newTheme.logo_color = '';
-			newTheme.popup_color = '';
-		}
+function initThemeForm() {
+	newTheme.title = '';
+	newTheme.background_path = '';
+	newTheme.font_family = '';
+	newTheme.color = '';
+	newTheme.logo_color = '';
+	newTheme.popup_color = '';
+}
 
-		onMounted(async () => {
-			getThemeList();
-		});
-		return {
-			//variables,
-			headerFields,
-			themeList,
-			selected,
-			newTheme,
-			//functions,
-			createThemeHandler,
-			deleteThemeHandler,
-		};
-	},
-	methods: {},
+onMounted(async () => {
+	getThemeList();
 });
 </script>
 

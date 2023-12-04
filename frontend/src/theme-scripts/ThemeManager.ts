@@ -43,10 +43,12 @@ class ThemeManager {
 	}
 
 	animate() {
-		this.ctx?.clearRect(0, 0, this.stageWidth, this.stageHeight);
+		this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
 		if (this.themeEffect) {
+			this.ctx.globalCompositeOperation = 'lighter';
 			this.themeEffect.draw(this.ctx);
 			if (this.theme !== 'starryNight') {
+				console.log('cancle not starryNight Theme');
 				cancelAnimationFrame(this.raf);
 				return;
 			}
@@ -55,6 +57,8 @@ class ThemeManager {
 	}
 
 	stopAnimation() {
+		console.log('theme changed!, try to stop animation');
+		this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
 		cancelAnimationFrame(this.raf);
 	}
 

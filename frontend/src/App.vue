@@ -4,40 +4,25 @@
 		<div id="content__layer">
 			<navbar />
 			<router-view />
-			<NavPopupMolecule />
-			<ConfigPopupMolecule />
+			<NavPopup />
+			<ConfigPopup />
 		</div>
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onBeforeMount } from 'vue';
-import Navbar from './components/Navbar.vue';
-import NavPopupMolecule from './components/nav/NavPopupMolecule.vue';
-import ConfigPopupMolecule from './components/themes/ConfigPopupMolecule.vue';
-import ThemeLayer from './components/common/ThemeLayer.vue';
-import { useUserStore } from './store/user';
+<script setup lang="ts">
+import Navbar from '@/components/nav/Navbar.vue';
+import NavPopup from '@/components/popups/NavPopup.vue';
+import ConfigPopup from '@/components/popups/ConfigPopup.vue';
+import ThemeLayer from '@/components/common/ThemeLayer.vue';
+import { onBeforeMount } from 'vue';
+import { useUserStore } from '@/store/user';
 
-export default defineComponent({
-	name: 'App',
-	components: {
-		Navbar,
-		// Popup,
-		NavPopupMolecule,
-		ConfigPopupMolecule,
-		ThemeLayer,
-	},
+const userStore = useUserStore();
 
-	setup() {
-		const userStore = useUserStore();
-
-		onBeforeMount(async () => {
-			await userStore.getUserInfo();
-			userStore.setBg();
-		});
-
-		return {};
-	},
+onBeforeMount(async () => {
+	await userStore.getUserInfo();
+	userStore.setBg();
 });
 </script>
 
@@ -52,6 +37,7 @@ export default defineComponent({
 	background-attachment: fixed;
 	text-shadow: var(--text-shadow);
 	color: var(--text--primary);
+
 	#content__layer {
 		position: fixed;
 		width: 100%;

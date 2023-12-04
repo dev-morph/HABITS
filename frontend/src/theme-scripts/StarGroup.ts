@@ -1,18 +1,18 @@
 import { Star } from './Star';
-import dayjs from 'dayjs';
+import { Stars } from './NewStars';
 
 export class StarGroup {
 	private stageWidth = 0;
 	private stageHeight = 0;
 	private startArea = { x: [0, 0], y: [0, 0] };
-	private stars: Star[] = [];
-	private frequency = 1000;
+	private stars: Stars[] = [];
+	private frequency = 5000;
 	private numbersOfStar = 10;
 	private lastCreatedTime;
 
 	constructor(stageWidth: number, stageHeight: number) {
 		this.resize(stageWidth, stageHeight);
-		this.lastCreatedTime = dayjs();
+		this.lastCreatedTime = 0;
 		this.createStar();
 	}
 
@@ -31,8 +31,8 @@ export class StarGroup {
 	createStar() {
 		const x = this.getRandomNumberInRange(this.startArea.x[0], this.startArea.x[1]);
 		const y = this.getRandomNumberInRange(this.startArea.y[0], this.startArea.y[1]);
-		const lifetime = this.getRandomNumberInRange(1000, 2000);
-		this.stars.push(new Star(x, y, lifetime, 75));
+		const ttl = this.getRandomNumberInRange(100, 200);
+		this.stars.push(new Stars(x, y, ttl, 5));
 	}
 
 	destroyStar(index: number) {
@@ -40,16 +40,15 @@ export class StarGroup {
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		const cur = dayjs();
-		const diff = cur.diff(this.lastCreatedTime);
-		if (diff > this.frequency) {
+		this.lastCreatedTime++;
+		if (this.lastCreatedTime <= this.frequency && this.stars.length < 2) {
 			this.createStar();
-			this.lastCreatedTime = cur;
+			this.lastCreatedTime = 0;
 		}
 
 		for (let i = 0; i < this.stars.length; i++) {
 			const star = this.stars[i];
-			if (star.lifetime <= 0) {
+			if (star.ttl <= star.lifetime) {
 				this.destroyStar(i);
 			} else {
 				this.stars[i].draw(ctx);

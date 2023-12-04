@@ -8,6 +8,7 @@ import { PrismaModule } from './database/prisma.module';
 import { TodoListsModule } from './todo-lists/todo-lists.module';
 import { RoutinesModule } from './routines/routines.module';
 import { ThemesModule } from './themes/themes.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
 	imports: [
@@ -19,6 +20,7 @@ import { ThemesModule } from './themes/themes.module';
 		TodoListsModule,
 		RoutinesModule,
 		ThemesModule,
+		FilesModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

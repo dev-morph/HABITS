@@ -17,6 +17,8 @@ model Users {
 	password String
 	theme Themes @relation(fields: [theme_id], references: [id])
 	theme_id Int @default(1)
+	profile_id String? @unique
+	profile_file Files? @relation(fields: [profile_id], references: [filename])
 	created_at DateTime @default(now())
 	updated_at DateTime @updatedAt
 }
@@ -54,6 +56,15 @@ model Themes{
 	logo_color String
 	popup_color String
 	users Users[]
+	created_at DateTime @default(now())
+	updated_at DateTime @updatedAt
+}
+
+model Files{
+	id Int @default(autoincrement()) @id
+	filename String @unique
+	path String
+	user Users?
 	created_at DateTime @default(now())
 	updated_at DateTime @updatedAt
 }

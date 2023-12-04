@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Login from '@/components/Login.vue';
+import Login from '@/components/greetings/Login.vue';
 
 export default defineComponent({
 	components: { Login },

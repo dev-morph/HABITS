@@ -41,6 +41,8 @@ export type UserInfoType = {
 	email: string;
 	theme_id: number;
 	theme: ThemeType | undefined;
+	profile_id: string | null;
+	profile_image: File | null;
 };
 
 export type UpdateUserType = {

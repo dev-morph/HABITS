@@ -13,6 +13,8 @@ export const useUserStore = defineStore({
 			email: '',
 			theme_id: 1,
 			theme: undefined as ThemeType | undefined,
+			profile_id: null as string | null,
+			profile_image: null as File | null,
 		}),
 	}),
 	getters: {
@@ -23,6 +25,10 @@ export const useUserStore = defineStore({
 		async getUserInfo() {
 			try {
 				const { data } = await getUserDetail();
+				console.log('got getUserDetail', data);
+				if (!data.profile_id) {
+					data.profile_image = 'default_profile_image.png';
+				}
 				this.$state.info = data;
 				window.dispatchEvent(
 					new CustomEvent('userInfoStored', {
@@ -42,6 +48,7 @@ export const useUserStore = defineStore({
 
 		setBg(theme?: ThemeType) {
 			let bgPath = '/imgs/';
+			console.log('got setBg', this.curTheme, theme);
 			if (theme) {
 				bgPath += theme.background_path;
 			} else {

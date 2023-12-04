@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Signup from '@/components/Signup.vue';
+import Signup from '@/components/greetings/Signup.vue';
 
 export default defineComponent({
 	name: 'SignupView',

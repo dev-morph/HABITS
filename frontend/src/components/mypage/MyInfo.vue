@@ -1,7 +1,11 @@
 <template>
 	<div class="my__info__wrapper">
 		<div class="avatar">
-			<img src="habit_nobackground.png" alt="" />
+			<img src="default_profile_image.png" alt="" />
+			<label for="profile_input" class="profile__edit__btn">
+				<PencilSvg :size="'2rem'" />
+				<input type="file" id="profile_input" @change="e => fileUploadHandler(e as InputEvent)" />
+			</label>
 		</div>
 		<div class="info__wrapper">
 			<div class="name">
@@ -34,78 +38,78 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref, reactive } from 'vue';
+<script setup lang="ts">
+import { onMounted, ref, Ref, reactive } from 'vue';
 import { useUserStore } from '@/store/user';
-import { updateUserInfo } from '@/api/userApi';
+import { updateUserInfo, uploadProfileImage } from '@/api/userApi';
+import PencilSvg from '../common/svg/PencilSvg.vue';
 
-export default defineComponent({
-	name: 'MyInfo',
-	components: {},
-	setup() {
-		const userStore = useUserStore();
-		const nameInput = ref();
-		const userInfo = reactive({
-			username: '',
-			email: '',
-		});
-		const editMode = ref(false);
+const userStore = useUserStore();
+const uploadedFile: Ref<File | null> = ref(null);
+const nameInput = ref();
+const userInfo = reactive({
+	username: '',
+	email: '',
+});
+const editMode = ref(false);
 
-		function editModeOpenHandler() {
-			editMode.value = true;
-			nameInput.value.disabled = false;
-			nameInput.value.focus();
-		}
-		function editModeOffHandler() {
-			editMode.value = false;
-		}
+function editModeOpenHandler() {
+	editMode.value = true;
+	nameInput.value.disabled = false;
+	nameInput.value.focus();
+}
+function editModeOffHandler() {
+	editMode.value = false;
+}
 
-		async function saveInfoHandler() {
-			if (userInfo.username.length === 0 || userInfo.email.length === 0) {
-				return;
-			}
-			await updateUserInfo(userInfo);
-			userStore.getUserInfo();
-			editModeOffHandler();
-		}
+async function saveInfoHandler() {
+	if (userInfo.username.length === 0 || userInfo.email.length === 0) {
+		return;
+	}
+	await updateUserInfo(userInfo);
+	userStore.getUserInfo();
+	editModeOffHandler();
+}
 
-		function cancleHandler() {
-			userInfo.email = userStore.userInfo.email;
-			userInfo.username = userStore.userInfo.username;
-			editModeOffHandler();
-		}
+function cancleHandler() {
+	userInfo.email = userStore.userInfo.email;
+	userInfo.username = userStore.userInfo.username;
+	editModeOffHandler();
+}
 
-		function inputHandler(event: Event, to: string) {
-			const target = event.target as HTMLInputElement;
+function inputHandler(event: Event, to: string) {
+	const target = event.target as HTMLInputElement;
 
-			if (to === 'name') {
-				userInfo.username = target.value;
-				// userStore.setUserName(target.value);
-			} else if (to === 'email') {
-				userInfo.email = target.value;
-				// userStore.setUserEmail(target.value);
-			}
-		}
+	if (to === 'name') {
+		userInfo.username = target.value;
+	} else if (to === 'email') {
+		userInfo.email = target.value;
+	}
+}
 
-		onMounted(async () => {
-			await userStore.getUserInfo();
-			userInfo.email = userStore.userInfo.email;
-			userInfo.username = userStore.userInfo.username;
-		});
-		return {
-			//variables,
-			userStore,
-			nameInput,
-			userInfo,
-			editMode,
-			//functions,
-			editModeOpenHandler,
-			saveInfoHandler,
-			cancleHandler,
-			inputHandler,
-		};
-	},
-	methods: {},
+async function fileUploadHandler(e: InputEvent) {
+	let files: FileList | null = null;
+	const target = e.target as HTMLInputElement;
+	files = target.files;
+	if (files && files.length > 0) {
+		uploadedFile.value = files[0];
+		const formData = new FormData();
+		formData.append('file', uploadedFile.value);
+		formData.append('data', JSON.stringify(userStore.userInfo));
+		const result = await uploadProfileImage(formData);
+		console.log('result is , ', result);
+	} else {
+		//취소한 경우,
+		uploadedFile.value = null;
+	}
+
+	console.log('uploadedFile is ---> ', uploadedFile.value);
+}
+
+onMounted(async () => {
+	await userStore.getUserInfo();
+	userInfo.email = userStore.userInfo.email;
+	userInfo.username = userStore.userInfo.username;
 });
 </script>
 
@@ -121,10 +125,26 @@ export default defineComponent({
 		opacity: 0;
 	}
 	.avatar {
+		position: relative;
 		background-color: white;
 		border-radius: 50%;
 		width: 20rem;
 		height: 20rem;
+
+		.profile__edit__btn {
+			position: absolute;
+			bottom: 7.5%;
+			right: 7.5%;
+			background-color: rgb(0, 0, 0);
+			border-radius: 50%;
+			padding: 0.5rem;
+
+			cursor: pointer;
+
+			input {
+				display: none;
+			}
+		}
 	}
 
 	.info__wrapper {

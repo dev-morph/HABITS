@@ -11,48 +11,29 @@
 			</div>
 		</section>
 		<footer class="footer">
-			<config-molecule />
+			<ConfigBtn />
 		</footer>
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
-import Greeting from '@/components/Greeting.vue';
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import Greeting from '@/components/greetings/Greeting.vue';
 import TodoList from '@/components/TodoList.vue';
 import { useUserStore } from '@/store/user';
 import MonthlyTodo from '@/components/todos/MonthlyTodo.vue';
 import ArrowSvg from '@/components/common/svg/ArrowSvg.vue';
-import ConfigMolecule from '@/components/molecules/ConfigMolecule.vue';
+import ConfigBtn from '@/components/configs/ConfigBtn.vue';
 
-export default defineComponent({
-	name: 'HomeView',
-	components: {
-		Greeting,
-		TodoList,
-		MonthlyTodo,
-		ArrowSvg,
-		ConfigMolecule,
-	},
-	setup() {
-		const userStore = useUserStore();
-		const calendarMode = ref(false);
+const userStore = useUserStore();
+const calendarMode = ref(false);
 
-		function calendarModeHandler() {
-			calendarMode.value = !calendarMode.value;
-		}
+function calendarModeHandler() {
+	calendarMode.value = !calendarMode.value;
+}
 
-		onMounted(() => {
-			userStore.getUserInfo();
-		});
-		return {
-			//variables,
-			userStore,
-			calendarMode,
-			//functions
-			calendarModeHandler,
-		};
-	},
+onMounted(() => {
+	userStore.getUserInfo();
 });
 </script>
 
