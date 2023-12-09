@@ -11,6 +11,7 @@ export class Stars {
 	public particles: Particles[] = [];
 	public progress = 0;
 	public rgb = [
+		// 'rgba(255, 255, 255, 1)',
 		'rgb(26, 188, 156)',
 		'rgb(46, 204, 113)',
 		'rgb(52, 152, 219)',
