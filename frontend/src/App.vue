@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<ThemeLayer />
+		<!-- <ThemeLayer /> -->
 		<div id="content__layer">
 			<navbar />
 			<router-view />

@@ -26,17 +26,17 @@ SET NAMES utf8mb4;
 DROP TABLE IF EXISTS `Themes`;
 
 CREATE TABLE `Themes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `background_path` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `font_family` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `color` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `logo_color` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `popup_color` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updated_at` datetime(3) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `Themes_title_key` (`title`)
+	`id` int NOT NULL AUTO_INCREMENT,
+	`title` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+	`background_path` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+	`font_family` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+	`color` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+	`logo_color` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+	`popup_color` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+	`created_at` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	`updated_at` datetime(3) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `Themes_title_key` (`title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 LOCK TABLES `Themes` WRITE;

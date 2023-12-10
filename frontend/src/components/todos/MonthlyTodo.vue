@@ -1,24 +1,20 @@
 <template>
 	<transition name="display">
 		<div class="calendar__wrapper">
-			<calendar v-if="selected.date" :selected="selected" :selectHandler="selectHandler" />
-			<selected-todo :selected="selected" />
+			<Calendar v-if="selected.date" :selected="selected" :selectHandler="selectHandler" />
+			<SelectedTodo :selected="selected" />
 		</div>
 	</transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive } from 'vue';
+<script setup lang="ts">
+import { reactive } from 'vue';
 import dayjs from 'dayjs';
 import Calendar from '@/components/common/Calendar.vue';
 import SelectedTodo from '@/components/todos/SelectedTodo.vue';
 import { CalendarCellType } from '@/types/types';
 
-export default defineComponent({
-	name: 'MonthlyTodo',
-	components: { Calendar, SelectedTodo },
-	setup() {
-		const selected: CalendarCellType = reactive({
+const selected: CalendarCellType = reactive({
 			year: dayjs().get('year'),
 			month: dayjs().get('month') + 1,
 			date: dayjs().get('date'),
@@ -29,16 +25,6 @@ export default defineComponent({
 			selected.month = cell.month;
 			selected.date = cell.date;
 		}
-
-		return {
-			//variables
-			selected,
-			//functions
-			selectHandler,
-		};
-	},
-	methods: {},
-});
 </script>
 
 <style lang="scss" scoped>

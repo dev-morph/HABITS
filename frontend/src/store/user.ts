@@ -25,7 +25,6 @@ export const useUserStore = defineStore({
 		async getUserInfo() {
 			try {
 				const { data } = await getUserDetail();
-				console.log('got getUserDetail', data);
 				if (!data.profile_id) {
 					data.profile_image = 'default_profile_image.png';
 				}
@@ -38,7 +37,7 @@ export const useUserStore = defineStore({
 					})
 				);
 			} catch (error) {
-				router.push('/login');
+				console.log("failed to getUserInfo");
 			}
 		},
 
@@ -48,7 +47,6 @@ export const useUserStore = defineStore({
 
 		setBg(theme?: ThemeType) {
 			let bgPath = '/imgs/';
-			console.log('got setBg', this.curTheme, theme);
 			if (theme) {
 				bgPath += theme.background_path;
 			} else {

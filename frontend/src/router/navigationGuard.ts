@@ -17,6 +17,8 @@ router.beforeEach(async (to, from, next) => {
 			next();
 		}
 	} else {
+		//login 안된 경우
+		//white List에 들어가 있다면 그대로 go
 		if (whiteList.includes(to.path)) {
 			next();
 		} else {

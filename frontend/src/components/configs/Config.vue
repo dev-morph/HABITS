@@ -27,7 +27,7 @@ import BgThumbnail from '@/components/configs/include/BgThumbnail.vue';
 import { onBeforeMount, ref, Ref } from 'vue';
 import { updateUserInfo } from '@/api/userApi';
 import { findAllThemes } from '@/api/themeApi';
-import { ThemeType, UserInfoType } from '@/types/types';
+import { ThemeType, UpdateUserType, UserInfoType } from '@/types/types';
 import { useUserStore } from '@/store/user';
 
 const userStore = useUserStore();
@@ -49,9 +49,17 @@ async function updateUserTheme(themeId: number) {
 	if (stringifiedUser) {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { theme, ...userInfo } = JSON.parse(stringifiedUser) as UserInfoType;
-		userInfo.theme_id = themeId;
-		await updateUserInfo(userInfo);
-		await userStore.getUserInfo();
+		const updateDto = {} as UpdateUserType;
+		updateDto.email = userInfo.email;
+		updateDto.username = userInfo.username;
+		updateDto.theme_id = themeId;
+
+		try {
+			await updateUserInfo(updateDto);
+			await userStore.getUserInfo();
+		} catch (error) {
+			console.log('failed to set bg')
+		}
 	}
 }
 
