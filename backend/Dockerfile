@@ -1,6 +1,8 @@
 FROM node:20.9-alpine
 
-WORKDIR /app
+RUN cd /usr && mkdir app
+
+WORKDIR /usr/app
 
 COPY package*.json ./
 COPY ./src/database/ ./src/database/
