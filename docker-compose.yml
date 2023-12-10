@@ -8,10 +8,9 @@ services:
             dockerfile: Dockerfile
         ports:
             - 8080:8080
-        # working_dir: /app/frontend
         volumes:
             - ./frontend:/usr/app
-            # - /app/node_modules
+            - /usr/app/node_modules
         environment:
             TZ: 'Asia/Seoul'
         networks:
@@ -26,8 +25,8 @@ services:
             - 3000:3000
         # working_dir: /app/backend
         volumes:
-            - './backend:/app'
-            - '/app/node_modules'
+            - './backend:/usr/app'
+            - '/usr/app/node_modules'
         environment:
             TZ: 'Asia/Seoul'
         networks:

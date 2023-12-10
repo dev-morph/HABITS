@@ -35,11 +35,6 @@ jobs:
                   echo "MYSQL_ROOT_PASSWORD=${{secrets.MYSQL_ROOT_PASSWORD}}" >> ./db/.env
                   echo "MYSQL_DATABASE=${{secrets.MYSQL_DATABASE}}" >> ./db/.env
 
-            # - name: 🐳 docker image build
-            #   run: |
-            #     docker-compose build
-            #     docker images
-
             - name: 🔧 makeInstallPackage.sh 실행
               run: |
                   chmod +x makeInstallPackage.sh

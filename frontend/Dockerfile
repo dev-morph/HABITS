@@ -1,6 +1,5 @@
 FROM node:20.9-alpine
 
-RUN npm config set registry http://registry.npmjs.org/
 RUN cd /usr && mkdir app
 
 WORKDIR /usr/app
