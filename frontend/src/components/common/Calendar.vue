@@ -189,7 +189,7 @@ export default defineComponent({
 		flex-shrink: 0;
 		flex-grow: 1;
 		max-width: 350px;
-		max-height: 400px;
+		max-height: 410px;
 		background-color: var(--bg--dark-300);
 		border-radius: 5px;
 		padding: 0.5rem 1rem;

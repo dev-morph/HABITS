@@ -1,6 +1,7 @@
 <template>
 	<div class="img__thumbnail">
-		<img :src="loadImage(url)" alt="" />
+		<div class="loading" v-show="loading"> </div>
+		<img v-show="!loading" :src="loadImage(url)" alt="" @load="loadedImage"/>
 	</div>
 </template>
 
@@ -9,10 +10,16 @@ interface BgThumbnailProps {
 	url: string;
 }
 
-import { toRefs } from 'vue';
+import { ref, toRefs } from 'vue';
 
 const props = defineProps<BgThumbnailProps>();
 const { url } = toRefs(props);
+
+const loading = ref(true);
+
+function loadedImage(){
+	loading.value = false;
+}
 
 function loadImage(url: string) {
 	return require(`/public/imgs/${url}`);
@@ -26,9 +33,15 @@ function loadImage(url: string) {
 		filter: contrast(50%);
 	}
 
+	.loading{
+		background-color: rgba(60, 60, 60, 0.8);
+		border-radius: 0.25rem;
+		height: 70px;
+	}
+
 	img {
 		border-radius: 0.25rem;
-		height: 100%;
+		height: 70px;
 	}
 }
 </style>

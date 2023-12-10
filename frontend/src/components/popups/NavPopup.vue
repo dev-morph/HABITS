@@ -20,9 +20,9 @@ const popupStore = usePopupStore();
 const router = useRouter();
 const mypageList = ref([
 	{ title: '마이 페이지', to: '/mypage' },
-	{ title: '캘린더 페이지', to: '/calendar' },
-	{ title: '루틴 설정', to: '/routine' },
-	{ title: '테마 설정', to: '/theme' },
+	// { title: '캘린더 페이지', to: '/calendar' },
+	// { title: '루틴 설정', to: '/routine' },
+	// { title: '테마 설정', to: '/theme' },
 	{ title: '로그아웃', to: '/logout' },
 ]);
 

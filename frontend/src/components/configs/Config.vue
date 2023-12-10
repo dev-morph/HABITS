@@ -71,7 +71,7 @@ onBeforeMount(async () => {
 
 <style lang="scss" scoped>
 .grid__wrapper {
-	--config-nav-width: 200px;
+	--config-nav-width: 150px;
 	--config-main-width: 520px;
 	--config-height: 520px;
 
@@ -116,6 +116,7 @@ onBeforeMount(async () => {
 		width: var(--config-main-width);
 		display: flex;
 		flex-direction: column;
+		flex-shrink: 1;
 
 		.thumbnail__list {
 			display: grid;
