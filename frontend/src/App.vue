@@ -21,6 +21,15 @@ import { useUserStore } from '@/store/user'
 const userStore = useUserStore()
 
 onBeforeMount(async () => {
+	const mode = import.meta.env.MODE;
+	console.log("mode is ", mode)
+
+	if(mode === "production"){
+		console.log("PRODUCTION MODE");
+		window.console.log = function(){};
+		window.console.warn = function(){};
+		window.console.error = function(){};
+	}
     await userStore.getUserInfo()
     userStore.setBg()
 })

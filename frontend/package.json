@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite --port 8080",
+        "prod": "vite --port 8080 --mode production",
         "build": "run-p type-check \"build-only {@}\" --",
         "preview": "vite preview --port 8080",
         "test:unit": "vitest",

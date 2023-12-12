@@ -11,4 +11,4 @@ COPY ./ ./
 
 RUN npm run build
 #Executed When Container launched
-CMD ["npm", "run", "preview"]
+CMD ["npm", "run", "prod"]
