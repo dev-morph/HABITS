@@ -9,5 +9,6 @@ RUN npm ci --force
 
 COPY ./ ./
 
+RUN npm run build
 #Executed When Container launched
-CMD ["npm", "run", "serve"]
+CMD ["npm", "run", "preview"]

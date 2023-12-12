@@ -1,83 +1,72 @@
 <template>
-	<transition name="popup">
-		<div class="popup__layer" v-if="popupStore.getOpenedPopup === target" @click="popupStore.closePopup">
-			<div class="popup" :class="computedPosition" @click.stop>
-				<slot></slot>
-			</div>
-		</div>
-	</transition>
+    <transition name="popup">
+        <div
+            class="popup__layer"
+            v-if="popupStore.getOpenedPopup === target"
+            @click="popupStore.closePopup"
+        >
+            <div class="popup" :class="computedPosition" @click.stop>
+                <slot></slot>
+            </div>
+        </div>
+    </transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType, ComputedRef } from 'vue';
-import { usePopupStore } from '@/store/popup';
-import { PopupPositionType, OpenableType } from '@/types/types';
+<script setup lang="ts">
+interface PopupProps {
+    position?: PopupPositionType
+    target: OpenableType
+}
 
-export default defineComponent({
-	name: 'Popup',
-	components: {},
-	props: {
-		position: {
-			type: String as PropType<PopupPositionType>,
-		},
-		target: {
-			type: String as PropType<OpenableType>,
-			requireed: true,
-		},
-	},
-	setup(props) {
-		const popupStore = usePopupStore();
+import { computed } from 'vue'
+import type { ComputedRef } from 'vue'
+import { usePopupStore } from '@/store/popup'
+import type { PopupPositionType, OpenableType } from '@/types/types'
 
-		const computedPosition: ComputedRef<PopupPositionType> = computed(() => {
-			if (props.position) return props.position;
-			else return 'top-right';
-		});
+const popupStore = usePopupStore()
+const { position, target } = defineProps<PopupProps>()
 
-		return {
-			//variables
-			popupStore,
-			computedPosition,
-			//functions,
-		};
-	},
-	methods: {},
-});
+const computedPosition: ComputedRef<PopupPositionType> = computed(() => {
+    if (position) return position
+    else return 'top-right'
+})
 </script>
 
 <style lang="scss" scoped>
 .popup__layer {
-	position: absolute;
-	top: 0;
-	left: 0;
-	background-color: transparent;
-	width: 100%;
-	height: 100%;
+    --background--hsl: 0% 0% 6%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
 
-	.popup {
-		position: absolute;
-		background-color: hsl(0 0 6% / 0.925);
-		border-radius: 0.35rem;
+    .popup {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.8);
+        border-radius: 0.35rem;
 
-		&.top-right {
-			top: 5rem;
-			right: 0.75rem;
+        &.top-right {
+            top: 5rem;
+            right: 0.75rem;
 
-			&:before {
-				content: '';
-				position: absolute;
-				display: block;
-				border-top: 0;
-				border: 10px solid transparent;
-				border-bottom: 10px solid hsl(0 0 6% / 0.925);
-				top: -20px;
-				right: 1rem;
-			}
-		}
+            &:before {
+                content: '';
+                position: absolute;
+                display: block;
+                border-top: 0;
+                border: 10px solid transparent;
+                border-bottom: 10px solid rgba(0, 0, 0, 0.8);
+                top: -20px;
+                right: 1rem;
+            }
+        }
 
-		&.bottom-right {
-			bottom: 1rem;
-			left: 0.75rem;
-		}
-	}
+        &.bottom-right {
+            bottom: 1rem;
+            left: 0.75rem;
+        }
+    }
 }
 </style>
