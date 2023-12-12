@@ -24,7 +24,7 @@ export const useUserStore = defineStore({
     actions: {
         async getUserInfo() {
             try {
-                const { data } = await getUserDetail()
+                const { data } = await getUserDetail();
                 if (!data.profile_id) {
                     data.profile_image = 'default_profile_image.png'
                 }
